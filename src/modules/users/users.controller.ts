@@ -6,8 +6,9 @@ import { RequestWithUser } from './users.interface';
 export class UsersController {
   constructor() {}
 
-  @Get('/me')
+  @Get('/profile')
   async getMe(@Req() req: RequestWithUser) {
+    Reflect.deleteProperty(req.user, 'password');
     return req.user;
   }
 }

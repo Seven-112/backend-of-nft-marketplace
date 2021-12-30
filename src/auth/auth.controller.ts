@@ -50,7 +50,9 @@ export class AuthController {
       Object.assign(user, body);
       const salt = await bcrypt.genSalt();
       user.password = await bcrypt.hash(body.password, salt);
-      return this.usersService.create(user);
+      const registeredUser = await this.usersService.create(user);
+      Reflect.deleteProperty(registeredUser, 'password');
+      return registeredUser;
     } catch (error) {
       throw error;
     }
@@ -83,6 +85,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async isAuthenticated(@Req() req: RequestWithUser) {
     try {
+      Reflect.deleteProperty(req.user, 'password');
       return req.user;
     } catch (error) {
       throw error;
