@@ -9,6 +9,7 @@ import {
   Controller,
   Get,
   Req,
+  UsePipes,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -18,6 +19,7 @@ import { UsersService } from 'src/modules/users/users.service';
 import { RequestWithUser, User } from 'src/modules/users/users.interface';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +31,7 @@ export class AuthController {
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
   @Public()
+  @UsePipes(new ValidationPipe())
   async register(@Body() body: RegisterDTO) {
     try {
       const isUsernameAvailable = await this.usersService.isUsernameAvailable(
@@ -56,6 +59,7 @@ export class AuthController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   @Public()
+  @UsePipes(new ValidationPipe())
   async login(@Body() body: LoginDTO) {
     try {
       const user = await this.usersService.getUserByEmail(body.email);

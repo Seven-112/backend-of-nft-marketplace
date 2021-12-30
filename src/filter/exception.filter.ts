@@ -48,7 +48,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       // not user error, might be fatal ಥ_ಥ, return dummy err
       // to avoid exposing internal information. also log it
       logger.error(err);
-      err = new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, 'error.unknown');
+      // err = new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, 'error.unknown');
     }
 
     // const httpStatus =
@@ -69,7 +69,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     httpAdapter.reply(
       ctx.getResponse(),
-      { message: err.message, status: statusCode, data: err.data },
+      {
+        message: err.message,
+        status: statusCode,
+        data: err.data,
+        errors: err.errors,
+      },
       statusCode,
     );
   }
