@@ -22,8 +22,7 @@ export class UsersService {
       })
       .limit(1)
       .exec();
-
-    return !!user.length;
+    return !user.count;
   }
 
   async isEmailAvailable(email: string) {
@@ -36,7 +35,7 @@ export class UsersService {
       .limit(1)
       .exec();
 
-    return !!user.length;
+    return !user.count;
   }
 
   async getUserByEmail(email: string) {
