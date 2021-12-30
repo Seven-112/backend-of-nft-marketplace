@@ -19,23 +19,23 @@ export const baseSchema = {
     hashKey: true,
   },
   createdAt: {
-    type: Number
+    type: Number,
   },
   updatedAt: {
-    type: Number
+    type: Number,
   },
   updatedBy: {
     type: Object,
     schema: {
       userId: {
-        type: Number
+        type: Number,
       },
       username: {
-        type: String
+        type: String,
       },
     },
   },
-}
+};
 
 export class UserModel extends BaseModel {
   firstName: string;
