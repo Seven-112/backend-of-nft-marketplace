@@ -17,19 +17,19 @@ export class TodoController {
     return this.todoService.findOne(id);
   }
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  create(@Request() req): Promise<Todo | undefined> {
-    return this.todoService.create(req.user, req.body);
-  }
+  // @Post()
+  // @HttpCode(HttpStatus.CREATED)
+  // create(@Request() req): Promise<Todo | undefined> {
+  //   return this.todoService.create(req.user, req.body);
+  // }
 
-  @Delete()
-  remove(@Request() req) {
-    return this.todoService.remove(req.body.id);
-  }
+  // @Delete()
+  // remove(@Request() req) {
+  //   return this.todoService.remove(req.body.id);
+  // }
 
-  @Put()
-  update(@Request() req) {
-    return this.todoService.update(req.user, req.body);
-  }
+  // @Put()
+  // update(@Request() req) {
+  //   return this.todoService.update(req.user, req.body);
+  // }
 }

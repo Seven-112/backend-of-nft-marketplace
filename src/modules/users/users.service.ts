@@ -15,7 +15,7 @@ export class UsersService {
 
   async isUsernameAvailable(username: string) {
     const user = await this.userModel
-      .query({
+      .scan({
         username: {
           eq: username,
         },
@@ -23,11 +23,7 @@ export class UsersService {
       .limit(1)
       .exec();
 
-    if (user.length) {
-      return false;
-    }
-
-    return true;
+    return !!user.length;
   }
 
   async isEmailAvailable(email: string) {
@@ -40,18 +36,36 @@ export class UsersService {
       .limit(1)
       .exec();
 
-    if (user.length) {
-      return false;
-    }
+    return !!user.length;
+  }
 
-    return true;
+  async getUserByEmail(email: string) {
+    const user = await this.userModel
+      .scan({
+        email: {
+          eq: email,
+        },
+      })
+      .limit(1)
+      .exec();
+    return user.length ? user[0] : null;
   }
 
   async create(user: User): Promise<User> {
-    return await this.userModel.create(user);
+    return this.userModel.create(user);
   }
 
   async findAll() {
-    return await this.userModel.scan().exec();
+    return this.userModel.scan().exec();
+  }
+
+  async findById(id: string) {
+    return this.userModel
+      .query({
+        id: {
+          eq: id,
+        },
+      })
+      .exec();
   }
 }
