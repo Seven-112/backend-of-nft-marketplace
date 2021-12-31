@@ -1,18 +1,19 @@
 import { Schema } from 'dynamoose';
 import { baseSchema } from 'src/common/model';
 
-export const UserSchema = new Schema({
+export const WalletSchema = new Schema({
   ...baseSchema,
-  username: {
+  userId: {
     type: String,
+    required: true,
+    rangeKey: true,
   },
-  email: {
+  address: {
     type: String,
+    required: true,
   },
-  isActive: {
-    type: Boolean,
-  },
-  password: {
+  type: {
     type: String,
+    required: true,
   },
 });

@@ -1,5 +1,4 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { Match } from 'src/decorators/match.decorator';
 
 export class RegisterDTO {
   @IsEmail()
@@ -18,7 +17,9 @@ export class RegisterDTO {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(4)
-  @Match('password')
-  passwordConfirm: string;
+  walletAddress: string;
+
+  @IsNotEmpty()
+  @IsString()
+  walletType: string;
 }
