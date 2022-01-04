@@ -21,7 +21,6 @@ import { RequestWithUser, User } from 'src/modules/user/user.interface';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { Wallet } from 'src/modules/wallet/wallet.interface';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
 
@@ -51,31 +50,17 @@ export class AuthController {
       if (!isEmailAvailable) {
         throw new ConflictException('Email is not available');
       }
-      const isWalletAvailable =
-        await this.walletService.isWalletAddressAvailable(body.walletAddress);
-      if (!isWalletAvailable) {
-        throw new ConflictException('Wallet is not available');
-      }
 
       // hashing password
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash(body.password, salt);
       const user = new User(body.username, body.email, password);
 
-      // create wallet
-
-      const wallet = await this.walletService.create(
-        new Wallet(user.id, body.walletAddress, body.walletType),
-      );
-
       // register user
       const registeredUser = await this.userService.create(user);
       Reflect.deleteProperty(registeredUser, 'password');
 
-      return {
-        ...registeredUser,
-        wallets: [wallet],
-      };
+      return registeredUser;
     } catch (error) {
       throw error;
     }

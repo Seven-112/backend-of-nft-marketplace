@@ -14,12 +14,4 @@ export class RegisterDTO {
   @IsString()
   @MinLength(4)
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  walletAddress: string;
-
-  @IsNotEmpty()
-  @IsString()
-  walletType: string;
 }

@@ -45,6 +45,10 @@ export class WalletService {
     return this.walletModel.query('address').eq(address).limit(1).exec();
   }
 
+  async deleteWallet(id: string) {
+    return this.walletModel.delete(id);
+  }
+
   async generateKey() {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(ALGORITHM, SECRET, iv);
