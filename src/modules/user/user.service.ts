@@ -11,45 +11,28 @@ export class UserService {
 
   async isUsernameAvailable(username: string) {
     const user = await this.userModel
-      .scan({
-        username: {
-          eq: username,
-        },
-      })
+      .query('username')
+      .eq(username)
       .limit(1)
       .exec();
+
     return !user.count;
   }
 
   async isEmailAvailable(email: string) {
-    const user = await this.userModel
-      .scan({
-        email: {
-          eq: email,
-        },
-      })
-      .limit(1)
-      .exec();
+    const user = await this.userModel.query('email').eq(email).limit(1).exec();
 
     return !user.count;
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.userModel
-      .scan({
-        email: {
-          eq: email,
-        },
-      })
-      .limit(1)
-      .exec();
+    const user = await this.userModel.query('email').eq(email).limit(1).exec();
 
     return user.count ? user[0] : null;
   }
 
   async create(user: User): Promise<User> {
-    const created = await this.userModel.create(user);
-    return created;
+    return this.userModel.create(user);
   }
 
   async findAll() {

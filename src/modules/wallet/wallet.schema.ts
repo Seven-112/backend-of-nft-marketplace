@@ -6,11 +6,18 @@ export const WalletSchema = new Schema({
   userId: {
     type: String,
     required: true,
-    rangeKey: true,
+    index: {
+      name: 'walletUserIdIndex',
+      global: true,
+    },
   },
   address: {
     type: String,
     required: true,
+    index: {
+      name: 'walletAddressIndex',
+      global: true,
+    },
   },
   type: {
     type: String,

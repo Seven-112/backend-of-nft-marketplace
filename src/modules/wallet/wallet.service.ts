@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { Wallet } from './wallet.interface';
 import * as crypto from 'crypto';
@@ -26,19 +26,15 @@ export class WalletService {
 
   async isWalletAddressAvailable(address: string) {
     const wallet = await this.walletModel
-      .scan({
-        address: {
-          eq: address,
-        },
-      })
+      .query('address')
+      .eq(address)
       .limit(1)
       .exec();
-
     return !wallet.count;
   }
 
   async findByUserId(userId: string) {
-    return this.walletModel.scan('userId').eq(userId).exec();
+    return this.walletModel.query('userId').eq(userId).exec();
   }
 
   async findById(id: string) {
@@ -46,11 +42,7 @@ export class WalletService {
   }
 
   async findByWalletAddress(address: string) {
-    return this.walletModel
-      .scan('address')
-      .eq(address)
-      .limit(1)
-      .exec();
+    return this.walletModel.query('address').eq(address).limit(1).exec();
   }
 
   async generateKey() {

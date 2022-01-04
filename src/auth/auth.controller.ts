@@ -143,11 +143,11 @@ export class AuthController {
 
     const wallet = await this.walletService.findByWalletAddress(body.publicKey);
 
-    if (!wallet) {
+    if (!wallet.count) {
       throw new NotFoundException();
     }
 
-    const userId = wallet[0].userId;
+    const userId = wallet?.[0]?.userId;
 
     const user = await this.userService.findById(userId);
     return this.authService.login(user);
