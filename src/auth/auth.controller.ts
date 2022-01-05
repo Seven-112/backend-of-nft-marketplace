@@ -27,6 +27,7 @@ import { WalletVerifyDTO } from './DTO/walletVerify.dto';
 import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
+import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
 
 @Controller('auth')
 export class AuthController {
@@ -35,6 +36,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly walletService: WalletService,
     private readonly mailService: MailService,
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   @Post('/register')
@@ -132,13 +134,18 @@ export class AuthController {
       if (!user) {
         throw new NotFoundException('User not found!');
       }
-      const token = this.mailService.decryptToken(body.token);
-      const isValid = await this.mailService.validateToken(user, token);
-      if (!isValid) {
-        throw new ForbiddenException('Invalid token');
+      const otp = await this.redisCacheService.get(body.email);
+      if (!otp) {
+        throw new ForbiddenException('OTP expired!');
       }
+      if (otp !== body.otp) {
+        throw new ForbiddenException('Invalid OTP');
+      }
+
       const password = await this.userService.hashPassword(body.password);
-      return this.userService.updatePassword(user.id, password);
+      const updated = await this.userService.updatePassword(user.id, password);
+      await this.redisCacheService.del(user.email);
+      return updated;
     } catch (error) {
       throw error;
     }
