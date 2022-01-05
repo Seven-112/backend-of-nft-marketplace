@@ -11,6 +11,7 @@ import {
   Req,
   UsePipes,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -23,13 +24,17 @@ import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
+import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
+import { MailService } from 'src/modules/mail/mail.service';
+import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private walletService: WalletService,
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    private readonly walletService: WalletService,
+    private readonly mailService: MailService,
   ) {}
 
   @Post('/register')
@@ -51,9 +56,7 @@ export class AuthController {
         throw new ConflictException('Email is not available');
       }
 
-      // hashing password
-      const salt = await bcrypt.genSalt();
-      const password = await bcrypt.hash(body.password, salt);
+      const password = await this.userService.hashPassword(body.password);
       const user = new User(body.username, body.email, password);
 
       // register user
@@ -99,6 +102,43 @@ export class AuthController {
         ...req.user,
         wallets,
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/forgot-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Public()
+  async forgotPassword(@Body() body: ForgotPasswordDTO) {
+    try {
+      const user = await this.userService.getUserByEmail(body.email);
+      if (!user) {
+        throw new NotFoundException('User not found!');
+      }
+
+      return this.mailService.sendForgotPasswordEmail(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/reset-password')
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  async resetPassword(@Body() body: ResetPasswordDTO) {
+    try {
+      const user = await this.userService.getUserByEmail(body.email);
+      if (!user) {
+        throw new NotFoundException('User not found!');
+      }
+      const token = this.mailService.decryptToken(body.token);
+      const isValid = await this.mailService.validateToken(user, token);
+      if (!isValid) {
+        throw new ForbiddenException('Invalid token');
+      }
+      const password = await this.userService.hashPassword(body.password);
+      return this.userService.updatePassword(user.id, password);
     } catch (error) {
       throw error;
     }

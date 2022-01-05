@@ -8,12 +8,14 @@ import { UserModule } from '../modules/user/user.module';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../utils/constants';
 import { AuthController } from './auth.controller';
 import { WalletModule } from 'src/modules/wallet/wallet.module';
+import { MailModule } from 'src/modules/mail/mail.module';
 
 @Module({
   imports: [
     UserModule,
     WalletModule,
     PassportModule,
+    MailModule,
     JwtModule.register({
       secret: JWT_SECRET,
       signOptions: { expiresIn: JWT_EXPIRES_IN },

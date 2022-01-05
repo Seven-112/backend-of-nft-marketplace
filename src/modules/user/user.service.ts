@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,10 @@ export class UserService {
       .exec();
 
     return !user.count;
+  }
+
+  async updatePassword(id: string, password: string) {
+    return this.userModel.update(id, { password });
   }
 
   async isEmailAvailable(email: string) {
@@ -41,5 +46,10 @@ export class UserService {
 
   async findById(id: string) {
     return this.userModel.get(id);
+  }
+
+  async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
   }
 }
