@@ -2,16 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { Wallet } from './wallet.interface';
 import * as crypto from 'crypto';
-import { HASH_SECRET, HASH_SECRET_KEY } from 'src/utils/constants';
+import { HASH_SECRET_KEY, SECRET } from 'src/utils/constants';
 import * as nacl from 'tweetnacl';
 import * as bs58 from 'bs58';
 
 const ALGORITHM = 'aes-256-cbc';
-const SECRET = crypto
-  .createHash('sha256')
-  .update(HASH_SECRET)
-  .digest('base64')
-  .substring(0, 32);
 
 @Injectable()
 export class WalletService {
