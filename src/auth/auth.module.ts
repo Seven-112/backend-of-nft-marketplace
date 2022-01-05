@@ -9,6 +9,7 @@ import { JWT_EXPIRES_IN, JWT_SECRET } from '../utils/constants';
 import { AuthController } from './auth.controller';
 import { WalletModule } from 'src/modules/wallet/wallet.module';
 import { MailModule } from 'src/modules/mail/mail.module';
+import { RedisCacheModule } from 'src/modules/redisCache/redisCache.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MailModule } from 'src/modules/mail/mail.module';
     WalletModule,
     PassportModule,
     MailModule,
+    RedisCacheModule,
     JwtModule.register({
       secret: JWT_SECRET,
       signOptions: { expiresIn: JWT_EXPIRES_IN },

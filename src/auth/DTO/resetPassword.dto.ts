@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class ResetPasswordDTO {
   @IsString()
   @IsNotEmpty()
-  token: string;
+  otp: string;
 
   @IsEmail()
   @IsNotEmpty()
