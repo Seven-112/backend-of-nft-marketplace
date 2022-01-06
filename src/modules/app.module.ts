@@ -9,7 +9,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from '../filter/exception.filter';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { DynamooseModule } from 'nestjs-dynamoose';
-
+import { RolesGuard } from 'src/guard/role.guard';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -26,10 +26,8 @@ import { DynamooseModule } from 'nestjs-dynamoose';
   ],
   controllers: [AppController],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,

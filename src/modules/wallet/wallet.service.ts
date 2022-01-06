@@ -19,6 +19,10 @@ export class WalletService {
     return this.walletModel.create(wallet);
   }
 
+  async createTransaction(wallet: Wallet) {
+    return this.walletModel.transaction.create(wallet);
+  }
+
   async isWalletAddressAvailable(address: string) {
     const wallet = await this.walletModel
       .query('address')
@@ -42,6 +46,10 @@ export class WalletService {
 
   async deleteWallet(id: string) {
     return this.walletModel.delete(id);
+  }
+
+  async deleteWalletTransaction(id: string) {
+    return this.walletModel.transaction.delete(id);
   }
 
   async generateKey() {

@@ -12,9 +12,11 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
+import { transaction } from 'dynamoose';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { RequestWithUser } from '../user/user.interface';
+import { RequestWithUser, UserRoles } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 
 import { AddWalletDTO } from './DTO/addWallet.dto';
 import { RemoveWalletDTO } from './DTO/removeWallet.dto';
@@ -23,7 +25,10 @@ import { WalletService } from './wallet.service';
 
 @Controller('wallet')
 export class WalletController {
-  constructor(private readonly walletService: WalletService) {}
+  constructor(
+    private readonly walletService: WalletService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get(':address')
   @HttpCode(HttpStatus.OK)
@@ -46,18 +51,27 @@ export class WalletController {
         await this.walletService.isWalletAddressAvailable(body.walletAddress);
 
       if (!isWalletAvailable) {
-        throw new ConflictException('Wallet is not available');
+        throw new ConflictException('Wallet address is not available');
       }
 
       const user = req.user;
       const wallet = new Wallet(user.id, body.walletAddress, body.walletType);
-      await this.walletService.create(wallet);
-      const userWallets = await this.walletService.findByUserId(user.id);
 
-      return {
-        ...user,
-        wallets: userWallets,
-      };
+      user.wallets = [
+        ...user.wallets,
+        { address: body.walletAddress, type: body.walletType },
+      ];
+
+      if (!user.roles.includes(UserRoles.user)) {
+        user.roles.push(UserRoles.user);
+      }
+
+      await transaction([
+        this.walletService.createTransaction(wallet),
+        this.userService.updateUserTransaction(user),
+      ]);
+
+      return user;
     } catch (error) {
       throw error;
     }
@@ -70,12 +84,28 @@ export class WalletController {
       const wallet = await this.walletService.findByWalletAddress(
         body.walletAddress,
       );
-
       if (!wallet.count) {
         throw new NotFoundException();
       }
+      const user = await this.userService.findById(wallet[0].userId);
+      if (!user) {
+        throw new NotFoundException();
+      }
 
-      return this.walletService.deleteWallet(wallet[0].id);
+      user.wallets = user.wallets.filter(
+        (wallet) => wallet.address !== body.walletAddress,
+      );
+
+      if (!user.wallets.length) {
+        user.roles = user.roles.filter((role) => role !== UserRoles.user);
+      }
+
+      await transaction([
+        this.walletService.deleteWalletTransaction(wallet[0].id),
+        this.userService.updateUserTransaction(user),
+      ]);
+
+      return user;
     } catch (error) {
       throw error;
     }

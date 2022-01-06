@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-import { User } from './user.interface';
+import { User, UserRoles, UserWallet } from './user.interface';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -18,6 +18,14 @@ export class UserService {
       .exec();
 
     return !user.count;
+  }
+
+  async updateUser(user: User) {
+    return this.userModel.update(user);
+  }
+
+  async updateUserTransaction(user: User) {
+    return this.userModel.transaction.update(user);
   }
 
   async updatePassword(id: string, password: string) {

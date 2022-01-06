@@ -95,7 +95,7 @@ export class AuthController {
         user.password,
       );
       if (!isValidPassword) {
-        throw new UnauthorizedException('Invalid password');
+        throw new UnauthorizedException();
       }
       return this.authService.login(user);
     } catch (error) {
@@ -106,6 +106,7 @@ export class AuthController {
   @Post('/login/google')
   @HttpCode(HttpStatus.OK)
   @Public()
+  @UsePipes(new ValidationPipe())
   async loginGoogle(@Body() body: LoginGoogleDTO) {
     try {
       const info = await this.authService.getTokenInfo(body.token);
@@ -113,10 +114,19 @@ export class AuthController {
       if (user) {
         return this.authService.login(user);
       }
-      const newUser = new User({ email: info.email, type: UserType.google });
+      const newUser = new User({
+        email: info.email,
+        firstName: body.firstName,
+        lastName: body.lastName,
+        type: UserType.google,
+      });
       const registeredUser = await this.userService.create(newUser);
       return this.authService.login(registeredUser);
     } catch (error) {
+      if (error?.response?.data?.error === 'invalid_token') {
+        throw new ForbiddenException('Invalid token');
+      }
+
       throw error;
     }
   }
@@ -126,11 +136,7 @@ export class AuthController {
   async isAuthenticated(@Req() req: RequestWithUser) {
     try {
       Reflect.deleteProperty(req.user, 'password');
-      const wallets = await this.walletService.findByUserId(req.user.id);
-      return {
-        ...req.user,
-        wallets,
-      };
+      return req.user;
     } catch (error) {
       throw error;
     }
