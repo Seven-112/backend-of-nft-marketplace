@@ -20,6 +20,7 @@ interface UserConstructor {
   firstName?: string;
   lastName?: string;
   email: string;
+  social?: Social;
   type?: keyof typeof UserType;
   roles?: UserRoles[];
 }
@@ -27,6 +28,12 @@ interface UserConstructor {
 export interface UserWallet {
   address: string;
   type: string;
+}
+
+export interface Social {
+  facebookId?: string;
+  googleId?: string;
+  twitterId?: string;
 }
 
 export class User extends BaseModel {
@@ -39,6 +46,7 @@ export class User extends BaseModel {
   type: keyof typeof UserType;
   wallets: UserWallet[];
   roles: UserRoles[];
+  social: Social;
 
   constructor({
     username,
@@ -46,6 +54,7 @@ export class User extends BaseModel {
     lastName,
     email,
     password,
+    social,
     type = UserType.email,
     roles = [UserRoles.guest],
   }: UserConstructor) {
@@ -58,6 +67,7 @@ export class User extends BaseModel {
     this.type = type;
     this.roles = roles;
     this.wallets = [];
+    this.social = social;
   }
 }
 

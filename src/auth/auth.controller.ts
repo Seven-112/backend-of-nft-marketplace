@@ -12,6 +12,8 @@ import {
   UsePipes,
   BadRequestException,
   ForbiddenException,
+  UseGuards,
+  Res,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -113,6 +115,9 @@ export class AuthController {
         firstName: body.firstName,
         lastName: body.lastName,
         type: UserType.google,
+        social: {
+          googleId: body.googleId,
+        },
       });
       const registeredUser = await this.userService.create(newUser);
 

@@ -12,4 +12,8 @@ export class LoginGoogleDTO {
   @IsString()
   @IsNotEmpty()
   lastName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  googleId: string;
 }

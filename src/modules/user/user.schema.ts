@@ -34,7 +34,7 @@ export const UserSchema = new Schema({
   },
   isActive: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   password: {
     type: String,
@@ -50,5 +50,20 @@ export const UserSchema = new Schema({
   type: {
     type: String,
     enum: Object.keys(UserType),
+  },
+  social: {
+    type: Object,
+    schema: {
+      facebookId: {
+        type: String,
+      },
+      googleId: {
+        type: String,
+      },
+      twitterId: {
+        type: String,
+      },
+    },
+    default: {},
   },
 });
