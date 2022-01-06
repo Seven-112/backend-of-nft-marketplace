@@ -10,8 +10,10 @@ import {
   Param,
   Post,
   Req,
+  UsePipes,
 } from '@nestjs/common';
 import { Public } from 'src/guard/jwt-auth.guard';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { RequestWithUser } from '../user/user.interface';
 
 import { AddWalletDTO } from './DTO/addWallet.dto';
@@ -37,6 +39,7 @@ export class WalletController {
   }
 
   @Post('/add')
+  @UsePipes(new ValidationPipe())
   async addWallet(@Req() req: RequestWithUser, @Body() body: AddWalletDTO) {
     try {
       const isWalletAvailable =
@@ -61,6 +64,7 @@ export class WalletController {
   }
 
   @Delete('/remove')
+  @UsePipes(new ValidationPipe())
   async removeWallet(@Body() body: RemoveWalletDTO) {
     try {
       const wallet = await this.walletService.findByWalletAddress(

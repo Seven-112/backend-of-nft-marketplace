@@ -8,6 +8,7 @@ export class RegisterDTO {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(4)
   username: string;
 
   @IsNotEmpty()

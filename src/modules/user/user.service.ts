@@ -12,7 +12,7 @@ export class UserService {
 
   async isUsernameAvailable(username: string) {
     const user = await this.userModel
-      .query('username')
+      .scan('username')
       .eq(username)
       .limit(1)
       .exec();
