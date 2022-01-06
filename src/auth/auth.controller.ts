@@ -50,12 +50,6 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async register(@Body() body: RegisterDTO) {
     try {
-      const isUsernameAvailable = await this.userService.isUsernameAvailable(
-        body.username,
-      );
-      if (!isUsernameAvailable) {
-        throw new ConflictException('Username is not available');
-      }
       const isEmailAvailable = await this.userService.isEmailAvailable(
         body.email,
       );
@@ -65,7 +59,6 @@ export class AuthController {
 
       const password = await this.userService.hashPassword(body.password);
       const user = new User({
-        username: body.username,
         email: body.email,
         password,
       });
@@ -97,6 +90,7 @@ export class AuthController {
       if (!isValidPassword) {
         throw new UnauthorizedException();
       }
+
       return this.authService.login(user);
     } catch (error) {
       throw error;
@@ -121,6 +115,7 @@ export class AuthController {
         type: UserType.google,
       });
       const registeredUser = await this.userService.create(newUser);
+
       return this.authService.login(registeredUser);
     } catch (error) {
       if (error?.response?.data?.error === 'invalid_token') {
@@ -178,13 +173,14 @@ export class AuthController {
       const password = await this.userService.hashPassword(body.password);
       const updated = await this.userService.updatePassword(user.id, password);
       await this.redisCacheService.del(user.email);
+
       return updated;
     } catch (error) {
       throw error;
     }
   }
 
-  @Post('/wallet/request')
+  @Get('/wallet/request')
   @HttpCode(HttpStatus.OK)
   @Public()
   async walletRequest() {
@@ -195,26 +191,31 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   async walletVerify(@Body() body: WalletVerifyDTO) {
-    const isValid = await this.walletService.verifyKey(
-      body.key,
-      body.iv,
-      body.publicKey,
-      body.sign,
-    );
+    try {
+      const isValid = await this.walletService.verifyKey(
+        body.key,
+        body.iv,
+        body.publicKey,
+        body.sign,
+      );
+      if (!isValid) {
+        throw new BadRequestException();
+      }
+      const wallet = await this.walletService.findByWalletAddress(
+        body.publicKey,
+      );
+      if (!wallet.count) {
+        throw new NotFoundException();
+      }
+      const userId = wallet?.[0]?.userId;
+      const user = await this.userService.findById(userId);
 
-    if (!isValid) {
-      throw new BadRequestException();
+      return this.authService.login(user);
+    } catch (error) {
+      if (error.code === 'ERR_CRYPTO_INVALID_IV') {
+        throw new BadRequestException('Invalid IV');
+      }
+      throw error;
     }
-
-    const wallet = await this.walletService.findByWalletAddress(body.publicKey);
-
-    if (!wallet.count) {
-      throw new NotFoundException();
-    }
-
-    const userId = wallet?.[0]?.userId;
-
-    const user = await this.userService.findById(userId);
-    return this.authService.login(user);
   }
 }

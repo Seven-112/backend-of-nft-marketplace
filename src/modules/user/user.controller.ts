@@ -9,6 +9,7 @@ export class UserController {
   @Get('/profile')
   async getProfile(@Req() req: RequestWithUser) {
     Reflect.deleteProperty(req.user, 'password');
+
     return req.user;
   }
 }

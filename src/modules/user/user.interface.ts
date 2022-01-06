@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { BaseModel } from 'src/common/model';
 
 export enum UserType {
-  basic = 'basic',
+  email = 'email',
   google = 'google',
   facebook = 'facebook',
   twitter = 'twitter',
@@ -46,7 +46,7 @@ export class User extends BaseModel {
     lastName,
     email,
     password,
-    type = 'basic',
+    type = UserType.email,
     roles = [UserRoles.guest],
   }: UserConstructor) {
     super();
