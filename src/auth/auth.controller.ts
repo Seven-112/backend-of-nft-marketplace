@@ -18,7 +18,11 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { RegisterDTO } from './DTO/register.dto';
 import { UserService } from 'src/modules/user/user.service';
-import { RequestWithUser, User } from 'src/modules/user/user.interface';
+import {
+  RequestWithUser,
+  User,
+  UserType,
+} from 'src/modules/user/user.interface';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
@@ -28,6 +32,7 @@ import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
+import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -59,7 +64,11 @@ export class AuthController {
       }
 
       const password = await this.userService.hashPassword(body.password);
-      const user = new User(body.username, body.email, password);
+      const user = new User({
+        username: body.username,
+        email: body.email,
+        password,
+      });
 
       // register user
       const registeredUser = await this.userService.create(user);
@@ -89,6 +98,24 @@ export class AuthController {
         throw new UnauthorizedException('Invalid password');
       }
       return this.authService.login(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/login/google')
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  async loginGoogle(@Body() body: LoginGoogleDTO) {
+    try {
+      const info = await this.authService.getTokenInfo(body.token);
+      const user = await this.userService.getUserByEmail(info.email);
+      if (user) {
+        return this.authService.login(user);
+      }
+      const newUser = new User({ email: info.email, type: UserType.google });
+      const registeredUser = await this.userService.create(newUser);
+      return this.authService.login(registeredUser);
     } catch (error) {
       throw error;
     }

@@ -5,11 +5,6 @@ export const UserSchema = new Schema({
   ...baseSchema,
   username: {
     type: String,
-    required: true,
-    index: {
-      name: 'usernameIndex',
-      global: true,
-    },
   },
   email: {
     type: String,
@@ -25,6 +20,5 @@ export const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
   },
 });
