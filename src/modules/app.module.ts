@@ -14,7 +14,12 @@ import { RolesGuard } from 'src/guard/role.guard';
   imports: [
     //dynamoose will get aws key from .env file
     DynamooseModule.forRoot({
-      local: true,
+      //local: true,
+      aws: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION,
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,
