@@ -395,5 +395,4 @@ Temporary Items
 =======
 # Local
 .env
-dist
 .tsconfig.build.tsbuildinfo
