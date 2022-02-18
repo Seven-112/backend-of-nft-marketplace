@@ -70,17 +70,13 @@ export class AuthController {
       // Reflect.deleteProperty(registeredUser, 'password');
       // return registeredUser;
 
-      const response = await Auth.signUp(body.email, body.password);
+      await Auth.signUp(body.email, body.password);
       return {
         code: HttpStatus.CREATED,
         message: 'User created',
       };
-    } catch (error: any) {
-      return {
-        code: HttpStatus.OK,
-        message: error.message,
-        errorCode: error.code,
-      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -111,11 +107,7 @@ export class AuthController {
         accessToken: response.signInUserSession.accessToken.jwtToken,
       };
     } catch (error) {
-      return {
-        code: HttpStatus.OK,
-        message: error.message,
-        errorCode: error.code,
-      };
+      throw new BadRequestException(error.message);
     }
   }
 

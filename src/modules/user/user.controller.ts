@@ -1,6 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Auth } from 'aws-amplify';
-import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
+import { Controller, Get, Req } from '@nestjs/common';
 import { RequestWithUser } from './user.interface';
 import { UserService } from './user.service';
 

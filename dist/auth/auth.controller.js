@@ -39,18 +39,14 @@ let AuthController = class AuthController {
     }
     async register(body) {
         try {
-            const response = await aws_amplify_1.Auth.signUp(body.email, body.password);
+            await aws_amplify_1.Auth.signUp(body.email, body.password);
             return {
                 code: common_1.HttpStatus.CREATED,
                 message: 'User created',
             };
         }
         catch (error) {
-            return {
-                code: common_1.HttpStatus.OK,
-                message: error.message,
-                errorCode: error.code,
-            };
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async login(body) {
@@ -62,11 +58,7 @@ let AuthController = class AuthController {
             };
         }
         catch (error) {
-            return {
-                code: common_1.HttpStatus.OK,
-                message: error.message,
-                errorCode: error.code,
-            };
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async loginGoogle(body) {

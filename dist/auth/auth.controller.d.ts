@@ -21,22 +21,10 @@ export declare class AuthController {
     register(body: RegisterDTO): Promise<{
         code: HttpStatus;
         message: string;
-        errorCode?: undefined;
-    } | {
-        code: HttpStatus;
-        message: any;
-        errorCode: any;
     }>;
     login(body: LoginDTO): Promise<{
         code: HttpStatus;
         accessToken: any;
-        message?: undefined;
-        errorCode?: undefined;
-    } | {
-        code: HttpStatus;
-        message: any;
-        errorCode: any;
-        accessToken?: undefined;
     }>;
     loginGoogle(body: LoginGoogleDTO): Promise<void>;
     isAuthenticated(req: RequestWithUser): Promise<User>;

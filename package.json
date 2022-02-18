@@ -23,6 +23,7 @@
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.1.1",
     "aws-amplify": "^4.3.14",
+    "aws-sdk": "^2.1076.0",
     "bcrypt": "^5.0.1",
     "bs58": "^4.0.1",
     "cache-manager": "^3.6.0",
