@@ -19,6 +19,8 @@ const SAMPLE_DATA = [
     {
         id: '1RVoIdac62lw3fObHTqG',
         name: 'Sample NFT 1',
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         forSale: true,
         metadata: {
             size: 1,
@@ -27,6 +29,8 @@ const SAMPLE_DATA = [
     {
         id: 'EvbeDyZ8rCgJc9wIhFio',
         name: 'Sample NFT 2',
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         forSale: true,
         metadata: {
             size: 2,
@@ -36,6 +40,8 @@ const SAMPLE_DATA = [
         id: 'sRBlzh463WpY5OogqSvP',
         name: 'Sample NFT 3',
         forSale: false,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 3,
         },
@@ -44,6 +50,8 @@ const SAMPLE_DATA = [
         id: 'weWgMt6HNryGbvAkOp21',
         name: 'Sample NFT 4',
         forSale: true,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 4,
         },
@@ -52,6 +60,8 @@ const SAMPLE_DATA = [
         id: '1RVoIdac62lw3fObHT2G',
         name: 'Sample NFT 5',
         forSale: true,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 1,
         },
@@ -60,6 +70,8 @@ const SAMPLE_DATA = [
         id: 'EvbeDyZ8rCgJc9wIhF3o',
         name: 'Sample NFT 6',
         forSale: true,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 2,
         },
@@ -68,6 +80,8 @@ const SAMPLE_DATA = [
         id: 'sRBlzh463WpY5OogqS4P',
         name: 'Sample NFT 7',
         forSale: false,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 3,
         },
@@ -76,6 +90,8 @@ const SAMPLE_DATA = [
         id: 'weWgMt6HNryGbvAkOp51',
         name: 'Sample NFT 8',
         forSale: true,
+        coinPrice: 123.55,
+        usdPrice: 845.55,
         metadata: {
             size: 4,
         },

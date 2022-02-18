@@ -9,6 +9,8 @@ export declare class NFTController {
             nfts: {
                 id: string;
                 name: string;
+                coinPrice: number;
+                usdPrice: number;
                 forSale: boolean;
                 metadata: {
                     size: number;
