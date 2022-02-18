@@ -34,6 +34,7 @@ async function bootstrap() {
     cors: true,
   });
 
+  app.setGlobalPrefix('v1');
   Amplify.configure(awsmobile);
   app.use(helmet());
 
