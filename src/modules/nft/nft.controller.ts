@@ -10,6 +10,7 @@ import {
   Query,
   Request,
 } from '@nestjs/common';
+import { Public } from 'src/guard/jwt-auth.guard';
 
 const SAMPLE_DATA = [
   {
@@ -44,12 +45,45 @@ const SAMPLE_DATA = [
       size: 4,
     },
   },
+  {
+    id: '1RVoIdac62lw3fObHT2G',
+    name: 'Sample NFT 5',
+    forSale: true,
+    metadata: {
+      size: 1,
+    },
+  },
+  {
+    id: 'EvbeDyZ8rCgJc9wIhF3o',
+    name: 'Sample NFT 6',
+    forSale: true,
+    metadata: {
+      size: 2,
+    },
+  },
+  {
+    id: 'sRBlzh463WpY5OogqS4P',
+    name: 'Sample NFT 7',
+    forSale: false,
+    metadata: {
+      size: 3,
+    },
+  },
+  {
+    id: 'weWgMt6HNryGbvAkOp51',
+    name: 'Sample NFT 8',
+    forSale: true,
+    metadata: {
+      size: 4,
+    },
+  },
 ];
 
 @Controller()
 export class NFTController {
   constructor() {}
 
+  @Public()
   @Get('/getAllNFTs')
   findAll(@Query() query: { filter: string }) {
     const { filter } = query;

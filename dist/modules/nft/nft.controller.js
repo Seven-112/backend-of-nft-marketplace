@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NFTController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const SAMPLE_DATA = [
     {
         id: '1RVoIdac62lw3fObHTqG',
@@ -47,6 +48,38 @@ const SAMPLE_DATA = [
             size: 4,
         },
     },
+    {
+        id: '1RVoIdac62lw3fObHT2G',
+        name: 'Sample NFT 5',
+        forSale: true,
+        metadata: {
+            size: 1,
+        },
+    },
+    {
+        id: 'EvbeDyZ8rCgJc9wIhF3o',
+        name: 'Sample NFT 6',
+        forSale: true,
+        metadata: {
+            size: 2,
+        },
+    },
+    {
+        id: 'sRBlzh463WpY5OogqS4P',
+        name: 'Sample NFT 7',
+        forSale: false,
+        metadata: {
+            size: 3,
+        },
+    },
+    {
+        id: 'weWgMt6HNryGbvAkOp51',
+        name: 'Sample NFT 8',
+        forSale: true,
+        metadata: {
+            size: 4,
+        },
+    },
 ];
 let NFTController = class NFTController {
     constructor() { }
@@ -62,6 +95,7 @@ let NFTController = class NFTController {
     }
 };
 __decorate([
+    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Get)('/getAllNFTs'),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
