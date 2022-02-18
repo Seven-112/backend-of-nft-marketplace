@@ -12,8 +12,8 @@ export class AuthService {
 
   constructor(
     private usersService: UserService,
-    private jwtService: JwtService,
-  ) {
+  ) // private jwtService: JwtService,
+  {
     this.oAuthClient = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -30,13 +30,13 @@ export class AuthService {
     return true;
   }
 
-  async login(user: User) {
-    const payload: JwtPayload = { email: user.email, id: user.id };
+  // async login(user: User) {
+  //   const payload: JwtPayload = { email: user.email, id: user.id };
 
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
-  }
+  //   return {
+  //     accessToken: this.jwtService.sign(payload),
+  //   };
+  // }
 
   async getTokenInfo(token: string) {
     return this.oAuthClient.getTokenInfo(token);

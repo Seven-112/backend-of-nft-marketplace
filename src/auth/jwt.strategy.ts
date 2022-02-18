@@ -1,21 +1,32 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { JWT_SECRET } from '../utils/constants';
-import { JwtPayload } from './auth.interface';
-import { UserService } from 'src/modules/user/user.service';
+import { passportJwtSecret } from 'jwks-rsa';
+
+const aws_cognito_region = 'eu-west-2';
+const aws_user_pools_id = 'eu-west-2_xi1EqOokH';
+const aws_user_pools_web_client_id = '7ml60ccnhckelan838rpnmr7gk';
+const issuer = `https://cognito-idp.${aws_cognito_region}.amazonaws.com/${aws_user_pools_id}`;
+const jwksUri = `${issuer}/.well-known/jwks.json`;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly usersService: UserService) {
+  constructor() {
     super({
+      secretOrKeyProvider: passportJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri,
+      }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: JWT_SECRET,
+      aud: aws_user_pools_web_client_id,
+      issuer,
+      algorithms: ['RS256'],
     });
   }
 
-  async validate(payload: JwtPayload) {
-    return this.usersService.findById(payload.id);
+  async validate(payload: unknown) {
+    return payload;
   }
 }

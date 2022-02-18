@@ -15,6 +15,7 @@ import {
   UseGuards,
   Res,
 } from '@nestjs/common';
+import { Auth } from 'aws-amplify';
 import * as bcrypt from 'bcrypt';
 
 import { AuthService } from './auth.service';
@@ -48,30 +49,35 @@ export class AuthController {
 
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @Public()
   @UsePipes(new ValidationPipe())
   async register(@Body() body: RegisterDTO) {
     try {
-      const isEmailAvailable = await this.userService.isEmailAvailable(
-        body.email,
-      );
-      if (!isEmailAvailable) {
-        throw new ConflictException('Email is not available');
-      }
+      // const isEmailAvailable = await this.userService.isEmailAvailable(
+      //   body.email,
+      // );
+      // if (!isEmailAvailable) {
+      //   throw new ConflictException('Email is not available');
+      // }
+      // const password = await this.userService.hashPassword(body.password);
+      // const user = new User({
+      //   email: body.email,
+      //   password,
+      // });
+      // // register user
+      // const registeredUser = await this.userService.create(user);
+      // Reflect.deleteProperty(registeredUser, 'password');
+      // return registeredUser;
 
-      const password = await this.userService.hashPassword(body.password);
-      const user = new User({
-        email: body.email,
-        password,
-      });
-
-      // register user
-      const registeredUser = await this.userService.create(user);
-      Reflect.deleteProperty(registeredUser, 'password');
-
-      return registeredUser;
-    } catch (error) {
-      throw error;
+      const response = await Auth.signUp(body.email, body.password);
+      return response;
+    } catch (error: any) {
+      return {
+        status: 200,
+        message: error.message,
+        errorCode: error.code,
+      };
     }
   }
 
@@ -81,21 +87,31 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async login(@Body() body: LoginDTO) {
     try {
-      const user = await this.userService.getUserByEmail(body.email);
-      if (!user) {
-        throw new NotFoundException('User not found!');
-      }
-      const isValidPassword = await bcrypt.compare(
-        body.password,
-        user.password,
-      );
-      if (!isValidPassword) {
-        throw new UnauthorizedException();
-      }
+      // const user = await this.userService.getUserByEmail(body.email);
+      // if (!user) {
+      //   throw new NotFoundException('User not found!');
+      // }
+      // const isValidPassword = await bcrypt.compare(
+      //   body.password,
+      //   user.password,
+      // );
+      // if (!isValidPassword) {
+      //   throw new UnauthorizedException();
+      // }
 
-      return this.authService.login(user);
+      // return this.authService.login(user);
+
+      const response = await Auth.signIn(body.email, body.password);
+
+      return {
+        accessToken: response.signInUserSession.accessToken.jwtToken,
+      };
     } catch (error) {
-      throw error;
+      return {
+        status: 200,
+        message: error.message,
+        errorCode: error.code,
+      };
     }
   }
 
@@ -108,7 +124,8 @@ export class AuthController {
       const info = await this.authService.getTokenInfo(body.token);
       const user = await this.userService.getUserByEmail(info.email);
       if (user) {
-        return this.authService.login(user);
+        // return this.authService.login(user);
+        return;
       }
       const newUser = new User({
         email: info.email,
@@ -121,7 +138,8 @@ export class AuthController {
       });
       const registeredUser = await this.userService.create(newUser);
 
-      return this.authService.login(registeredUser);
+      // return this.authService.login(registeredUser);
+      return;
     } catch (error) {
       if (error?.response?.data?.error === 'invalid_token') {
         throw new ForbiddenException('Invalid token');
@@ -215,7 +233,8 @@ export class AuthController {
       const userId = wallet?.[0]?.userId;
       const user = await this.userService.findById(userId);
 
-      return this.authService.login(user);
+      // return this.authService.login(user);
+      return;
     } catch (error) {
       if (error.code === 'ERR_CRYPTO_INVALID_IV') {
         throw new BadRequestException('Invalid IV');
