@@ -10,6 +10,7 @@ import { AllExceptionsFilter } from '../filter/exception.filter';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { RolesGuard } from 'src/guard/role.guard';
+import { NFTModule } from './nft/nft.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -28,6 +29,7 @@ import { RolesGuard } from 'src/guard/role.guard';
     TodoModule,
     AuthModule,
     UserModule,
+    NFTModule,
   ],
   controllers: [AppController],
   providers: [

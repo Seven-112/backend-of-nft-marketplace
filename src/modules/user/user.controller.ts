@@ -14,12 +14,4 @@ export class UserController {
 
     return req.user;
   }
-
-  @Public()
-  @Get('/hello')
-  async hello() {
-    const response = await Auth.signIn('sample@gmail.com', 'jickye103');
-
-    return response;
-  }
 }

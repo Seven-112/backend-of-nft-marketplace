@@ -71,10 +71,13 @@ export class AuthController {
       // return registeredUser;
 
       const response = await Auth.signUp(body.email, body.password);
-      return response;
+      return {
+        code: HttpStatus.CREATED,
+        message: 'User created',
+      };
     } catch (error: any) {
       return {
-        status: 200,
+        code: HttpStatus.OK,
         message: error.message,
         errorCode: error.code,
       };
@@ -104,11 +107,12 @@ export class AuthController {
       const response = await Auth.signIn(body.email, body.password);
 
       return {
+        code: HttpStatus.OK,
         accessToken: response.signInUserSession.accessToken.jwtToken,
       };
     } catch (error) {
       return {
-        status: 200,
+        code: HttpStatus.OK,
         message: error.message,
         errorCode: error.code,
       };
