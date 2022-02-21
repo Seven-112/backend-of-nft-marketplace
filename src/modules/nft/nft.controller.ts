@@ -95,6 +95,29 @@ const SAMPLE_DATA = [
   },
 ];
 
+const PERSONAL_NFTS = [
+  {
+    id: 'IXG7RZ1LOVAnydFwWfHl',
+    name: 'NFT Item 1',
+    forSale: false,
+    coinPrice: 100,
+    usdPrice: 800,
+    metadata: {
+      size: 4,
+    },
+  },
+  {
+    id: '6v0UV9GyfxmZB52l4zOn',
+    name: 'NFT Item 2',
+    forSale: false,
+    coinPrice: 800,
+    usdPrice: 1600,
+    metadata: {
+      size: 2,
+    },
+  },
+];
+
 @Controller()
 export class NFTController {
   constructor() {}
@@ -109,6 +132,17 @@ export class NFTController {
       message: '',
       data: {
         nfts: SAMPLE_DATA,
+      },
+    };
+  }
+
+  @Get('/getMyNFTs')
+  getMyNFT() {
+    return {
+      code: 200,
+      message: '',
+      data: {
+        nfts: PERSONAL_NFTS,
       },
     };
   }

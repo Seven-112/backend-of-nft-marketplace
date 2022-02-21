@@ -97,6 +97,28 @@ const SAMPLE_DATA = [
         },
     },
 ];
+const PERSONAL_NFTS = [
+    {
+        id: 'IXG7RZ1LOVAnydFwWfHl',
+        name: 'NFT Item 1',
+        forSale: false,
+        coinPrice: 100,
+        usdPrice: 800,
+        metadata: {
+            size: 4,
+        },
+    },
+    {
+        id: '6v0UV9GyfxmZB52l4zOn',
+        name: 'NFT Item 2',
+        forSale: false,
+        coinPrice: 800,
+        usdPrice: 1600,
+        metadata: {
+            size: 2,
+        },
+    },
+];
 let NFTController = class NFTController {
     constructor() { }
     findAll(query) {
@@ -109,6 +131,15 @@ let NFTController = class NFTController {
             },
         };
     }
+    getMyNFT() {
+        return {
+            code: 200,
+            message: '',
+            data: {
+                nfts: PERSONAL_NFTS,
+            },
+        };
+    }
 };
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
@@ -118,6 +149,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], NFTController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('/getMyNFTs'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], NFTController.prototype, "getMyNFT", null);
 NFTController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [])

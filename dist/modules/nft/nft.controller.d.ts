@@ -18,4 +18,20 @@ export declare class NFTController {
             }[];
         };
     };
+    getMyNFT(): {
+        code: number;
+        message: string;
+        data: {
+            nfts: {
+                id: string;
+                name: string;
+                forSale: boolean;
+                coinPrice: number;
+                usdPrice: number;
+                metadata: {
+                    size: number;
+                };
+            }[];
+        };
+    };
 }
