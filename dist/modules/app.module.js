@@ -19,6 +19,7 @@ const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const role_guard_1 = require("../guard/role.guard");
 const nft_module_1 = require("./nft/nft.module");
+const notification_module_1 = require("./notification/notification.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -42,6 +43,7 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             nft_module_1.NFTModule,
+            notification_module_1.NotificationModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

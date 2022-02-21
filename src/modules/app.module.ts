@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { RolesGuard } from 'src/guard/role.guard';
 import { NFTModule } from './nft/nft.module';
+import { NotificationModule } from './notification/notification.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -30,6 +31,7 @@ import { NFTModule } from './nft/nft.module';
     AuthModule,
     UserModule,
     NFTModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [
