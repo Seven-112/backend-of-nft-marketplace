@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { LoggerMiddleware } from '../middlewares';
+import { LoggerMiddleware, TextBodyMiddleware } from '../middlewares';
 import { TodoModule } from './todo/todo.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
@@ -12,6 +12,7 @@ import { DynamooseModule } from 'nestjs-dynamoose';
 import { RolesGuard } from 'src/guard/role.guard';
 import { NFTModule } from './nft/nft.module';
 import { NotificationModule } from './notification/notification.module';
+import { NotificationController } from './notification/notification.controller';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -48,5 +49,6 @@ export class AppModule implements NestModule {
     // you can research more to load middleware at here: https://docs.nestjs.com/middleware
 
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(TextBodyMiddleware).forRoutes(NotificationController);
   }
 }

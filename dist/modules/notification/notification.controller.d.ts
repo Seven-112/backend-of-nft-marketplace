@@ -1,4 +1,7 @@
+import { Request } from 'express';
+import { NotificationService } from './notification.service';
 export declare class NotificationController {
-    constructor();
-    createMessage(): Promise<import("@aws-sdk/client-sns").PublishCommandOutput>;
+    private readonly notiService;
+    constructor(notiService: NotificationService);
+    subscribeTopic(req: Request): Promise<void>;
 }

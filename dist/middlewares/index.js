@@ -11,4 +11,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./logger.middelware"), exports);
+__exportStar(require("./textBody.middleware"), exports);
 //# sourceMappingURL=index.js.map

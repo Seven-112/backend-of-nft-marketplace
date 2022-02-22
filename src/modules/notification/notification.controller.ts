@@ -1,60 +1,57 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Public } from 'src/guard/jwt-auth.guard';
 import {
-  SNSClient,
-  GetTopicAttributesCommand,
-  PublishCommand,
-  SubscribeCommand,
-} from '@aws-sdk/client-sns';
+  Controller,
+  HttpException,
+  InternalServerErrorException,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { Request } from 'express';
+import { Public } from 'src/guard/jwt-auth.guard';
+import { NotificationService } from './notification.service';
 
 @Controller()
 export class NotificationController {
-  snsClient: SNSClient;
-
-  constructor() {
-    this.snsClient = new SNSClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-    });
-  }
+  constructor(private readonly notiService: NotificationService) {}
 
   @Public()
-  @Get('/noti')
-  async createMessage() {
+  @Post('/noti')
+  async subscribeTopic(@Req() req: Request) {
     try {
-      // send message
-      const params = {
-        Message: 'Hello',
-        TopicArn: 'arn:aws:sns:eu-west-2:565352093069:Test',
-      };
-      const data = await this.snsClient.send(new PublishCommand(params));
+      const payloadStr = req.body;
+      const payload = JSON.parse(payloadStr);
 
-      console.log(data);
+      if (req.header('x-amz-sns-message-type') === 'SubscriptionConfirmation') {
+        const url = payload.SubscribeURL;
+        const response = await this.notiService.callGetApi(url);
 
-      return data;
+        await response.forEach((value) => {
+          if (value.status === 200) {
+            return 'Yes! We have accepted the confirmation from AWS';
+          } else {
+            throw new HttpException('Unable to subscribe to given URL', 400);
+          }
+        });
+      } else if (req.header('x-amz-sns-message-type') === 'Notification') {
+        console.log(payload);
+        // notication format:
+        /**
+         * Type: string;
+         * MessageId: string;
+         * TopicArn: string;
+         * Subject: string;
+         * Message: string;
+         * Timestamp: string;
+         * SignatureVersion: string;
+         * Signature: string;
+         * SigningCertURL: string;
+         * UnsubscribeURL: string;
+         */
+      } else {
+        throw new HttpException(`Invalid message type ${payload.Type}`, 400);
+      }
     } catch (error) {
-      console.log(error.stack);
-    }
-  }
-
-  @Public()
-  @Post('/noti/phone')
-  async subscribePhone(@Body() body: { phone: string }) {
-    try {
-      const data = await this.snsClient.send(
-        new SubscribeCommand({
-          Protocol: 'SMS',
-          TopicArn: 'arn:aws:sns:eu-west-2:565352093069:Test',
-          Endpoint: body.phone,
-        }),
-      );
-
-      return data;
-    } catch (error) {
-      console.log(error.stack);
+      console.error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

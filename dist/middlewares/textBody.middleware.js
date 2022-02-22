@@ -6,19 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationModule = void 0;
-const notification_controller_1 = require("./notification.controller");
+exports.TextBodyMiddleware = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = require("@nestjs/axios");
-const notification_service_1 = require("./notification.service");
-let NotificationModule = class NotificationModule {
+const body_parser_1 = require("body-parser");
+let TextBodyMiddleware = class TextBodyMiddleware {
+    use(req, res, next) {
+        (0, body_parser_1.text)()(req, res, next);
+    }
 };
-NotificationModule = __decorate([
-    (0, common_1.Module)({
-        imports: [axios_1.HttpModule],
-        controllers: [notification_controller_1.NotificationController],
-        providers: [notification_service_1.NotificationService],
-    })
-], NotificationModule);
-exports.NotificationModule = NotificationModule;
-//# sourceMappingURL=notification.module.js.map
+TextBodyMiddleware = __decorate([
+    (0, common_1.Injectable)()
+], TextBodyMiddleware);
+exports.TextBodyMiddleware = TextBodyMiddleware;
+//# sourceMappingURL=textBody.middleware.js.map
