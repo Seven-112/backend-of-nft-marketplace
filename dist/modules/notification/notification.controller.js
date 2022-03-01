@@ -40,7 +40,9 @@ let NotificationController = class NotificationController {
                 });
             }
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
-                this.eventService.emit('noti.created', payload);
+                await this.notiService.createNotification(payload);
+                const allNoti = await this.notiService.getAllNotification();
+                this.eventService.emit('noti.created', allNoti);
             }
             else {
                 throw new common_1.HttpException(`Invalid message type ${payload.Type}`, 400);
@@ -53,6 +55,10 @@ let NotificationController = class NotificationController {
     }
     sse() {
         return this.eventService.subscribe('noti.created');
+    }
+    async getAllNoti() {
+        const allNoti = await this.notiService.getAllNotification();
+        return allNoti;
     }
 };
 __decorate([
@@ -70,6 +76,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], NotificationController.prototype, "sse", null);
+__decorate([
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.Get)('/noti'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "getAllNoti", null);
 NotificationController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [notification_service_1.NotificationService,

@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   HttpException,
   InternalServerErrorException,
   Post,
@@ -39,7 +40,9 @@ export class NotificationController {
           }
         });
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
-        this.eventService.emit('noti.created', payload);
+        await this.notiService.createNotification(payload);
+        const allNoti = await this.notiService.getAllNotification();
+        this.eventService.emit('noti.created', allNoti);
         // notication format:
         /**
          * Type: string;
@@ -66,5 +69,12 @@ export class NotificationController {
   @Sse('/noti/sse')
   sse() {
     return this.eventService.subscribe('noti.created');
+  }
+
+  @Public()
+  @Get('/noti')
+  async getAllNoti() {
+    const allNoti = await this.notiService.getAllNotification();
+    return allNoti;
   }
 }
