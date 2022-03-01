@@ -42,7 +42,13 @@ let NotificationController = class NotificationController {
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
                 await this.notiService.createNotification(payload);
                 const allNoti = await this.notiService.getAllNotification();
-                this.eventService.emit('noti.created', allNoti);
+                this.eventService.emit('noti.created', {
+                    code: 200,
+                    message: '',
+                    data: {
+                        notifications: allNoti,
+                    },
+                });
             }
             else {
                 throw new common_1.HttpException(`Invalid message type ${payload.Type}`, 400);
@@ -58,7 +64,13 @@ let NotificationController = class NotificationController {
     }
     async getAllNoti() {
         const allNoti = await this.notiService.getAllNotification();
-        return allNoti;
+        return {
+            code: 200,
+            message: '',
+            data: {
+                notifications: allNoti,
+            },
+        };
     }
 };
 __decorate([

@@ -42,7 +42,13 @@ export class NotificationController {
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
         await this.notiService.createNotification(payload);
         const allNoti = await this.notiService.getAllNotification();
-        this.eventService.emit('noti.created', allNoti);
+        this.eventService.emit('noti.created', {
+          code: 200,
+          message: '',
+          data: {
+            notifications: allNoti,
+          },
+        });
         // notication format:
         /**
          * Type: string;
@@ -75,6 +81,12 @@ export class NotificationController {
   @Get('/noti')
   async getAllNoti() {
     const allNoti = await this.notiService.getAllNotification();
-    return allNoti;
+    return {
+      code: 200,
+      message: '',
+      data: {
+        notifications: allNoti,
+      },
+    };
   }
 }
