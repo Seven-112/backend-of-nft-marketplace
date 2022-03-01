@@ -8,14 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationService = void 0;
 const common_1 = require("@nestjs/common");
 const client_sns_1 = require("@aws-sdk/client-sns");
 const axios_1 = require("@nestjs/axios");
+const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 let NotificationService = class NotificationService {
-    constructor(httpService) {
+    constructor(httpService, notificationModel) {
         this.httpService = httpService;
+        this.notificationModel = notificationModel;
         this.snsClient = new client_sns_1.SNSClient({
             region: process.env.AWS_REGION,
             credentials: {
@@ -27,10 +32,20 @@ let NotificationService = class NotificationService {
     async callGetApi(url) {
         return this.httpService.get(url);
     }
+    async createNotification(notification) {
+        return this.notificationModel.create(notification);
+    }
+    async getAllNotification() {
+        return this.notificationModel.scan().exec();
+    }
+    async getNotificationById(id) {
+        return this.notificationModel.get(id);
+    }
 };
 NotificationService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService])
+    __param(1, (0, nestjs_dynamoose_1.InjectModel)('Notification')),
+    __metadata("design:paramtypes", [axios_1.HttpService, Object])
 ], NotificationService);
 exports.NotificationService = NotificationService;
 //# sourceMappingURL=notification.service.js.map

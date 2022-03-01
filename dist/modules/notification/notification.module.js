@@ -12,11 +12,21 @@ const axios_1 = require("@nestjs/axios");
 const notification_controller_1 = require("./notification.controller");
 const notification_service_1 = require("./notification.service");
 const events_service_1 = require("./events.service");
+const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const notification_schema_1 = require("./notification.schema");
 let NotificationModule = class NotificationModule {
 };
 NotificationModule = __decorate([
     (0, common_1.Module)({
-        imports: [axios_1.HttpModule],
+        imports: [
+            axios_1.HttpModule,
+            nestjs_dynamoose_1.DynamooseModule.forFeature([
+                {
+                    name: 'Notification',
+                    schema: notification_schema_1.NotificationSchema,
+                },
+            ]),
+        ],
         controllers: [notification_controller_1.NotificationController],
         providers: [notification_service_1.NotificationService, events_service_1.EventsService],
     })
