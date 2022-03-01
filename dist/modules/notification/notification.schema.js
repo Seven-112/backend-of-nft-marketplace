@@ -3,32 +3,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationSchema = void 0;
 const dynamoose_1 = require("dynamoose");
 exports.NotificationSchema = new dynamoose_1.Schema({
-    type: {
+    Type: {
         type: String,
     },
-    messageId: {
+    MessageId: {
         type: String,
         hashKey: true,
     },
-    topicArn: {
+    TopicArn: {
         type: String,
     },
-    message: {
+    Message: {
         type: String,
     },
-    timestamp: {
+    Timestamp: {
         type: Date,
     },
-    signatureVersion: {
+    SignatureVersion: {
         type: String,
     },
-    signature: {
+    Signature: {
         type: String,
     },
     signingCertURL: {
         type: String,
     },
-    unsubscribeURL: {
+    UnsubscribeURL: {
         type: String,
     },
 });

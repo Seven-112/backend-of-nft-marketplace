@@ -1,11 +1,11 @@
 export interface Notification {
-  type: string;
-  messageId: string;
-  topicArn: string;
-  message: string;
-  timestamp: Date;
-  signatureVersion: string;
-  signature: string;
-  signingCertURL: string;
-  unsubscribeURL: string;
+  Type: string;
+  MessageId: string;
+  TopicArn: string;
+  Message: string;
+  Timestamp: Date;
+  SignatureVersion: string;
+  Signature: string;
+  SigningCertURL: string;
+  UnsubscribeURL: string;
 }

@@ -13,7 +13,7 @@ export class NotificationService {
   constructor(
     private httpService: HttpService,
     @InjectModel('Notification')
-    private notificationModel: Model<Notification, Notification['messageId']>,
+    private notificationModel: Model<Notification, Notification['MessageId']>,
   ) {
     this.snsClient = new SNSClient({
       region: process.env.AWS_REGION,

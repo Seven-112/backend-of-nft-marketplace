@@ -8,7 +8,7 @@ export declare class NotificationService {
     private httpService;
     private notificationModel;
     snsClient: SNSClient;
-    constructor(httpService: HttpService, notificationModel: Model<Notification, Notification['messageId']>);
+    constructor(httpService: HttpService, notificationModel: Model<Notification, Notification['MessageId']>);
     callGetApi(url: any): Promise<Observable<AxiosResponse<any, any>>>;
     createNotification(notification: Notification): Promise<import("nestjs-dynamoose").Document<Notification>>;
     getAllNotification(): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Notification>>>;
