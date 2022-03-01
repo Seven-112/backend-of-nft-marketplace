@@ -1,6 +1,7 @@
 export interface Notification {
   Type: string;
   MessageId: string;
+  Subject: string;
   TopicArn: string;
   Message: string;
   Timestamp: string;

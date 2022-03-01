@@ -4,6 +4,9 @@ export const NotificationSchema = new Schema({
   Type: {
     type: String,
   },
+  Subject: {
+    type: String,
+  },
   MessageId: {
     type: String,
     hashKey: true,

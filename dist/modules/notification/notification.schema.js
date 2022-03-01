@@ -6,6 +6,9 @@ exports.NotificationSchema = new dynamoose_1.Schema({
     Type: {
         type: String,
     },
+    Subject: {
+        type: String,
+    },
     MessageId: {
         type: String,
         hashKey: true,
