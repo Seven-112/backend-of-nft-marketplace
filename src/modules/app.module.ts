@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { LoggerMiddleware, TextBodyMiddleware } from '../middlewares';
 import { TodoModule } from './todo/todo.module';
 import { ConfigModule } from '@nestjs/config';
@@ -49,6 +54,8 @@ export class AppModule implements NestModule {
     // you can research more to load middleware at here: https://docs.nestjs.com/middleware
 
     consumer.apply(LoggerMiddleware).forRoutes('*');
-    consumer.apply(TextBodyMiddleware).forRoutes(NotificationController);
+    consumer
+      .apply(TextBodyMiddleware)
+      .forRoutes({ path: 'noti', method: RequestMethod.POST });
   }
 }

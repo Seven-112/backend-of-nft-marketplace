@@ -4,14 +4,20 @@ import {
   InternalServerErrorException,
   Post,
   Req,
+  Sse,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Observable, of } from 'rxjs';
 import { Public } from 'src/guard/jwt-auth.guard';
+import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 
 @Controller()
 export class NotificationController {
-  constructor(private readonly notiService: NotificationService) {}
+  constructor(
+    private readonly notiService: NotificationService,
+    private readonly eventService: EventsService,
+  ) {}
 
   @Public()
   @Post('/noti')
@@ -26,13 +32,14 @@ export class NotificationController {
 
         await response.forEach((value) => {
           if (value.status === 200) {
+            console.log('subscribed');
             return 'Yes! We have accepted the confirmation from AWS';
           } else {
             throw new HttpException('Unable to subscribe to given URL', 400);
           }
         });
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
-        console.log(payload);
+        this.eventService.emit('noti.created', payload);
         // notication format:
         /**
          * Type: string;
@@ -53,5 +60,11 @@ export class NotificationController {
       console.error(error);
       throw new InternalServerErrorException(error);
     }
+  }
+
+  @Public()
+  @Sse('/noti/sse')
+  sse() {
+    return this.eventService.subscribe('noti.created');
   }
 }

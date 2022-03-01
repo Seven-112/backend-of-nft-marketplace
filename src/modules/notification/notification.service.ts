@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { HttpService } from '@nestjs/axios';
-import { Observable } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { AxiosResponse } from 'axios';
+import EventEmitter from 'events';
 
 @Injectable()
 export class NotificationService {

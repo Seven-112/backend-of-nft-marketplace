@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationController = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
+const events_service_1 = require("./events.service");
 const notification_service_1 = require("./notification.service");
 let NotificationController = class NotificationController {
-    constructor(notiService) {
+    constructor(notiService, eventService) {
         this.notiService = notiService;
+        this.eventService = eventService;
     }
     async subscribeTopic(req) {
         try {
@@ -29,6 +31,7 @@ let NotificationController = class NotificationController {
                 const response = await this.notiService.callGetApi(url);
                 await response.forEach((value) => {
                     if (value.status === 200) {
+                        console.log('subscribed');
                         return 'Yes! We have accepted the confirmation from AWS';
                     }
                     else {
@@ -37,7 +40,7 @@ let NotificationController = class NotificationController {
                 });
             }
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
-                console.log(payload);
+                this.eventService.emit('noti.created', payload);
             }
             else {
                 throw new common_1.HttpException(`Invalid message type ${payload.Type}`, 400);
@@ -48,6 +51,9 @@ let NotificationController = class NotificationController {
             throw new common_1.InternalServerErrorException(error);
         }
     }
+    sse() {
+        return this.eventService.subscribe('noti.created');
+    }
 };
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
@@ -57,9 +63,17 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "subscribeTopic", null);
+__decorate([
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.Sse)('/noti/sse'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], NotificationController.prototype, "sse", null);
 NotificationController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [notification_service_1.NotificationService])
+    __metadata("design:paramtypes", [notification_service_1.NotificationService,
+        events_service_1.EventsService])
 ], NotificationController);
 exports.NotificationController = NotificationController;
 //# sourceMappingURL=notification.controller.js.map

@@ -20,11 +20,12 @@ const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const role_guard_1 = require("../guard/role.guard");
 const nft_module_1 = require("./nft/nft.module");
 const notification_module_1 = require("./notification/notification.module");
-const notification_controller_1 = require("./notification/notification.controller");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
-        consumer.apply(middlewares_1.TextBodyMiddleware).forRoutes(notification_controller_1.NotificationController);
+        consumer
+            .apply(middlewares_1.TextBodyMiddleware)
+            .forRoutes({ path: 'noti', method: common_1.RequestMethod.POST });
     }
 };
 AppModule = __decorate([
