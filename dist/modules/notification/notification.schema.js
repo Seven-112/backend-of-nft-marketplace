@@ -17,7 +17,7 @@ exports.NotificationSchema = new dynamoose_1.Schema({
         type: String,
     },
     Timestamp: {
-        type: Date,
+        type: String,
     },
     SignatureVersion: {
         type: String,

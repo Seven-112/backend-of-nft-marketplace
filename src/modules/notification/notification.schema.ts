@@ -15,7 +15,7 @@ export const NotificationSchema = new Schema({
     type: String,
   },
   Timestamp: {
-    type: Date,
+    type: String,
   },
   SignatureVersion: {
     type: String,

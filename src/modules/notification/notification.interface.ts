@@ -3,7 +3,7 @@ export interface Notification {
   MessageId: string;
   TopicArn: string;
   Message: string;
-  Timestamp: Date;
+  Timestamp: string;
   SignatureVersion: string;
   Signature: string;
   SigningCertURL: string;
