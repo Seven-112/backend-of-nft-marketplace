@@ -141,7 +141,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getNotiById", null);
 __decorate([
-    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Post)('/noti/user'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),

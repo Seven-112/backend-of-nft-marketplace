@@ -92,6 +92,7 @@ export class NotificationController {
   @Public()
   @Sse('/noti/sse/:id')
   sse(@Param('id') id: string) {
+    // console.log(id)
     return this.eventService.subscribe(`noti.created${id}`);
   }
 
@@ -121,7 +122,6 @@ export class NotificationController {
     };
   }
 
-  @Public()
   @Post('/noti/user')
   @UsePipes(new ValidationPipe())
   async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
