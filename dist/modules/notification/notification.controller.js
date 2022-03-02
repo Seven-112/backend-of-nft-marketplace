@@ -13,8 +13,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationController = void 0;
+const client_sns_1 = require("@aws-sdk/client-sns");
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
+const validation_pipe_1 = require("../../pipes/validation.pipe");
+const notifyGroup_dto_1 = require("./DTO/notifyGroup.dto");
 const events_service_1 = require("./events.service");
 const notification_service_1 = require("./notification.service");
 let NotificationController = class NotificationController {
@@ -40,14 +43,15 @@ let NotificationController = class NotificationController {
                 });
             }
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
-                await this.notiService.createNotification(payload);
-                const allNoti = await this.notiService.getAllNotification();
-                this.eventService.emit('noti.created', {
-                    code: 200,
-                    message: '',
-                    data: {
-                        notifications: allNoti,
-                    },
+                const { userId, msg } = JSON.parse(payload.Message);
+                userId.forEach((id) => {
+                    this.eventService.emit(`noti.created${id}`, {
+                        code: 200,
+                        messageId: payload.MessageId,
+                        message: msg,
+                        timeStamp: payload.Timestamp,
+                        receiver: id,
+                    });
                 });
             }
             else {
@@ -59,8 +63,8 @@ let NotificationController = class NotificationController {
             throw new common_1.InternalServerErrorException(error);
         }
     }
-    sse() {
-        return this.eventService.subscribe('noti.created');
+    sse(id) {
+        return this.eventService.subscribe(`noti.created${id}`);
     }
     async getAllNoti() {
         const allNoti = await this.notiService.getAllNotification();
@@ -71,6 +75,20 @@ let NotificationController = class NotificationController {
                 notifications: allNoti,
             },
         };
+    }
+    async sendNotiToUsers(body) {
+        try {
+            const publishText = await this.notiService.snsClient.send(new client_sns_1.PublishCommand({
+                TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+                Message: JSON.stringify({
+                    userId: body.userId,
+                    msg: body.msg,
+                }),
+            }));
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error.message);
+        }
     }
 };
 __decorate([
@@ -83,9 +101,10 @@ __decorate([
 ], NotificationController.prototype, "subscribeTopic", null);
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
-    (0, common_1.Sse)('/noti/sse'),
+    (0, common_1.Sse)('/noti/sse/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], NotificationController.prototype, "sse", null);
 __decorate([
@@ -95,6 +114,15 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getAllNoti", null);
+__decorate([
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.Post)('/noti/user'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [notifyGroup_dto_1.NotifyGroupDTO]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "sendNotiToUsers", null);
 NotificationController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [notification_service_1.NotificationService,

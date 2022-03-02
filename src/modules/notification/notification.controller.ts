@@ -1,15 +1,22 @@
+import { CreateTopicCommand, PublishCommand } from '@aws-sdk/client-sns';
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
   HttpException,
   InternalServerErrorException,
+  Param,
   Post,
   Req,
   Sse,
+  UsePipes,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable, of } from 'rxjs';
 import { Public } from 'src/guard/jwt-auth.guard';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 
@@ -40,14 +47,19 @@ export class NotificationController {
           }
         });
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
-        await this.notiService.createNotification(payload);
-        const allNoti = await this.notiService.getAllNotification();
-        this.eventService.emit('noti.created', {
-          code: 200,
-          message: '',
-          data: {
-            notifications: allNoti,
-          },
+        // console.log(payload);
+
+        const { userId, msg } = JSON.parse(payload.Message);
+        // await this.notiService.createNotification(payload);
+        // const allNoti = await this.notiService.getAllNotification();
+        userId.forEach((id) => {
+          this.eventService.emit(`noti.created${id}`, {
+            code: 200,
+            messageId: payload.MessageId,
+            message: msg,
+            timeStamp: payload.Timestamp,
+            receiver: id,
+          });
         });
         // notication format:
         /**
@@ -72,9 +84,10 @@ export class NotificationController {
   }
 
   @Public()
-  @Sse('/noti/sse')
-  sse() {
-    return this.eventService.subscribe('noti.created');
+  @Sse('/noti/sse/:id')
+  sse(@Param('id') id: string) {
+    // console.log(id);
+    return this.eventService.subscribe(`noti.created${id}`);
   }
 
   @Public()
@@ -88,5 +101,25 @@ export class NotificationController {
         notifications: allNoti,
       },
     };
+  }
+
+  @Public()
+  @Post('/noti/user')
+  @UsePipes(new ValidationPipe())
+  async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
+    try {
+      const publishText = await this.notiService.snsClient.send(
+        new PublishCommand({
+          TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+          Message: JSON.stringify({
+            userId: body.userId,
+            msg: body.msg,
+          }),
+        }),
+      );
+      // console.log(publishText);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

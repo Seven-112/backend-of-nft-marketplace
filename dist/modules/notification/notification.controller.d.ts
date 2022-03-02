@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 export declare class NotificationController {
@@ -7,7 +8,7 @@ export declare class NotificationController {
     private readonly eventService;
     constructor(notiService: NotificationService, eventService: EventsService);
     subscribeTopic(req: Request): Promise<void>;
-    sse(): Observable<unknown>;
+    sse(id: string): Observable<unknown>;
     getAllNoti(): Promise<{
         code: number;
         message: string;
@@ -15,4 +16,5 @@ export declare class NotificationController {
             notifications: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
         };
     }>;
+    sendNotiToUsers(body: NotifyGroupDTO): Promise<void>;
 }
