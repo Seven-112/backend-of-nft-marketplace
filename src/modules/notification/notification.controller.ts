@@ -119,6 +119,10 @@ export class NotificationController {
         }),
       );
       // console.log(publishText);
+      return {
+        code: 200,
+        msg: 'Successfully publish message',
+      };
     } catch (error) {
       throw new BadRequestException(error.message);
     }

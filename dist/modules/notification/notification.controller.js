@@ -87,6 +87,10 @@ let NotificationController = class NotificationController {
                     msg: body.msg,
                 }),
             }));
+            return {
+                code: 200,
+                msg: 'Successfully publish message',
+            };
         }
         catch (error) {
             throw new common_1.BadRequestException(error.message);
