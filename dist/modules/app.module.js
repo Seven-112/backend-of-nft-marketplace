@@ -21,6 +21,7 @@ const role_guard_1 = require("../guard/role.guard");
 const nft_module_1 = require("./nft/nft.module");
 const notification_module_1 = require("./notification/notification.module");
 const ioredis_1 = require("@nestjs-modules/ioredis");
+const chat_module_1 = require("./chat/chat.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -48,6 +49,7 @@ AppModule = __decorate([
             user_module_1.UserModule,
             nft_module_1.NFTModule,
             notification_module_1.NotificationModule,
+            chat_module_1.ChatModule,
             ioredis_1.RedisModule.forRoot({
                 config: {
                     port: +process.env.REDIS_PORT,
