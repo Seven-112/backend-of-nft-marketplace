@@ -49,14 +49,15 @@ export class NotificationController {
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
         // console.log(payload);
 
-        const { userId, msg } = JSON.parse(payload.Message);
+        const { userId, msg, type } = JSON.parse(payload.Message);
         // await this.notiService.createNotification(payload);
         // const allNoti = await this.notiService.getAllNotification();
-        userId.forEach((id) => {
+        userId.forEach((id: string) => {
           this.eventService.emit(`noti.created${id}`, {
             code: 200,
             messageId: payload.MessageId,
             message: msg,
+            type,
             timeStamp: payload.Timestamp,
             receiver: id,
           });
@@ -103,7 +104,6 @@ export class NotificationController {
     };
   }
 
-  @Public()
   @Post('/noti/user')
   @UsePipes(new ValidationPipe())
   async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
@@ -113,6 +113,7 @@ export class NotificationController {
           TopicArn: process.env.AWS_SNS_TOPIC_ARN,
           Message: JSON.stringify({
             userId: body.userId,
+            type: body.type,
             msg: body.msg,
           }),
         }),

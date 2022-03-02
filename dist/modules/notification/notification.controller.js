@@ -43,12 +43,13 @@ let NotificationController = class NotificationController {
                 });
             }
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
-                const { userId, msg } = JSON.parse(payload.Message);
+                const { userId, msg, type } = JSON.parse(payload.Message);
                 userId.forEach((id) => {
                     this.eventService.emit(`noti.created${id}`, {
                         code: 200,
                         messageId: payload.MessageId,
                         message: msg,
+                        type,
                         timeStamp: payload.Timestamp,
                         receiver: id,
                     });
@@ -82,6 +83,7 @@ let NotificationController = class NotificationController {
                 TopicArn: process.env.AWS_SNS_TOPIC_ARN,
                 Message: JSON.stringify({
                     userId: body.userId,
+                    type: body.type,
                     msg: body.msg,
                 }),
             }));
@@ -115,7 +117,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getAllNoti", null);
 __decorate([
-    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Post)('/noti/user'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
