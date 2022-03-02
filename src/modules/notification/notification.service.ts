@@ -5,6 +5,9 @@ import { fromEvent, Observable } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { Notification } from './notification.interface';
 import { InjectModel, Model } from 'nestjs-dynamoose';
+import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { RedisService } from '../redis/redis.service';
+import { EListType } from '../redis/redis.interface';
 
 @Injectable()
 export class NotificationService {
@@ -14,6 +17,7 @@ export class NotificationService {
     private httpService: HttpService,
     @InjectModel('Notification')
     private notificationModel: Model<Notification, Notification['MessageId']>,
+    private redisService: RedisService,
   ) {
     this.snsClient = new SNSClient({
       region: process.env.AWS_REGION,
@@ -38,5 +42,11 @@ export class NotificationService {
 
   async getNotificationById(id: string) {
     return this.notificationModel.get(id);
+  }
+
+  async getAllNotificationRedis(userId: string) {
+    const list = await this.redisService.getAll(EListType.notification);
+
+    return list.filter((item) => item.userId === userId);
   }
 }

@@ -13,6 +13,8 @@ export class RedisService {
 
     await this.redis.hmset(`item:${id}`, data);
     await this.redis.lpush(target, `item:${id}`);
+
+    return data;
   }
 
   async getAll(target: EListType) {

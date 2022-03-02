@@ -14,6 +14,7 @@ const notification_service_1 = require("./notification.service");
 const events_service_1 = require("./events.service");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const notification_schema_1 = require("./notification.schema");
+const redis_module_1 = require("../redis/redis.module");
 let NotificationModule = class NotificationModule {
 };
 NotificationModule = __decorate([
@@ -26,6 +27,7 @@ NotificationModule = __decorate([
                     schema: notification_schema_1.NotificationSchema,
                 },
             ]),
+            redis_module_1.RedisModule,
         ],
         controllers: [notification_controller_1.NotificationController],
         providers: [notification_service_1.NotificationService, events_service_1.EventsService],

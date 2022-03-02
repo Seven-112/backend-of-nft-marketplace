@@ -5,6 +5,7 @@ import { NotificationService } from './notification.service';
 import { EventsService } from './events.service';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { NotificationSchema } from './notification.schema';
+import { RedisModule } from '../redis/redis.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { NotificationSchema } from './notification.schema';
         schema: NotificationSchema,
       },
     ]),
+    RedisModule,
   ],
   controllers: [NotificationController],
   providers: [NotificationService, EventsService],

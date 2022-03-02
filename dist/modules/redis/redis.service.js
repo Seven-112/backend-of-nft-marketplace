@@ -25,6 +25,7 @@ let RedisService = class RedisService {
         const data = Object.assign(Object.assign({}, payload), { isSync: false });
         await this.redis.hmset(`item:${id}`, data);
         await this.redis.lpush(target, `item:${id}`);
+        return data;
     }
     async getAll(target) {
         const keys = await this.redis.lrange(target, 0, -1);

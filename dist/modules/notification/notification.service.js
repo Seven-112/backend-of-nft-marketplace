@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const client_sns_1 = require("@aws-sdk/client-sns");
 const axios_1 = require("@nestjs/axios");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const redis_service_1 = require("../redis/redis.service");
+const redis_interface_1 = require("../redis/redis.interface");
 let NotificationService = class NotificationService {
-    constructor(httpService, notificationModel) {
+    constructor(httpService, notificationModel, redisService) {
         this.httpService = httpService;
         this.notificationModel = notificationModel;
+        this.redisService = redisService;
         this.snsClient = new client_sns_1.SNSClient({
             region: process.env.AWS_REGION,
             credentials: {
@@ -41,11 +44,15 @@ let NotificationService = class NotificationService {
     async getNotificationById(id) {
         return this.notificationModel.get(id);
     }
+    async getAllNotificationRedis(userId) {
+        const list = await this.redisService.getAll(redis_interface_1.EListType.notification);
+        return list.filter((item) => item.userId === userId);
+    }
 };
 NotificationService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, nestjs_dynamoose_1.InjectModel)('Notification')),
-    __metadata("design:paramtypes", [axios_1.HttpService, Object])
+    __metadata("design:paramtypes", [axios_1.HttpService, Object, redis_service_1.RedisService])
 ], NotificationService);
 exports.NotificationService = NotificationService;
 //# sourceMappingURL=notification.service.js.map
