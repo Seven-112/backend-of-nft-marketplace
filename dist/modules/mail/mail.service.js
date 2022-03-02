@@ -12,15 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailService = void 0;
 const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
-const redisCache_service_1 = require("../redisCache/redisCache.service");
 let MailService = class MailService {
-    constructor(mailerService, redisCacheService) {
+    constructor(mailerService) {
         this.mailerService = mailerService;
-        this.redisCacheService = redisCacheService;
     }
     async sendForgotPasswordEmail(user) {
         const otp = this.generateOTP();
-        this.redisCacheService.set(user.email, '' + otp, 300);
         await this.mailerService.sendMail({
             to: user.email,
             subject: 'Forgot password email',
@@ -34,8 +31,7 @@ let MailService = class MailService {
 };
 MailService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [mailer_1.MailerService,
-        redisCache_service_1.RedisCacheService])
+    __metadata("design:paramtypes", [mailer_1.MailerService])
 ], MailService);
 exports.MailService = MailService;
 //# sourceMappingURL=mail.service.js.map

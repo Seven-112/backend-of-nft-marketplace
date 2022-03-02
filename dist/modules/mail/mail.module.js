@@ -10,7 +10,6 @@ exports.MailModule = void 0;
 const common_1 = require("@nestjs/common");
 const mailer_1 = require("@nestjs-modules/mailer");
 const mail_service_1 = require("./mail.service");
-const redisCache_module_1 = require("../redisCache/redisCache.module");
 let MailModule = class MailModule {
 };
 MailModule = __decorate([
@@ -30,7 +29,6 @@ MailModule = __decorate([
                     from: '"No Reply" <longnguyennapa@gmail.com>',
                 },
             }),
-            redisCache_module_1.RedisCacheModule,
         ],
         providers: [mail_service_1.MailService],
         exports: [mail_service_1.MailService],

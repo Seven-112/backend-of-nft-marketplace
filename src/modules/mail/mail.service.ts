@@ -1,19 +1,18 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import { RedisCacheService } from '../redisCache/redisCache.service';
 import { User } from '../user/user.interface';
 
 @Injectable()
 export class MailService {
   constructor(
     private readonly mailerService: MailerService,
-    private readonly redisCacheService: RedisCacheService,
+    // private readonly redisCacheService: RedisCacheService,
   ) {}
 
   async sendForgotPasswordEmail(user: User) {
     const otp = this.generateOTP();
 
-    this.redisCacheService.set(user.email, '' + otp, 300);
+    // this.redisCacheService.set(user.email, '' + otp, 300);
 
     await this.mailerService.sendMail({
       to: user.email,

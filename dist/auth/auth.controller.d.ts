@@ -9,15 +9,13 @@ import { WalletVerifyDTO } from './DTO/walletVerify.dto';
 import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
-import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
 import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 export declare class AuthController {
     private readonly authService;
     private readonly userService;
     private readonly walletService;
     private readonly mailService;
-    private readonly redisCacheService;
-    constructor(authService: AuthService, userService: UserService, walletService: WalletService, mailService: MailService, redisCacheService: RedisCacheService);
+    constructor(authService: AuthService, userService: UserService, walletService: WalletService, mailService: MailService);
     register(body: RegisterDTO): Promise<{
         code: HttpStatus;
         message: string;

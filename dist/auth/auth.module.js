@@ -12,7 +12,6 @@ const passport_1 = require("@nestjs/passport");
 const user_module_1 = require("../modules/user/user.module");
 const wallet_module_1 = require("../modules/wallet/wallet.module");
 const mail_module_1 = require("../modules/mail/mail.module");
-const redisCache_module_1 = require("../modules/redisCache/redisCache.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const local_strategy_1 = require("./local.strategy");
@@ -26,7 +25,6 @@ AuthModule = __decorate([
             wallet_module_1.WalletModule,
             passport_1.PassportModule,
             mail_module_1.MailModule,
-            redisCache_module_1.RedisCacheModule,
         ],
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
         exports: [auth_service_1.AuthService],

@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -18,6 +19,7 @@ import { RolesGuard } from 'src/guard/role.guard';
 import { NFTModule } from './nft/nft.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationController } from './notification/notification.controller';
+import { RedisModule } from '@nestjs-modules/ioredis';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -33,11 +35,18 @@ import { NotificationController } from './notification/notification.controller';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
     TodoModule,
     AuthModule,
     UserModule,
     NFTModule,
     NotificationModule,
+    RedisModule.forRoot({
+      config: {
+        port: +process.env.REDIS_PORT,
+        host: process.env.REDIS_HOST,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [

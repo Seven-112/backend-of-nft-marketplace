@@ -27,15 +27,13 @@ const walletVerify_dto_1 = require("./DTO/walletVerify.dto");
 const forgotPassword_dto_1 = require("./DTO/forgotPassword.dto");
 const mail_service_1 = require("../modules/mail/mail.service");
 const resetPassword_dto_1 = require("./DTO/resetPassword.dto");
-const redisCache_service_1 = require("../modules/redisCache/redisCache.service");
 const loginGoogle_dto_1 = require("./DTO/loginGoogle.dto");
 let AuthController = class AuthController {
-    constructor(authService, userService, walletService, mailService, redisCacheService) {
+    constructor(authService, userService, walletService, mailService) {
         this.authService = authService;
         this.userService = userService;
         this.walletService = walletService;
         this.mailService = mailService;
-        this.redisCacheService = redisCacheService;
     }
     async register(body) {
         try {
@@ -115,16 +113,8 @@ let AuthController = class AuthController {
             if (!user) {
                 throw new common_1.NotFoundException('User not found!');
             }
-            const otp = await this.redisCacheService.get(body.email);
-            if (!otp) {
-                throw new common_1.ForbiddenException('OTP expired!');
-            }
-            if (otp !== body.otp) {
-                throw new common_1.ForbiddenException('Invalid OTP');
-            }
             const password = await this.userService.hashPassword(body.password);
             const updated = await this.userService.updatePassword(user.id, password);
-            await this.redisCacheService.del(user.email);
             return updated;
         }
         catch (error) {
@@ -236,8 +226,7 @@ AuthController = __decorate([
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService,
         wallet_service_1.WalletService,
-        mail_service_1.MailService,
-        redisCache_service_1.RedisCacheService])
+        mail_service_1.MailService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

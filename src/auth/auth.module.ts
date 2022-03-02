@@ -3,7 +3,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../modules/user/user.module';
 import { WalletModule } from 'src/modules/wallet/wallet.module';
 import { MailModule } from 'src/modules/mail/mail.module';
-import { RedisCacheModule } from 'src/modules/redisCache/redisCache.module';
+// import { RedisCacheModule } from 'src/modules/redisCache/redisCache.module';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -17,7 +17,7 @@ import { JwtStrategy } from './jwt.strategy';
     WalletModule,
     PassportModule,
     MailModule,
-    RedisCacheModule,
+    // RedisCacheModule,
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
