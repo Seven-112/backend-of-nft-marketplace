@@ -16,6 +16,13 @@ export declare class NotificationController {
             notifications: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
         };
     }>;
+    getNotiById(id: string): Promise<{
+        code: number;
+        message: string;
+        data: {
+            notifications: import("nestjs-dynamoose").Document<import("./notification.interface").Notification>[];
+        };
+    }>;
     sendNotiToUsers(body: NotifyGroupDTO): Promise<{
         code: number;
         msg: string;

@@ -50,16 +50,21 @@ export class NotificationController {
         // console.log(payload);
 
         const { userId, msg, type } = JSON.parse(payload.Message);
-        // await this.notiService.createNotification(payload);
         // const allNoti = await this.notiService.getAllNotification();
         userId.forEach((id: string) => {
-          this.eventService.emit(`noti.created${id}`, {
-            code: 200,
+          const noti = {
             messageId: payload.MessageId,
             message: msg,
             type,
             timeStamp: payload.Timestamp,
             receiver: id,
+          };
+
+          this.notiService.createNotification(noti).then(() => {
+            this.eventService.emit(`noti.created${id}`, {
+              code: 200,
+              ...noti,
+            });
           });
         });
         // notication format:
@@ -87,7 +92,6 @@ export class NotificationController {
   @Public()
   @Sse('/noti/sse/:id')
   sse(@Param('id') id: string) {
-    // console.log(id);
     return this.eventService.subscribe(`noti.created${id}`);
   }
 
@@ -104,6 +108,20 @@ export class NotificationController {
     };
   }
 
+  @Public()
+  @Get('/noti/:id')
+  async getNotiById(@Param('id') id: string) {
+    const allNoti = await this.notiService.getAllNotification();
+    return {
+      code: 200,
+      message: '',
+      data: {
+        notifications: allNoti.filter((noti) => noti.receiver === id),
+      },
+    };
+  }
+
+  @Public()
   @Post('/noti/user')
   @UsePipes(new ValidationPipe())
   async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
