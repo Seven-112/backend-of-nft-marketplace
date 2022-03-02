@@ -1,35 +1,20 @@
 import { Schema } from 'dynamoose';
 
 export const NotificationSchema = new Schema({
-  Type: {
+  type: {
     type: String,
   },
-  Subject: {
+  message: {
     type: String,
   },
-  MessageId: {
+  messageId: {
     type: String,
     hashKey: true,
   },
-  TopicArn: {
+  timeStamp: {
     type: String,
   },
-  Message: {
-    type: String,
-  },
-  Timestamp: {
-    type: String,
-  },
-  SignatureVersion: {
-    type: String,
-  },
-  Signature: {
-    type: String,
-  },
-  signingCertURL: {
-    type: String,
-  },
-  UnsubscribeURL: {
+  receiver: {
     type: String,
   },
 });

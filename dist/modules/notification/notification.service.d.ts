@@ -10,9 +10,10 @@ export declare class NotificationService {
     private notificationModel;
     private redisService;
     snsClient: SNSClient;
-    constructor(httpService: HttpService, notificationModel: Model<Notification, Notification['MessageId']>, redisService: RedisService);
+    constructor(httpService: HttpService, notificationModel: Model<Notification, Notification['messageId']>, redisService: RedisService);
     callGetApi(url: any): Promise<Observable<AxiosResponse<any, any>>>;
     createNotification(notification: Notification): Promise<import("nestjs-dynamoose").Document<Notification>>;
+    deleteAllNotification(): Promise<import("nestjs-dynamoose").UnprocessedItems<string>>;
     getAllNotification(): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Notification>>>;
     getNotificationById(id: string): Promise<import("nestjs-dynamoose").Document<Notification>>;
     getAllNotificationRedis(userId: string): Promise<any[]>;

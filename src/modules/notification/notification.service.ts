@@ -5,7 +5,6 @@ import { fromEvent, Observable } from 'rxjs';
 import { AxiosResponse } from 'axios';
 import { Notification } from './notification.interface';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { RedisService } from '../redis/redis.service';
 import { EListType } from '../redis/redis.interface';
 
@@ -16,7 +15,7 @@ export class NotificationService {
   constructor(
     private httpService: HttpService,
     @InjectModel('Notification')
-    private notificationModel: Model<Notification, Notification['MessageId']>,
+    private notificationModel: Model<Notification, Notification['messageId']>,
     private redisService: RedisService,
   ) {
     this.snsClient = new SNSClient({
@@ -34,6 +33,14 @@ export class NotificationService {
 
   async createNotification(notification: Notification) {
     return this.notificationModel.create(notification);
+  }
+
+  async deleteAllNotification() {
+    const items = await this.notificationModel.scan().exec();
+
+    const ids = items.map((item) => item.messageId);
+
+    return this.notificationModel.batchDelete(ids);
   }
 
   async getAllNotification() {

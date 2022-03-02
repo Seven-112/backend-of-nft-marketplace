@@ -38,6 +38,11 @@ let NotificationService = class NotificationService {
     async createNotification(notification) {
         return this.notificationModel.create(notification);
     }
+    async deleteAllNotification() {
+        const items = await this.notificationModel.scan().exec();
+        const ids = items.map((item) => item.messageId);
+        return this.notificationModel.batchDelete(ids);
+    }
     async getAllNotification() {
         return this.notificationModel.scan().exec();
     }
