@@ -1,10 +1,9 @@
-import { CreateUserDTO } from './DTO/create-user.dto';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    create(request: any, body: CreateUserDTO): Promise<{
+    create(request: any): Promise<{
         code: number;
         message: string;
         data?: undefined;

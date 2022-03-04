@@ -16,7 +16,9 @@ export class UserService {
   }
 
   async isUserAvailable(id: string) {
-    return !this.userModel.get(id);
+    const user = await this.userModel.get(id);
+
+    return !user;
   }
 
   async createUser(data: User) {

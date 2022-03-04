@@ -8,9 +8,7 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { CreateUserDTO } from './DTO/create-user.dto';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 
@@ -20,18 +18,7 @@ export class UserController {
 
   @Post('/create')
   @UsePipes(new ValidationPipe())
-  async create(@Req() request: any, @Body() body: CreateUserDTO) {
-    const isWalletAvailable = await this.userService.isWalletAvailable(
-      body.walletAddress,
-    );
-
-    if (!isWalletAvailable) {
-      return {
-        code: 401,
-        message: 'Wallet not avaiable',
-      };
-    }
-
+  async create(@Req() request: any) {
     const isUserAvailable = await this.userService.isUserAvailable(
       request.user.sub,
     );
@@ -45,7 +32,6 @@ export class UserController {
 
     const user = await this.userService.createUser({
       id: request.user.sub,
-      walletAddress: body.walletAddress,
     });
 
     return {

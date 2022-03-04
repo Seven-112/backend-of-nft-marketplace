@@ -24,7 +24,8 @@ let UserService = class UserService {
         return !user.count;
     }
     async isUserAvailable(id) {
-        return !this.userModel.get(id);
+        const user = await this.userModel.get(id);
+        return !user;
     }
     async createUser(data) {
         return this.userModel.create(data);

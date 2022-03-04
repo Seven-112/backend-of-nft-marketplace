@@ -15,21 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
-const create_user_dto_1 = require("./DTO/create-user.dto");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async create(request, body) {
-        const isWalletAvailable = await this.userService.isWalletAvailable(body.walletAddress);
-        if (!isWalletAvailable) {
-            return {
-                code: 401,
-                message: 'Wallet not avaiable',
-            };
-        }
+    async create(request) {
         const isUserAvailable = await this.userService.isUserAvailable(request.user.sub);
         if (!isUserAvailable) {
             return {
@@ -39,7 +31,6 @@ let UserController = class UserController {
         }
         const user = await this.userService.createUser({
             id: request.user.sub,
-            walletAddress: body.walletAddress,
         });
         return {
             code: 200,
@@ -81,9 +72,8 @@ __decorate([
     (0, common_1.Post)('/create'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, create_user_dto_1.CreateUserDTO]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
