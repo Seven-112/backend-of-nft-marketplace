@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class RemoveWalletDTO {
-  @IsNotEmpty()
+export class UpdateUserDTO {
   @IsString()
+  @IsNotEmpty()
   walletAddress: string;
 }

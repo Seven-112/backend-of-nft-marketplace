@@ -17,7 +17,6 @@ const app_controller_1 = require("./app.controller");
 const core_1 = require("@nestjs/core");
 const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
-const role_guard_1 = require("../guard/role.guard");
 const nft_module_1 = require("./nft/nft.module");
 const notification_module_1 = require("./notification/notification.module");
 const ioredis_1 = require("@nestjs-modules/ioredis");
@@ -60,7 +59,6 @@ AppModule = __decorate([
         controllers: [app_controller_1.AppController],
         providers: [
             { provide: core_1.APP_GUARD, useClass: jwt_auth_guard_1.JwtAuthGuard },
-            { provide: core_1.APP_GUARD, useClass: role_guard_1.RolesGuard },
         ],
     })
 ], AppModule);

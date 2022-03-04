@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-import { User, UserRoles, UserWallet } from './user.interface';
-import * as bcrypt from 'bcrypt';
+import { User } from './user.interface';
 
 @Injectable()
 export class UserService {
@@ -10,55 +9,25 @@ export class UserService {
     private userModel: Model<User, User['id']>,
   ) {}
 
-  async isUsernameAvailable(username: string) {
-    const user = await this.userModel
-      .scan('username')
-      .eq(username)
-      .limit(1)
-      .exec();
+  async isWalletAvailable(address: string) {
+    const user = await this.userModel.scan('walletAddress').eq(address).exec();
 
     return !user.count;
   }
 
-  async updateUser(user: User) {
-    return this.userModel.update(user);
+  async isUserAvailable(id: string) {
+    return !this.userModel.get(id);
   }
 
-  async updateUserTransaction(user: User) {
-    return this.userModel.transaction.update(user);
+  async createUser(data: User) {
+    return this.userModel.create(data);
   }
 
-  async updatePassword(id: string, password: string) {
-    return this.userModel.update(id, { password });
+  async getByWalletAddress(address: string) {
+    return this.userModel.scan('walletAddress').eq(address).exec();
   }
 
-  async isEmailAvailable(email: string) {
-    const user = await this.userModel.query('email').eq(email).limit(1).exec();
-
-    return !user.count;
-  }
-
-  async getUserByEmail(email: string) {
-    const user = await this.userModel.query('email').eq(email).limit(1).exec();
-
-    return user.count ? user[0] : null;
-  }
-
-  async create(user: User): Promise<User> {
-    return this.userModel.create(user);
-  }
-
-  async findAll() {
-    return this.userModel.scan().exec();
-  }
-
-  async findById(id: string) {
-    return this.userModel.get(id);
-  }
-
-  async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt();
-    
-    return bcrypt.hash(password, salt);
+  async updateUser(id: string, walletAddress: string) {
+    return this.userModel.update(id, { walletAddress });
   }
 }

@@ -14,12 +14,12 @@ export class MailService {
 
     // this.redisCacheService.set(user.email, '' + otp, 300);
 
-    await this.mailerService.sendMail({
-      to: user.email,
-      subject: 'Forgot password email',
-      text: 'Sample email',
-      html: `OTP here ${otp}`,
-    });
+    // await this.mailerService.sendMail({
+    //   to: user.email,
+    //   subject: 'Forgot password email',
+    //   text: 'Sample email',
+    //   html: `OTP here ${otp}`,
+    // });
   }
 
   generateOTP() {

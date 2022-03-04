@@ -21,15 +21,10 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { RegisterDTO } from './DTO/register.dto';
 import { UserService } from 'src/modules/user/user.service';
-import {
-  RequestWithUser,
-  User,
-  UserType,
-} from 'src/modules/user/user.interface';
+import { User } from 'src/modules/user/user.interface';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { WalletService } from 'src/modules/wallet/wallet.service';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
 import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
@@ -42,9 +37,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly walletService: WalletService,
-    private readonly mailService: MailService,
-    // private readonly redisCacheService: RedisCacheService,
+    private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
   ) {}
 
   @Post('/register')
@@ -111,131 +104,46 @@ export class AuthController {
     }
   }
 
-  @Post('/login/google')
-  @HttpCode(HttpStatus.OK)
-  @Public()
-  @UsePipes(new ValidationPipe())
-  async loginGoogle(@Body() body: LoginGoogleDTO) {
-    try {
-      const info = await this.authService.getTokenInfo(body.token);
-      const user = await this.userService.getUserByEmail(info.email);
-      if (user) {
-        // return this.authService.login(user);
-        return;
-      }
-      const newUser = new User({
-        email: info.email,
-        firstName: body.firstName,
-        lastName: body.lastName,
-        type: UserType.google,
-        social: {
-          googleId: body.googleId,
-        },
-      });
-      const registeredUser = await this.userService.create(newUser);
+  // @Post('/forgot-password')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // @Public()
+  // async forgotPassword(@Body() body: ForgotPasswordDTO) {
+  //   try {
+  //     const user = await this.userService.getUserByEmail(body.email);
+  //     if (!user) {
+  //       throw new NotFoundException('User not found!');
+  //     }
 
-      // return this.authService.login(registeredUser);
-      return;
-    } catch (error) {
-      if (error?.response?.data?.error === 'invalid_token') {
-        throw new ForbiddenException('Invalid token');
-      }
+  //     return this.mailService.sendForgotPasswordEmail(user);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-      throw error;
-    }
-  }
+  // @Post('/reset-password')
+  // @HttpCode(HttpStatus.OK)
+  // @Public()
+  // async resetPassword(@Body() body: ResetPasswordDTO) {
+  //   try {
+  //     const user = await this.userService.getUserByEmail(body.email);
+  //     if (!user) {
+  //       throw new NotFoundException('User not found!');
+  //     }
+  //     // const otp = await this.redisCacheService.get(body.email);
+  //     // if (!otp) {
+  //     //   throw new ForbiddenException('OTP expired!');
+  //     // }
+  //     // if (otp !== body.otp) {
+  //     //   throw new ForbiddenException('Invalid OTP');
+  //     // }
 
-  @Get('/isAuthenticated')
-  @HttpCode(HttpStatus.OK)
-  async isAuthenticated(@Req() req: RequestWithUser) {
-    try {
-      Reflect.deleteProperty(req.user, 'password');
-      return req.user;
-    } catch (error) {
-      throw error;
-    }
-  }
+  //     const password = await this.userService.hashPassword(body.password);
+  //     const updated = await this.userService.updatePassword(user.id, password);
+  //     // await this.redisCacheService.del(user.email);
 
-  @Post('/forgot-password')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Public()
-  async forgotPassword(@Body() body: ForgotPasswordDTO) {
-    try {
-      const user = await this.userService.getUserByEmail(body.email);
-      if (!user) {
-        throw new NotFoundException('User not found!');
-      }
-
-      return this.mailService.sendForgotPasswordEmail(user);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Post('/reset-password')
-  @HttpCode(HttpStatus.OK)
-  @Public()
-  async resetPassword(@Body() body: ResetPasswordDTO) {
-    try {
-      const user = await this.userService.getUserByEmail(body.email);
-      if (!user) {
-        throw new NotFoundException('User not found!');
-      }
-      // const otp = await this.redisCacheService.get(body.email);
-      // if (!otp) {
-      //   throw new ForbiddenException('OTP expired!');
-      // }
-      // if (otp !== body.otp) {
-      //   throw new ForbiddenException('Invalid OTP');
-      // }
-
-      const password = await this.userService.hashPassword(body.password);
-      const updated = await this.userService.updatePassword(user.id, password);
-      // await this.redisCacheService.del(user.email);
-
-      return updated;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @Get('/wallet/request')
-  @HttpCode(HttpStatus.OK)
-  @Public()
-  async walletRequest() {
-    return this.walletService.generateKey();
-  }
-
-  @Post('/wallet/verify')
-  @HttpCode(HttpStatus.OK)
-  @Public()
-  async walletVerify(@Body() body: WalletVerifyDTO) {
-    try {
-      const isValid = await this.walletService.verifyKey(
-        body.key,
-        body.iv,
-        body.publicKey,
-        body.sign,
-      );
-      if (!isValid) {
-        throw new BadRequestException();
-      }
-      const wallet = await this.walletService.findByWalletAddress(
-        body.publicKey,
-      );
-      if (!wallet.count) {
-        throw new NotFoundException();
-      }
-      const userId = wallet?.[0]?.userId;
-      const user = await this.userService.findById(userId);
-
-      // return this.authService.login(user);
-      return;
-    } catch (error) {
-      if (error.code === 'ERR_CRYPTO_INVALID_IV') {
-        throw new BadRequestException('Invalid IV');
-      }
-      throw error;
-    }
-  }
+  //     return updated;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

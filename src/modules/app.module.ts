@@ -15,7 +15,6 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from '../filter/exception.filter';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { DynamooseModule } from 'nestjs-dynamoose';
-import { RolesGuard } from 'src/guard/role.guard';
 import { NFTModule } from './nft/nft.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationController } from './notification/notification.controller';
@@ -53,7 +52,6 @@ import { ChatModule } from './chat/chat.module';
   controllers: [AppController],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
-    { provide: APP_GUARD, useClass: RolesGuard },
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,

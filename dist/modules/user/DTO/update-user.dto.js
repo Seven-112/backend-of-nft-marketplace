@@ -9,23 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailService = void 0;
-const mailer_1 = require("@nestjs-modules/mailer");
-const common_1 = require("@nestjs/common");
-let MailService = class MailService {
-    constructor(mailerService) {
-        this.mailerService = mailerService;
-    }
-    async sendForgotPasswordEmail(user) {
-        const otp = this.generateOTP();
-    }
-    generateOTP() {
-        return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-    }
-};
-MailService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [mailer_1.MailerService])
-], MailService);
-exports.MailService = MailService;
-//# sourceMappingURL=mail.service.js.map
+exports.UpdateUserDTO = void 0;
+const class_validator_1 = require("class-validator");
+class UpdateUserDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdateUserDTO.prototype, "walletAddress", void 0);
+exports.UpdateUserDTO = UpdateUserDTO;
+//# sourceMappingURL=update-user.dto.js.map

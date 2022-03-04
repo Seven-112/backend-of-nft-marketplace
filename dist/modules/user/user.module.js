@@ -9,7 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
-const wallet_module_1 = require("../wallet/wallet.module");
 const user_controller_1 = require("./user.controller");
 const user_schema_1 = require("./user.schema");
 const user_service_1 = require("./user.service");
@@ -24,7 +23,6 @@ UserModule = __decorate([
                     schema: user_schema_1.UserSchema,
                 },
             ]),
-            wallet_module_1.WalletModule,
         ],
         providers: [user_service_1.UserService],
         exports: [user_service_1.UserService],

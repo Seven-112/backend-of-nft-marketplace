@@ -15,48 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
-const bcrypt = require("bcrypt");
 let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
     }
-    async isUsernameAvailable(username) {
-        const user = await this.userModel
-            .scan('username')
-            .eq(username)
-            .limit(1)
-            .exec();
+    async isWalletAvailable(address) {
+        const user = await this.userModel.scan('walletAddress').eq(address).exec();
         return !user.count;
     }
-    async updateUser(user) {
-        return this.userModel.update(user);
+    async isUserAvailable(id) {
+        return !this.userModel.get(id);
     }
-    async updateUserTransaction(user) {
-        return this.userModel.transaction.update(user);
+    async createUser(data) {
+        return this.userModel.create(data);
     }
-    async updatePassword(id, password) {
-        return this.userModel.update(id, { password });
+    async getByWalletAddress(address) {
+        return this.userModel.scan('walletAddress').eq(address).exec();
     }
-    async isEmailAvailable(email) {
-        const user = await this.userModel.query('email').eq(email).limit(1).exec();
-        return !user.count;
-    }
-    async getUserByEmail(email) {
-        const user = await this.userModel.query('email').eq(email).limit(1).exec();
-        return user.count ? user[0] : null;
-    }
-    async create(user) {
-        return this.userModel.create(user);
-    }
-    async findAll() {
-        return this.userModel.scan().exec();
-    }
-    async findById(id) {
-        return this.userModel.get(id);
-    }
-    async hashPassword(password) {
-        const salt = await bcrypt.genSalt();
-        return bcrypt.hash(password, salt);
+    async updateUser(id, walletAddress) {
+        return this.userModel.update(id, { walletAddress });
     }
 };
 UserService = __decorate([

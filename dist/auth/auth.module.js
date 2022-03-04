@@ -10,7 +10,6 @@ exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const user_module_1 = require("../modules/user/user.module");
-const wallet_module_1 = require("../modules/wallet/wallet.module");
 const mail_module_1 = require("../modules/mail/mail.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
@@ -22,7 +21,6 @@ AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
             user_module_1.UserModule,
-            wallet_module_1.WalletModule,
             passport_1.PassportModule,
             mail_module_1.MailModule,
         ],

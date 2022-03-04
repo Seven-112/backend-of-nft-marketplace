@@ -9,6 +9,6 @@ export declare class WalletController {
     private readonly userService;
     constructor(walletService: WalletService, userService: UserService);
     getWallet(address: string): Promise<import("nestjs-dynamoose").Document<Wallet>>;
-    addWallet(req: RequestWithUser, body: AddWalletDTO): Promise<import("../user/user.interface").User>;
+    addWallet(req: RequestWithUser, body: AddWalletDTO): Promise<any>;
     removeWallet(body: RemoveWalletDTO): Promise<import("nestjs-dynamoose").Document<import("../user/user.interface").User>>;
 }
