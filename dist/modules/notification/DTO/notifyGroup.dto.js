@@ -25,5 +25,9 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Object)
 ], NotifyGroupDTO.prototype, "msg", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], NotifyGroupDTO.prototype, "sender", void 0);
 exports.NotifyGroupDTO = NotifyGroupDTO;
 //# sourceMappingURL=notifyGroup.dto.js.map

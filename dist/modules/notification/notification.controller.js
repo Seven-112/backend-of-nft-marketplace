@@ -96,12 +96,7 @@ let NotificationController = class NotificationController {
         try {
             const publishText = await this.notiService.snsClient.send(new client_sns_1.PublishCommand({
                 TopicArn: process.env.AWS_SNS_TOPIC_ARN,
-                Message: JSON.stringify({
-                    userId: body.userId,
-                    type: body.type,
-                    msg: body.msg,
-                    sender: body.sender || '',
-                }),
+                Message: JSON.stringify(Object.assign({}, body)),
             }));
             return {
                 code: 200,
