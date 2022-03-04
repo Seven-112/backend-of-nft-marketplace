@@ -19,6 +19,7 @@ import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
+import { nanoid } from 'nanoid';
 
 @Controller()
 export class NotificationController {
@@ -49,16 +50,20 @@ export class NotificationController {
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
         // console.log(payload);
 
-        const { userId, msg, type } = JSON.parse(payload.Message);
+        const { userId, msg, type, sender } = JSON.parse(payload.Message);
         // const allNoti = await this.notiService.getAllNotification();
         userId.forEach((id: string) => {
+          const idx = nanoid();
           const noti = {
-            messageId: payload.MessageId,
+            messageId: idx,
             message: msg,
             type,
             timeStamp: payload.Timestamp,
             receiver: id,
+            sender,
           };
+
+          // console.log(noti);
 
           this.notiService.createNotification(noti).then(() => {
             this.eventService.emit(`noti.created${id}`, {
@@ -133,6 +138,7 @@ export class NotificationController {
             userId: body.userId,
             type: body.type,
             msg: body.msg,
+            sender: body.sender || '',
           }),
         }),
       );

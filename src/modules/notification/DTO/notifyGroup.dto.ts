@@ -7,4 +7,5 @@ export class NotifyGroupDTO {
   type: string;
   @IsNotEmpty()
   msg: any;
+  sender?: string;
 }

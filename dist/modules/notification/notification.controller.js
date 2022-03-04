@@ -20,6 +20,7 @@ const validation_pipe_1 = require("../../pipes/validation.pipe");
 const notifyGroup_dto_1 = require("./DTO/notifyGroup.dto");
 const events_service_1 = require("./events.service");
 const notification_service_1 = require("./notification.service");
+const nanoid_1 = require("nanoid");
 let NotificationController = class NotificationController {
     constructor(notiService, eventService) {
         this.notiService = notiService;
@@ -43,14 +44,16 @@ let NotificationController = class NotificationController {
                 });
             }
             else if (req.header('x-amz-sns-message-type') === 'Notification') {
-                const { userId, msg, type } = JSON.parse(payload.Message);
+                const { userId, msg, type, sender } = JSON.parse(payload.Message);
                 userId.forEach((id) => {
+                    const idx = (0, nanoid_1.nanoid)();
                     const noti = {
-                        messageId: payload.MessageId,
+                        messageId: idx,
                         message: msg,
                         type,
                         timeStamp: payload.Timestamp,
                         receiver: id,
+                        sender,
                     };
                     this.notiService.createNotification(noti).then(() => {
                         this.eventService.emit(`noti.created${id}`, Object.assign({ code: 200 }, noti));
@@ -97,6 +100,7 @@ let NotificationController = class NotificationController {
                     userId: body.userId,
                     type: body.type,
                     msg: body.msg,
+                    sender: body.sender || '',
                 }),
             }));
             return {

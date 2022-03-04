@@ -17,4 +17,8 @@ export const NotificationSchema = new Schema({
   receiver: {
     type: String,
   },
+  sender: {
+    type: String,
+    required: false,
+  },
 });
