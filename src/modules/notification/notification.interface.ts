@@ -4,4 +4,5 @@ export interface Notification {
   type: string;
   timeStamp: string;
   receiver: string;
+  sender: string;
 }
