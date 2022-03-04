@@ -26,6 +26,7 @@
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.1.1",
     "@nestjs/schedule": "^1.0.2",
+    "@nestjs/swagger": "^5.2.0",
     "aws-amplify": "^4.3.14",
     "aws-sdk": "^2.1076.0",
     "axios": "^0.26.0",
@@ -56,6 +57,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.4.0",
+    "swagger-ui-express": "^4.3.0",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {

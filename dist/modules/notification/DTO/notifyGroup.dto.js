@@ -10,15 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotifyGroupDTO = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class NotifyGroupDTO {
 }
 __decorate([
     (0, class_validator_1.ArrayNotEmpty)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], NotifyGroupDTO.prototype, "userId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], NotifyGroupDTO.prototype, "type", void 0);
 __decorate([
@@ -26,7 +29,9 @@ __decorate([
     __metadata("design:type", Object)
 ], NotifyGroupDTO.prototype, "msg", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], NotifyGroupDTO.prototype, "sender", void 0);
 exports.NotifyGroupDTO = NotifyGroupDTO;

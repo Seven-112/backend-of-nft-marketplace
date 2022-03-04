@@ -3,6 +3,7 @@ import { AppModule } from './modules/app.module';
 import { PORT } from './utils/constants';
 import * as helmet from 'helmet';
 import Amplify from 'aws-amplify';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 const awsmobile = {
   aws_project_region: 'eu-west-2',
@@ -38,8 +39,15 @@ async function bootstrap() {
   Amplify.configure(awsmobile);
   app.use(helmet());
 
-  await app.listen(PORT);
+  const config = new DocumentBuilder()
+    .setTitle('Metaversus API')
+    .setDescription('The Metaversus API description')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
+  await app.listen(PORT);
   console.info(`server running on port ${PORT}`);
 
   if (module.hot) {
