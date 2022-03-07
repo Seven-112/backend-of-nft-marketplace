@@ -36,8 +36,11 @@ async function bootstrap() {
         .setTitle('Metaversus API')
         .setDescription('The Metaversus API description')
         .setVersion('1.0')
+        .addBearerAuth()
         .build();
-    const document = swagger_1.SwaggerModule.createDocument(app, config);
+    const document = swagger_1.SwaggerModule.createDocument(app, config, {
+        ignoreGlobalPrefix: true,
+    });
     swagger_1.SwaggerModule.setup('api', app, document);
     await app.listen(constants_1.PORT);
     console.info(`server running on port ${constants_1.PORT}`);

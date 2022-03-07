@@ -4,6 +4,7 @@ import { PORT } from './utils/constants';
 import * as helmet from 'helmet';
 import Amplify from 'aws-amplify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import swaggerDist from 'swagger-ui-dist';
 
 const awsmobile = {
   aws_project_region: 'eu-west-2',
@@ -43,8 +44,13 @@ async function bootstrap() {
     .setTitle('Metaversus API')
     .setDescription('The Metaversus API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+
+  const document = SwaggerModule.createDocument(app, config, {
+    ignoreGlobalPrefix: true,
+  });
+
   SwaggerModule.setup('api', app, document);
 
   await app.listen(PORT);
