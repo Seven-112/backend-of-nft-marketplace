@@ -8,7 +8,6 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post('/create')
-  @Public()
   async create(@Body() body: CreateChatDTO) {
     const data = await this.chatService.getChatByUserId(body.userId);
 
@@ -25,7 +24,6 @@ export class ChatController {
     });
   }
 
-  @Public()
   @Get('/:id')
   async getId(@Param('id') id: string) {
     return this.chatService.getChatByUserId(id);

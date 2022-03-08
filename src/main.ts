@@ -4,7 +4,7 @@ import { PORT } from './utils/constants';
 import * as helmet from 'helmet';
 import Amplify from 'aws-amplify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import swaggerDist from 'swagger-ui-dist';
+import aws from 'aws-sdk';
 
 const awsmobile = {
   aws_project_region: 'eu-west-2',

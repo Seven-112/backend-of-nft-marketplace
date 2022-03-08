@@ -6,4 +6,7 @@ export class UpdateUserDTO {
   @IsNotEmpty()
   @ApiProperty()
   walletAddress: string;
+
+  @IsString()
+  email: string;
 }

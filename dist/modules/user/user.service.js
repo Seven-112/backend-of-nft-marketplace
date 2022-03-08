@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const aws = require("aws-sdk");
 let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -35,6 +36,19 @@ let UserService = class UserService {
     }
     async updateUser(id, walletAddress) {
         return this.userModel.update(id, { walletAddress });
+    }
+    async getUsers(ids) {
+        return this.userModel.batchGet(ids);
+    }
+    async test() {
+        const params = {
+            UserPoolId: process.env.USER_POOL_ID,
+            AttributesToGet: ['email'],
+        };
+        const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
+        cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
+            console.log(err, data);
+        });
     }
 };
 UserService = __decorate([

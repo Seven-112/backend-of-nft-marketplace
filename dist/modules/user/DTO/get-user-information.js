@@ -9,20 +9,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateUserDTO = void 0;
-const swagger_1 = require("@nestjs/swagger");
+exports.GetUserInformationDTO = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateUserDTO {
+class GetUserInformationDTO {
 }
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", String)
-], UpdateUserDTO.prototype, "walletAddress", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDTO.prototype, "email", void 0);
-exports.UpdateUserDTO = UpdateUserDTO;
-//# sourceMappingURL=update-user.dto.js.map
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], GetUserInformationDTO.prototype, "userIds", void 0);
+exports.GetUserInformationDTO = GetUserInformationDTO;
+//# sourceMappingURL=get-user-information.js.map

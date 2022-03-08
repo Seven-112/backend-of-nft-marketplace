@@ -14,7 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
+const get_user_information_1 = require("./DTO/get-user-information");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
@@ -53,6 +55,19 @@ let UserController = class UserController {
             data: user,
         };
     }
+    async test() {
+        this.userService.test();
+        return {};
+    }
+    async getUserInformation(body) {
+        const users = await this.userService.getUsers(body.userIds);
+        return {
+            code: 200,
+            data: {
+                users,
+            },
+        };
+    }
     async getByWalletAddress(walletAddress) {
         const user = await this.userService.getByWalletAddress(walletAddress);
         if (!user.count) {
@@ -85,6 +100,21 @@ __decorate([
     __metadata("design:paramtypes", [Object, update_user_dto_1.UpdateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
+__decorate([
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.Get)('/test'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "test", null);
+__decorate([
+    (0, common_1.Post)('/info'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [get_user_information_1.GetUserInformationDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserInformation", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
     __param(0, (0, common_1.Param)('walletAddress')),

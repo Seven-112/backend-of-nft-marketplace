@@ -8,7 +8,9 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
+import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { GetUserInformationDTO } from './DTO/get-user-information';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 
@@ -64,6 +66,26 @@ export class UserController {
       code: 200,
       message: '',
       data: user,
+    };
+  }
+
+  @Public()
+  @Get('/test')
+  async test() {
+    this.userService.test();
+    return {};
+  }
+
+  @Post('/info')
+  @UsePipes(new ValidationPipe())
+  async getUserInformation(@Body() body: GetUserInformationDTO) {
+    const users = await this.userService.getUsers(body.userIds);
+
+    return {
+      code: 200,
+      data: {
+        users,
+      },
     };
   }
 

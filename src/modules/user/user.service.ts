@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
+import * as aws from 'aws-sdk';
 
 @Injectable()
 export class UserService {
@@ -31,5 +32,23 @@ export class UserService {
 
   async updateUser(id: string, walletAddress: string) {
     return this.userModel.update(id, { walletAddress });
+  }
+
+  async getUsers(ids: string[]) {
+    return this.userModel.batchGet(ids);
+  }
+
+  async test() {
+    const params = {
+      UserPoolId: process.env.USER_POOL_ID,
+      AttributesToGet: ['email'],
+    };
+
+    const cognitoIdentityServiceProvider =
+      new aws.CognitoIdentityServiceProvider();
+
+    cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
+      console.log(err, data);
+    });
   }
 }
