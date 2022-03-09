@@ -18,31 +18,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('/create')
-  @UsePipes(new ValidationPipe())
-  async create(@Req() request: any) {
-    const isUserAvailable = await this.userService.isUserAvailable(
-      request.user.sub,
-    );
-
-    if (!isUserAvailable) {
-      return {
-        code: 401,
-        message: 'User not avaiable',
-      };
-    }
-
-    const user = await this.userService.createUser({
-      id: request.user.sub,
-    });
-
-    return {
-      code: 200,
-      message: '',
-      data: user,
-    };
-  }
-
   @Patch('/update')
   @UsePipes(new ValidationPipe())
   async update(@Req() request: any, @Body() body: UpdateUserDTO) {

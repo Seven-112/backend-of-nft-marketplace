@@ -9,14 +9,14 @@ export declare class NotificationController {
     constructor(notiService: NotificationService, eventService: EventsService);
     subscribeTopic(req: Request): Promise<void>;
     sse(id: string): Observable<unknown>;
-    getAllNoti(): Promise<{
+    getAllNoti(limit: number, lastKey: string, type: string): Promise<{
         code: number;
         message: string;
         data: {
             notifications: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
         };
     }>;
-    getNotiById(id: string): Promise<{
+    getNotiById(id: string, limit: number, lastKey: string, type: string): Promise<{
         code: number;
         message: string;
         data: {

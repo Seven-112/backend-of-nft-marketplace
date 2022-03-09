@@ -14,7 +14,7 @@ export declare class NotificationService {
     callGetApi(url: any): Promise<Observable<AxiosResponse<any, any>>>;
     createNotification(notification: Notification): Promise<import("nestjs-dynamoose").Document<Notification>>;
     deleteAllNotification(): Promise<import("nestjs-dynamoose").UnprocessedItems<string>>;
-    getAllNotification(): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Notification>>>;
+    getAllNotification(limit: number, lastKey?: string, type?: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Notification>>>;
     getNotificationById(id: string): Promise<import("nestjs-dynamoose").Document<Notification>>;
     getAllNotificationRedis(userId: string): Promise<any[]>;
 }

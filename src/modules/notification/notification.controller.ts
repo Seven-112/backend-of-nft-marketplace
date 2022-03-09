@@ -8,6 +8,7 @@ import {
   InternalServerErrorException,
   Param,
   Post,
+  Query,
   Req,
   Sse,
   UsePipes,
@@ -20,6 +21,7 @@ import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 import { nanoid } from 'nanoid';
+import { number } from 'joi';
 
 @Controller()
 export class NotificationController {
@@ -103,8 +105,13 @@ export class NotificationController {
 
   @Public()
   @Get('/noti')
-  async getAllNoti() {
-    const allNoti = await this.notiService.getAllNotification();
+  async getAllNoti(
+    @Query('limit') limit = 5,
+    @Query('lastKey') lastKey: string,
+    @Query('type') type: string,
+  ) {
+    const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
+
     return {
       code: 200,
       message: '',
@@ -116,8 +123,13 @@ export class NotificationController {
 
   @Public()
   @Get('/noti/:id')
-  async getNotiById(@Param('id') id: string) {
-    const allNoti = await this.notiService.getAllNotification();
+  async getNotiById(
+    @Param('id') id: string,
+    @Query('limit') limit = 5,
+    @Query('lastKey') lastKey: string,
+    @Query('type') type: string,
+  ) {
+    const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
     return {
       code: 200,
       message: '',

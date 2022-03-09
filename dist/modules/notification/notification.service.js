@@ -43,8 +43,30 @@ let NotificationService = class NotificationService {
         const ids = items.map((item) => item.messageId);
         return this.notificationModel.batchDelete(ids);
     }
-    async getAllNotification() {
-        return this.notificationModel.scan().exec();
+    async getAllNotification(limit, lastKey, type) {
+        if (type) {
+            if (lastKey) {
+                return this.notificationModel
+                    .scan('type')
+                    .eq(type)
+                    .startAt({
+                    messageId: lastKey,
+                })
+                    .limit(limit)
+                    .exec();
+            }
+            return this.notificationModel.scan('type').eq(type).limit(limit).exec();
+        }
+        if (lastKey) {
+            return this.notificationModel
+                .scan()
+                .startAt({
+                messageId: lastKey,
+            })
+                .limit(limit)
+                .exec();
+        }
+        return this.notificationModel.scan().limit(limit).exec();
     }
     async getNotificationById(id) {
         return this.notificationModel.get(id);

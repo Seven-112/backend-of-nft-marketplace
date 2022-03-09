@@ -23,23 +23,6 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async create(request) {
-        const isUserAvailable = await this.userService.isUserAvailable(request.user.sub);
-        if (!isUserAvailable) {
-            return {
-                code: 401,
-                message: 'User not avaiable',
-            };
-        }
-        const user = await this.userService.createUser({
-            id: request.user.sub,
-        });
-        return {
-            code: 200,
-            message: '',
-            data: user,
-        };
-    }
     async update(request, body) {
         const isWalletAvailable = await this.userService.isWalletAvailable(body.walletAddress);
         if (!isWalletAvailable) {
@@ -83,14 +66,6 @@ let UserController = class UserController {
         };
     }
 };
-__decorate([
-    (0, common_1.Post)('/create'),
-    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)('/update'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

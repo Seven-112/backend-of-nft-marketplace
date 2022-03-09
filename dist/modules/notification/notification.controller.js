@@ -72,8 +72,8 @@ let NotificationController = class NotificationController {
     sse(id) {
         return this.eventService.subscribe(`noti.created${id}`);
     }
-    async getAllNoti() {
-        const allNoti = await this.notiService.getAllNotification();
+    async getAllNoti(limit = 5, lastKey, type) {
+        const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
         return {
             code: 200,
             message: '',
@@ -82,8 +82,8 @@ let NotificationController = class NotificationController {
             },
         };
     }
-    async getNotiById(id) {
-        const allNoti = await this.notiService.getAllNotification();
+    async getNotiById(id, limit = 5, lastKey, type) {
+        const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
         return {
             code: 200,
             message: '',
@@ -127,16 +127,22 @@ __decorate([
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Get)('/noti'),
+    __param(0, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Query)('lastKey')),
+    __param(2, (0, common_1.Query)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getAllNoti", null);
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Get)('/noti/:id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('lastKey')),
+    __param(3, (0, common_1.Query)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object, String, String]),
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getNotiById", null);
 __decorate([
