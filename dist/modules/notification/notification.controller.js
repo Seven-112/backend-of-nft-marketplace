@@ -110,7 +110,11 @@ let NotificationController = class NotificationController {
         }
     }
     async markRead(body) {
-        return this.notiService.markRead(body.messageIds);
+        return {
+            code: 200,
+            message: '',
+            data: this.notiService.markRead(body.messageIds),
+        };
     }
 };
 __decorate([

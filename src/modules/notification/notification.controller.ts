@@ -204,6 +204,10 @@ export class NotificationController {
   @Post('/mark-read')
   @UsePipes(new ValidationPipe())
   async markRead(@Body() body: MarkReadDTO) {
-    return this.notiService.markRead(body.messageIds);
+    return {
+      code: 200,
+      message: '',
+      data: this.notiService.markRead(body.messageIds),
+    };
   }
 }

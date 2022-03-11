@@ -20,13 +20,17 @@ export declare class NotificationController {
         code: number;
         msg: string;
     }>;
-    markRead(body: MarkReadDTO): Promise<({
-        populate(): Promise<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
-        populate(callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>, import("aws-sdk").AWSError>): void;
-        populate(settings: import("dynamoose/dist/Populate").PopulateSettings): Promise<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
-        populate(settings: import("dynamoose/dist/Populate").PopulateSettings, callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>, import("aws-sdk").AWSError>): void;
-        serialize(nameOrOptions: string | import("nestjs-dynamoose").SerializerOptions): import("nestjs-dynamoose").ObjectType;
-        toJSON(): import("nestjs-dynamoose").ObjectType;
-        original(): import("nestjs-dynamoose").ObjectType;
-    } & import("./notification.interface").Notification)[]>;
+    markRead(body: MarkReadDTO): Promise<{
+        code: number;
+        message: string;
+        data: Promise<({
+            populate(): Promise<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
+            populate(callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>, import("aws-sdk").AWSError>): void;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings): Promise<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>>;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings, callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./notification.interface").Notification>, import("aws-sdk").AWSError>): void;
+            serialize(nameOrOptions: string | import("nestjs-dynamoose").SerializerOptions): import("nestjs-dynamoose").ObjectType;
+            toJSON(): import("nestjs-dynamoose").ObjectType;
+            original(): import("nestjs-dynamoose").ObjectType;
+        } & import("./notification.interface").Notification)[]>;
+    }>;
 }
