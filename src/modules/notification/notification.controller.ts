@@ -1,4 +1,4 @@
-import { CreateTopicCommand, PublishCommand } from '@aws-sdk/client-sns';
+import { PublishCommand } from '@aws-sdk/client-sns';
 import {
   BadRequestException,
   Body,
@@ -14,16 +14,14 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Observable, of } from 'rxjs';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 import { nanoid } from 'nanoid';
-import { number } from 'joi';
 
-@Controller()
+@Controller('noti')
 export class NotificationController {
   constructor(
     private readonly notiService: NotificationService,
@@ -31,7 +29,7 @@ export class NotificationController {
   ) {}
 
   @Public()
-  @Post('/noti')
+  @Post('/')
   async subscribeTopic(@Req() req: Request) {
     try {
       const payloadStr = req.body;
@@ -97,20 +95,80 @@ export class NotificationController {
   }
 
   @Public()
-  @Sse('/noti/sse/:id')
+  @Sse('/sse/:id')
   sse(@Param('id') id: string) {
-    // console.log(id)
+    console.log(id);
     return this.eventService.subscribe(`noti.created${id}`);
   }
 
-  @Public()
-  @Get('/noti')
-  async getAllNoti(
+  // @Public()
+  // @Get('/noti')
+  // async getAllNoti(
+  //   @Query('limit') limit = 5,
+  //   @Query('lastKey') lastKey: string,
+  //   @Query('type') type: string,
+  // ) {
+  //   const allNoti = await this.notiService.getAllNotification(
+  //     limit,
+  //     lastKey,
+  //     type,
+  //   );
+
+  //   return {
+  //     code: 200,
+  //     message: '',
+  //     data: {
+  //       notifications: allNoti,
+  //     },
+  //   };
+  // }
+
+  // @Public()
+  // @Get('/noti/:id')
+  // async getNotiById(
+  //   @Param('id') id: string,
+  //   @Query('limit') limit = 5,
+  //   @Query('lastKey') lastKey: string,
+  //   @Query('type') type: string,
+  // ) {
+  //   const allNoti = await this.notiService.getAllNotification(
+  //     limit,
+  //     lastKey,
+  //     type,
+  //   );
+  //   return {
+  //     code: 200,
+  //     message: '',
+  //     data: {
+  //       notifications: allNoti.filter((noti) => noti.receiver === id),
+  //     },
+  //   };
+  // }
+
+  @Get('/:type')
+  async getNotiByReceiver(
+    @Req() req: Request,
+    @Param('type') type: string,
     @Query('limit') limit = 5,
-    @Query('lastKey') lastKey: string,
-    @Query('type') type: string,
   ) {
-    const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
+    console.log(type);
+    const decryptedUserInfo = req.user as any;
+    // console.log(decryptedUserInfo);
+    const allNoti = [];
+    const formattedType = JSON.parse(type);
+
+    // console.log(formattedType);
+
+    if (formattedType.length > 0) {
+      for (let i = 0; i < formattedType.length; i++) {
+        const notiPerType = await this.notiService.getNotificationByReceiver(
+          decryptedUserInfo.sub,
+          formattedType[i],
+        );
+
+        allNoti.push(...notiPerType);
+      }
+    }
 
     return {
       code: 200,
@@ -121,25 +179,7 @@ export class NotificationController {
     };
   }
 
-  @Public()
-  @Get('/noti/:id')
-  async getNotiById(
-    @Param('id') id: string,
-    @Query('limit') limit = 5,
-    @Query('lastKey') lastKey: string,
-    @Query('type') type: string,
-  ) {
-    const allNoti = await this.notiService.getAllNotification(limit, lastKey, type);
-    return {
-      code: 200,
-      message: '',
-      data: {
-        notifications: allNoti.filter((noti) => noti.receiver === id),
-      },
-    };
-  }
-
-  @Post('/noti/user')
+  @Post('/user')
   @UsePipes(new ValidationPipe())
   async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
     try {

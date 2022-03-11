@@ -72,8 +72,17 @@ export class NotificationService {
     return this.notificationModel.scan().limit(limit).exec();
   }
 
-  async getNotificationById(id: string) {
-    return this.notificationModel.get(id);
+  async getNotificationByReceiver(receiverId: string, type?: string) {
+    if (type) {
+      return this.notificationModel
+        .scan('receiver')
+        .eq(receiverId)
+        .where('type')
+        .eq(type)
+        .exec();
+    }
+
+    return this.notificationModel.scan('receiver').eq(receiverId).exec();
   }
 
   async getAllNotificationRedis(userId: string) {

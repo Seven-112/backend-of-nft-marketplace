@@ -68,8 +68,16 @@ let NotificationService = class NotificationService {
         }
         return this.notificationModel.scan().limit(limit).exec();
     }
-    async getNotificationById(id) {
-        return this.notificationModel.get(id);
+    async getNotificationByReceiver(receiverId, type) {
+        if (type) {
+            return this.notificationModel
+                .scan('receiver')
+                .eq(receiverId)
+                .where('type')
+                .eq(type)
+                .exec();
+        }
+        return this.notificationModel.scan('receiver').eq(receiverId).exec();
     }
     async getAllNotificationRedis(userId) {
         const list = await this.redisService.getAll(redis_interface_1.EListType.notification);
