@@ -21,6 +21,7 @@ const notifyGroup_dto_1 = require("./DTO/notifyGroup.dto");
 const events_service_1 = require("./events.service");
 const notification_service_1 = require("./notification.service");
 const nanoid_1 = require("nanoid");
+const markRead_dto_1 = require("./DTO/markRead.dto");
 let NotificationController = class NotificationController {
     constructor(notiService, eventService) {
         this.notiService = notiService;
@@ -54,6 +55,7 @@ let NotificationController = class NotificationController {
                         timeStamp: payload.Timestamp,
                         receiver: id,
                         sender,
+                        isRead: false,
                     };
                     this.notiService.createNotification(noti).then(() => {
                         this.eventService.emit(`noti.created${id}`, Object.assign({ code: 200 }, noti));
@@ -107,6 +109,9 @@ let NotificationController = class NotificationController {
             throw new common_1.BadRequestException(error.message);
         }
     }
+    async markRead(body) {
+        return this.notiService.markRead(body.messageIds);
+    }
 };
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
@@ -141,6 +146,14 @@ __decorate([
     __metadata("design:paramtypes", [notifyGroup_dto_1.NotifyGroupDTO]),
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "sendNotiToUsers", null);
+__decorate([
+    (0, common_1.Post)('/mark-read'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [markRead_dto_1.MarkReadDTO]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "markRead", null);
 NotificationController = __decorate([
     (0, common_1.Controller)('noti'),
     __metadata("design:paramtypes", [notification_service_1.NotificationService,

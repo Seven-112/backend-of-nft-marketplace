@@ -20,4 +20,7 @@ export const NotificationSchema = new Schema({
   sender: {
     type: String,
   },
+  isRead: {
+    type: Boolean,
+  },
 });

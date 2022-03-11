@@ -90,4 +90,12 @@ export class NotificationService {
 
     return list.filter((item) => item.userId === userId);
   }
+
+  async markRead(messageIds: string[]) {
+    return Promise.all(
+      messageIds.map((id) =>
+        this.notificationModel.update(id, { isRead: true }),
+      ),
+    );
+  }
 }

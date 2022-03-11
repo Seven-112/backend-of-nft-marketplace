@@ -83,6 +83,9 @@ let NotificationService = class NotificationService {
         const list = await this.redisService.getAll(redis_interface_1.EListType.notification);
         return list.filter((item) => item.userId === userId);
     }
+    async markRead(messageIds) {
+        return Promise.all(messageIds.map((id) => this.notificationModel.update(id, { isRead: true })));
+    }
 };
 NotificationService = __decorate([
     (0, common_1.Injectable)(),

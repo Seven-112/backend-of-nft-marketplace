@@ -22,5 +22,8 @@ exports.NotificationSchema = new dynamoose_1.Schema({
     sender: {
         type: String,
     },
+    isRead: {
+        type: Boolean,
+    },
 });
 //# sourceMappingURL=notification.schema.js.map

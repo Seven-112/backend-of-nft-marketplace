@@ -20,6 +20,7 @@ import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 import { nanoid } from 'nanoid';
+import { MarkReadDTO } from './DTO/markRead.dto';
 
 @Controller('noti')
 export class NotificationController {
@@ -61,6 +62,7 @@ export class NotificationController {
             timeStamp: payload.Timestamp,
             receiver: id,
             sender,
+            isRead: false,
           };
 
           // console.log(noti);
@@ -197,5 +199,11 @@ export class NotificationController {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  @Post('/mark-read')
+  @UsePipes(new ValidationPipe())
+  async markRead(@Body() body: MarkReadDTO) {
+    return this.notiService.markRead(body.messageIds);
   }
 }

@@ -5,4 +5,5 @@ export interface Notification {
     timeStamp: string;
     receiver: string;
     sender: string;
+    isRead: boolean;
 }
