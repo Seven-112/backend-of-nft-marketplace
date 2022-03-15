@@ -18,30 +18,37 @@ const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const presign_url_dto_1 = require("./DTO/presign-url-dto");
 const AWS = require("aws-sdk");
 const nanoid_1 = require("nanoid");
+const validation_pipe_1 = require("../../pipes/validation.pipe");
 let AWSController = class AWSController {
-    async getPresignURL(body) {
+    async getPresign(path) {
         const s3 = new AWS.S3();
         return new Promise((resolve, reject) => {
             s3.getSignedUrl('putObject', {
-                Bucket: 'nft-metaversus',
-                Key: `chat/${(0, nanoid_1.nanoid)() + '_' + body.fileName}`,
+                Bucket: process.env.AWS_BUCKET,
+                Key: path,
                 Expires: 15 * 60,
             }, (error, url) => {
                 if (error) {
                     reject(error);
                 }
-                resolve({
-                    code: 200,
-                    message: '',
-                    data: url,
-                });
+                resolve(url);
             });
         });
+    }
+    async getPresignURL(body) {
+        const id = (0, nanoid_1.nanoid)();
+        const path = `${body.folder}/${id + '_' + body.fileName}`;
+        const url = await this.getPresign(path);
+        return {
+            urlUpload: url,
+            urlEndpoint: `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${path}`,
+        };
     }
 };
 __decorate([
     (0, common_1.Post)('/presignURL'),
     (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [presign_url_dto_1.PresignURLDTO]),
