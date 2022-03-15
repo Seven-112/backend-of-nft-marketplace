@@ -40,8 +40,12 @@ let AWSController = class AWSController {
         const path = `${body.folder}/${id + '_' + body.fileName}`;
         const url = await this.getPresign(path);
         return {
-            urlUpload: url,
-            urlEndpoint: `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${path}`,
+            code: 200,
+            message: '',
+            data: {
+                urlUpload: url,
+                urlEndpoint: `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${path}`,
+            },
         };
     }
 };
