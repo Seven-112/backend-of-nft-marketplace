@@ -20,6 +20,7 @@ import { NotificationModule } from './notification/notification.module';
 import { NotificationController } from './notification/notification.controller';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { ChatModule } from './chat/chat.module';
+import { AWSModule } from './aws/aws.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -42,6 +43,7 @@ import { ChatModule } from './chat/chat.module';
     NFTModule,
     NotificationModule,
     ChatModule,
+    AWSModule,
     RedisModule.forRoot({
       config: {
         port: +process.env.REDIS_PORT,

@@ -51,6 +51,13 @@ let UserController = class UserController {
             },
         };
     }
+    async getUserById(id) {
+        const user = await this.userService.getUserById(id);
+        return {
+            code: 200,
+            data: user,
+        };
+    }
     async getByWalletAddress(walletAddress) {
         const user = await this.userService.getByWalletAddress(walletAddress);
         if (!user.count) {
@@ -90,6 +97,13 @@ __decorate([
     __metadata("design:paramtypes", [get_user_information_1.GetUserInformationDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserInformation", null);
+__decorate([
+    (0, common_1.Get)('/id/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserById", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
     __param(0, (0, common_1.Param)('walletAddress')),

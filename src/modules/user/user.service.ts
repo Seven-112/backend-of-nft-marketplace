@@ -22,6 +22,10 @@ export class UserService {
     return !user;
   }
 
+  async getUserById(id: string) {
+    return this.userModel.get(id);
+  }
+
   async createUser(data: User) {
     return this.userModel.create(data);
   }

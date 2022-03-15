@@ -28,6 +28,9 @@ let UserService = class UserService {
         const user = await this.userModel.get(id);
         return !user;
     }
+    async getUserById(id) {
+        return this.userModel.get(id);
+    }
     async createUser(data) {
         return this.userModel.create(data);
     }

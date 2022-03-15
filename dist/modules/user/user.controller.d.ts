@@ -20,6 +20,10 @@ export declare class UserController {
             users: import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
         };
     }>;
+    getUserById(id: string): Promise<{
+        code: number;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
     getByWalletAddress(walletAddress: string): Promise<{
         code: number;
         message: string;

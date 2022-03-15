@@ -64,6 +64,16 @@ export class UserController {
     };
   }
 
+  @Get('/id/:id')
+  async getUserById(@Param('id') id: string) {
+    const user = await this.userService.getUserById(id);
+
+    return {
+      code: 200,
+      data: user,
+    };
+  }
+
   @Get('/:walletAddress')
   async getByWalletAddress(@Param('walletAddress') walletAddress: string) {
     const user = await this.userService.getByWalletAddress(walletAddress);
