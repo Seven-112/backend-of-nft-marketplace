@@ -8,6 +8,7 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
+import { UserModel } from 'src/common/model';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
@@ -36,6 +37,8 @@ export class UserController {
     const user = await this.userService.updateUser(
       request.user.sub,
       body.walletAddress,
+      body.email,
+      body.name,
     );
 
     return {

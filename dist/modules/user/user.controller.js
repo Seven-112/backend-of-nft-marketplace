@@ -32,7 +32,7 @@ let UserController = class UserController {
                 message: 'Wallet not avaiable',
             };
         }
-        const user = await this.userService.updateUser(request.user.sub, body.walletAddress);
+        const user = await this.userService.updateUser(request.user.sub, body.walletAddress, body.email, body.name);
         return {
             code: 200,
             message: '',
