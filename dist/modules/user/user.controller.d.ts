@@ -1,4 +1,5 @@
 import { GetUserInformationDTO } from './DTO/get-user-information';
+import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 export declare class UserController {
@@ -23,6 +24,11 @@ export declare class UserController {
     getUserById(id: string): Promise<{
         code: number;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
+    search(body: SearchUserDTO): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
     }>;
     getByWalletAddress(walletAddress: string): Promise<{
         code: number;

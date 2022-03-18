@@ -53,6 +53,9 @@ let UserService = class UserService {
             console.log(err, data);
         });
     }
+    async searchUsers(address) {
+        return this.userModel.scan('walletAddress').contains(address).exec();
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

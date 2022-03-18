@@ -12,4 +12,8 @@ export const UserSchema = new Schema({
   email: {
     type: String,
   },
+  name: {
+    type: String,
+    required: false,
+  },
 });

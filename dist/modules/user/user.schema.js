@@ -14,5 +14,9 @@ exports.UserSchema = new dynamoose_1.Schema({
     email: {
         type: String,
     },
+    name: {
+        type: String,
+        required: false,
+    },
 });
 //# sourceMappingURL=user.schema.js.map

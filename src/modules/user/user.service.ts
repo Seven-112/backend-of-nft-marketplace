@@ -55,4 +55,8 @@ export class UserService {
       console.log(err, data);
     });
   }
+
+  async searchUsers(address: string) {
+    return this.userModel.scan('walletAddress').contains(address).exec();
+  }
 }

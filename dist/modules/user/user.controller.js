@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const get_user_information_1 = require("./DTO/get-user-information");
+const search_user_dto_1 = require("./DTO/search-user.dto");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
@@ -56,6 +57,21 @@ let UserController = class UserController {
         return {
             code: 200,
             data: user,
+        };
+    }
+    async search(body) {
+        const users = await this.userService.searchUsers(body.address);
+        if (!users.count) {
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        }
+        return {
+            code: 200,
+            message: '',
+            data: users,
         };
     }
     async getByWalletAddress(walletAddress) {
@@ -104,6 +120,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserById", null);
+__decorate([
+    (0, common_1.Post)('/search'),
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [search_user_dto_1.SearchUserDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
     __param(0, (0, common_1.Param)('walletAddress')),

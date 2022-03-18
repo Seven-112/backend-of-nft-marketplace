@@ -11,6 +11,7 @@ import {
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
+import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 
@@ -71,6 +72,27 @@ export class UserController {
     return {
       code: 200,
       data: user,
+    };
+  }
+
+  @Post('/search')
+  @Public()
+  @UsePipes(new ValidationPipe())
+  async search(@Body() body: SearchUserDTO) {
+    const users = await this.userService.searchUsers(body.address);
+
+    if (!users.count) {
+      return {
+        code: 404,
+        message: 'User not found',
+        data: null,
+      };
+    }
+
+    return {
+      code: 200,
+      message: '',
+      data: users,
     };
   }
 
