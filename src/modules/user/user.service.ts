@@ -34,13 +34,8 @@ export class UserService {
     return this.userModel.scan('walletAddress').eq(address).exec();
   }
 
-  async updateUser(
-    id: string,
-    walletAddress: string,
-    email: string,
-    name?: string,
-  ) {
-    return this.userModel.update(id, { walletAddress, email, name });
+  async updateUser(user: User) {
+    return this.userModel.update(user);
   }
 
   async getUsers(ids: string[]) {

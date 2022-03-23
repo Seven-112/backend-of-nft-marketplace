@@ -9,20 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateUserDTO = void 0;
-const swagger_1 = require("@nestjs/swagger");
+exports.UpdateProfileDTO = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateUserDTO {
+class UpdateProfileDTO {
 }
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], UpdateUserDTO.prototype, "walletAddress", void 0);
+], UpdateProfileDTO.prototype, "username", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateUserDTO.prototype, "email", void 0);
-exports.UpdateUserDTO = UpdateUserDTO;
-//# sourceMappingURL=update-user.dto.js.map
+], UpdateProfileDTO.prototype, "job", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "personalWebsite", void 0);
+__decorate([
+    (0, class_validator_1.IsPhoneNumber)('VN'),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "timezone", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "avatar", void 0);
+exports.UpdateProfileDTO = UpdateProfileDTO;
+//# sourceMappingURL=update-profile.js.map

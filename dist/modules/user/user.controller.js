@@ -14,15 +14,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
+const Document_1 = require("dynamoose/dist/Document");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const get_user_information_1 = require("./DTO/get-user-information");
 const search_user_dto_1 = require("./DTO/search-user.dto");
+const update_profile_1 = require("./DTO/update-profile");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
+    }
+    async updateProfile(request, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user) {
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        }
+        Object.assign(user, body);
+        const updatedUser = await this.userService.updateUser(user);
+        return {
+            code: 200,
+            message: 'Updated',
+            data: updatedUser,
+        };
     }
     async update(request, body) {
         const isWalletAvailable = await this.userService.isWalletAvailable(body.walletAddress);
@@ -32,11 +51,21 @@ let UserController = class UserController {
                 message: 'Wallet not avaiable',
             };
         }
-        const user = await this.userService.updateUser(request.user.sub, body.walletAddress, body.email, body.name);
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user) {
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        }
+        user.walletAddress = body.walletAddress;
+        user.email = body.email;
+        const updatedUser = await this.userService.updateUser(user);
         return {
             code: 200,
             message: '',
-            data: user,
+            data: updatedUser,
         };
     }
     async test() {
@@ -89,6 +118,16 @@ let UserController = class UserController {
         };
     }
 };
+__decorate([
+    (0, common_1.Patch)('/profile'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Document_1.AnyDocument,
+        update_profile_1.UpdateProfileDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateProfile", null);
 __decorate([
     (0, common_1.Patch)('/update'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

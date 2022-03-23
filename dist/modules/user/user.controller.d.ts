@@ -1,10 +1,17 @@
+import { AnyDocument } from 'dynamoose/dist/Document';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
+import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
+    updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
     update(request: any, body: UpdateUserDTO): Promise<{
         code: number;
         message: string;

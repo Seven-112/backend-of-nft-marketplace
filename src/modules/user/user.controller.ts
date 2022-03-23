@@ -8,17 +8,46 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
+import { AnyDocument } from 'dynamoose/dist/Document';
 import { UserModel } from 'src/common/model';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
+import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Patch('/profile')
+  @UsePipes(new ValidationPipe())
+  async updateProfile(
+    @Req() request: AnyDocument,
+    @Body() body: UpdateProfileDTO,
+  ) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if (!user) {
+      return {
+        code: 404,
+        message: 'User not found',
+        data: null,
+      };
+    }
+
+    Object.assign(user, body);
+
+    const updatedUser = await this.userService.updateUser(user);
+
+    return {
+      code: 200,
+      message: 'Updated',
+      data: updatedUser,
+    };
+  }
 
   @Patch('/update')
   @UsePipes(new ValidationPipe())
@@ -34,17 +63,25 @@ export class UserController {
       };
     }
 
-    const user = await this.userService.updateUser(
-      request.user.sub,
-      body.walletAddress,
-      body.email,
-      body.name,
-    );
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if (!user) {
+      return {
+        code: 404,
+        message: 'User not found',
+        data: null,
+      };
+    }
+
+    user.walletAddress = body.walletAddress;
+    user.email = body.email;
+
+    const updatedUser = await this.userService.updateUser(user);
 
     return {
       code: 200,
       message: '',
-      data: user,
+      data: updatedUser,
     };
   }
 
