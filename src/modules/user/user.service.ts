@@ -42,6 +42,10 @@ export class UserService {
     return this.userModel.update(user);
   }
 
+  async updateWalletAddress(id: string, email: string, walletAddress: string) {
+    return this.userModel.update(id, { walletAddress, email });
+  }
+
   async getUsers(ids: string[]) {
     return this.userModel.batchGet(ids);
   }

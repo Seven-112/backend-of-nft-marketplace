@@ -17,6 +17,7 @@ import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
+import { User } from './user.interface';
 
 @Controller('user')
 export class UserController {
@@ -39,24 +40,27 @@ export class UserController {
     @Req() request: AnyDocument,
     @Body() body: UpdateProfileDTO,
   ) {
-    const isValidUsername = await this.userService.getUserByUsername(
-      body.username,
-    );
-
-    if (isValidUsername.count) {
-      return {
-        code: 409,
-        message: 'Username is already taken',
-        data: null,
-      };
-    }
-
     const user = await this.userService.getUserById(request.user.sub);
 
     if (!user) {
       return {
         code: 404,
         message: 'User not found',
+        data: null,
+      };
+    }
+
+    const isValidUsername = await this.userService.getUserByUsername(
+      body.username,
+    );
+
+    if (
+      isValidUsername.count &&
+      isValidUsername[0].username !== user.username
+    ) {
+      return {
+        code: 409,
+        message: 'Username is already taken',
         data: null,
       };
     }
@@ -86,20 +90,11 @@ export class UserController {
       };
     }
 
-    const user = await this.userService.getUserById(request.user.sub);
-
-    if (!user) {
-      return {
-        code: 404,
-        message: 'User not found',
-        data: null,
-      };
-    }
-
-    user.walletAddress = body.walletAddress;
-    user.email = body.email;
-
-    const updatedUser = await this.userService.updateUser(user);
+    const updatedUser = await this.userService.updateWalletAddress(
+      request.user.sub,
+      body.email,
+      body.walletAddress,
+    );
 
     return {
       code: 200,

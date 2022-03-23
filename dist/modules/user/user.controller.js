@@ -35,19 +35,20 @@ let UserController = class UserController {
         };
     }
     async updateProfile(request, body) {
-        const isValidUsername = await this.userService.getUserByUsername(body.username);
-        if (isValidUsername.count) {
-            return {
-                code: 409,
-                message: 'Username is already taken',
-                data: null,
-            };
-        }
         const user = await this.userService.getUserById(request.user.sub);
         if (!user) {
             return {
                 code: 404,
                 message: 'User not found',
+                data: null,
+            };
+        }
+        const isValidUsername = await this.userService.getUserByUsername(body.username);
+        if (isValidUsername.count &&
+            isValidUsername[0].username !== user.username) {
+            return {
+                code: 409,
+                message: 'Username is already taken',
                 data: null,
             };
         }
@@ -67,17 +68,7 @@ let UserController = class UserController {
                 message: 'Wallet not avaiable',
             };
         }
-        const user = await this.userService.getUserById(request.user.sub);
-        if (!user) {
-            return {
-                code: 404,
-                message: 'User not found',
-                data: null,
-            };
-        }
-        user.walletAddress = body.walletAddress;
-        user.email = body.email;
-        const updatedUser = await this.userService.updateUser(user);
+        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, body.email, body.walletAddress);
         return {
             code: 200,
             message: '',

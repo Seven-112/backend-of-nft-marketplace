@@ -43,6 +43,9 @@ let UserService = class UserService {
     async updateUser(user) {
         return this.userModel.update(user);
     }
+    async updateWalletAddress(id, email, walletAddress) {
+        return this.userModel.update(id, { walletAddress, email });
+    }
     async getUsers(ids) {
         return this.userModel.batchGet(ids);
     }
