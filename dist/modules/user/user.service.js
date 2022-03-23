@@ -34,6 +34,9 @@ let UserService = class UserService {
     async createUser(data) {
         return this.userModel.create(data);
     }
+    async getUserByUsername(username) {
+        return this.userModel.scan('username').eq(username).exec();
+    }
     async getByWalletAddress(address) {
         return this.userModel.scan('walletAddress').eq(address).exec();
     }

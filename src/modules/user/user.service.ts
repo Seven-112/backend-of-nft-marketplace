@@ -30,6 +30,10 @@ export class UserService {
     return this.userModel.create(data);
   }
 
+  async getUserByUsername(username: string) {
+    return this.userModel.scan('username').eq(username).exec();
+  }
+
   async getByWalletAddress(address: string) {
     return this.userModel.scan('walletAddress').eq(address).exec();
   }

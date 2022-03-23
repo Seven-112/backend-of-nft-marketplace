@@ -28,6 +28,18 @@ export class UserController {
     @Req() request: AnyDocument,
     @Body() body: UpdateProfileDTO,
   ) {
+    const isValidUsername = await this.userService.getUserByUsername(
+      body.username,
+    );
+
+    if (isValidUsername.count) {
+      return {
+        code: 409,
+        message: 'Username is already taken',
+        data: null,
+      };
+    }
+
     const user = await this.userService.getUserById(request.user.sub);
 
     if (!user) {

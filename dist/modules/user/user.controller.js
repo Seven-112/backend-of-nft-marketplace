@@ -27,6 +27,14 @@ let UserController = class UserController {
         this.userService = userService;
     }
     async updateProfile(request, body) {
+        const isValidUsername = await this.userService.getUserByUsername(body.username);
+        if (isValidUsername.count) {
+            return {
+                code: 409,
+                message: 'Username is already taken',
+                data: null,
+            };
+        }
         const user = await this.userService.getUserById(request.user.sub);
         if (!user) {
             return {
