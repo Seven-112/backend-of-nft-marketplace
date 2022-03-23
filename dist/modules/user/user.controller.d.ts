@@ -7,6 +7,11 @@ import { UserService } from './user.service';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
+    getUserProfile(request: any): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
         message: string;

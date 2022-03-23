@@ -26,6 +26,14 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
+    async getUserProfile(request) {
+        const user = await this.userService.getUserById(request.user.sub);
+        return {
+            code: 200,
+            message: '',
+            data: user,
+        };
+    }
     async updateProfile(request, body) {
         const isValidUsername = await this.userService.getUserByUsername(body.username);
         if (isValidUsername.count) {
@@ -126,6 +134,13 @@ let UserController = class UserController {
         };
     }
 };
+__decorate([
+    (0, common_1.Get)('/profile'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserProfile", null);
 __decorate([
     (0, common_1.Patch)('/profile'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

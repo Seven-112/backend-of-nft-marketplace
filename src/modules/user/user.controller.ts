@@ -22,6 +22,17 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get('/profile')
+  async getUserProfile(@Req() request: any) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    return {
+      code: 200,
+      message: '',
+      data: user,
+    };
+  }
+
   @Patch('/profile')
   @UsePipes(new ValidationPipe())
   async updateProfile(
