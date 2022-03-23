@@ -15,27 +15,33 @@ class UpdateProfileDTO {
 }
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "username", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "job", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "personalWebsite", void 0);
 __decorate([
     (0, class_validator_1.IsPhoneNumber)('VN'),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "phoneNumber", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "timezone", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "avatar", void 0);
 exports.UpdateProfileDTO = UpdateProfileDTO;

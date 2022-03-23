@@ -1,22 +1,28 @@
-import { IsString, IsPhoneNumber } from 'class-validator';
+import { IsString, IsPhoneNumber, IsOptional } from 'class-validator';
 
 export class UpdateProfileDTO {
   @IsString()
+  @IsOptional()
   username?: string;
 
   @IsString()
+  @IsOptional()
   job?: string;
 
   @IsString()
+  @IsOptional()
   personalWebsite?: string;
 
   @IsPhoneNumber('VN')
   @IsString()
-  phoneNumber: string;
+  @IsOptional()
+  phoneNumber?: string;
 
   @IsString()
-  timezone: string;
+  @IsOptional()
+  timezone?: string;
 
   @IsString()
-  avatar: string;
+  @IsOptional()
+  avatar?: string;
 }
