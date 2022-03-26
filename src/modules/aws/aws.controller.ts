@@ -5,6 +5,7 @@ import * as AWS from 'aws-sdk';
 import { nanoid } from 'nanoid';
 import { CompleteUploadDTO } from './DTO/complete-upload-dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { TranslateBodyDTO } from './DTO/translate.dto';
 
 @Controller('aws')
 export class AWSController {
@@ -45,5 +46,56 @@ export class AWSController {
         urlEndpoint: `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${path}`,
       },
     };
+  }
+
+  @Post('/translate')
+  @Public()
+  @UsePipes(new ValidationPipe())
+  async getTranslatedData(@Body() body: TranslateBodyDTO) {
+    const translate = new AWS.Translate();
+
+    const handleTranslate = (text: string) => {
+      const params: AWS.Translate.TranslateTextRequest = {
+        SourceLanguageCode: 'auto',
+        TargetLanguageCode: body.targetLanguageCode,
+        Text: text,
+      };
+
+      return translate
+        .translateText(params, (err, data) => {
+          if (err) return err;
+
+          return data;
+        })
+        .promise();
+    };
+
+    if (typeof body.translateData === 'string') {
+      try {
+        const response = await handleTranslate(body.translateData);
+
+        return { code: 200, data: response.TranslatedText };
+      } catch (error) {
+        return error;
+      }
+    } else if (Object.keys(body.translateData).length > 0) {
+      try {
+        const translatedData = {};
+
+        for (let key in body.translateData) {
+          const response = await handleTranslate(body.translateData[key]);
+
+          if (response.$response.error) {
+            throw response.$response.error;
+          } else {
+            translatedData[key] = response.TranslatedText;
+          }
+        }
+
+        return { code: 200, data: translatedData };
+      } catch (error) {
+        return error;
+      }
+    }
   }
 }

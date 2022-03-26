@@ -19,6 +19,7 @@ const presign_url_dto_1 = require("./DTO/presign-url-dto");
 const AWS = require("aws-sdk");
 const nanoid_1 = require("nanoid");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
+const translate_dto_1 = require("./DTO/translate.dto");
 let AWSController = class AWSController {
     async getPresign(path) {
         const s3 = new AWS.S3();
@@ -48,6 +49,50 @@ let AWSController = class AWSController {
             },
         };
     }
+    async getTranslatedData(body) {
+        const translate = new AWS.Translate();
+        const handleTranslate = (text) => {
+            const params = {
+                SourceLanguageCode: 'auto',
+                TargetLanguageCode: body.targetLanguageCode,
+                Text: text,
+            };
+            return translate
+                .translateText(params, (err, data) => {
+                if (err)
+                    return err;
+                return data;
+            })
+                .promise();
+        };
+        if (typeof body.translateData === 'string') {
+            try {
+                const response = await handleTranslate(body.translateData);
+                return { code: 200, data: response.TranslatedText };
+            }
+            catch (error) {
+                return error;
+            }
+        }
+        else if (Object.keys(body.translateData).length > 0) {
+            try {
+                const translatedData = {};
+                for (let key in body.translateData) {
+                    const response = await handleTranslate(body.translateData[key]);
+                    if (response.$response.error) {
+                        throw response.$response.error;
+                    }
+                    else {
+                        translatedData[key] = response.TranslatedText;
+                    }
+                }
+                return { code: 200, data: translatedData };
+            }
+            catch (error) {
+                return error;
+            }
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('/presignURL'),
@@ -58,6 +103,15 @@ __decorate([
     __metadata("design:paramtypes", [presign_url_dto_1.PresignURLDTO]),
     __metadata("design:returntype", Promise)
 ], AWSController.prototype, "getPresignURL", null);
+__decorate([
+    (0, common_1.Post)('/translate'),
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [translate_dto_1.TranslateBodyDTO]),
+    __metadata("design:returntype", Promise)
+], AWSController.prototype, "getTranslatedData", null);
 AWSController = __decorate([
     (0, common_1.Controller)('aws')
 ], AWSController);

@@ -1,4 +1,5 @@
 import { PresignURLDTO } from './DTO/presign-url-dto';
+import { TranslateBodyDTO } from './DTO/translate.dto';
 export declare class AWSController {
     getPresign(path: string): Promise<unknown>;
     getPresignURL(body: PresignURLDTO): Promise<{
@@ -9,4 +10,5 @@ export declare class AWSController {
             urlEndpoint: string;
         };
     }>;
+    getTranslatedData(body: TranslateBodyDTO): Promise<any>;
 }
