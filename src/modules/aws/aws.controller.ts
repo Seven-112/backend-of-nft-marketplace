@@ -83,12 +83,35 @@ export class AWSController {
         const translatedData = {};
 
         for (let key in body.translateData) {
-          const response = await handleTranslate(body.translateData[key]);
+          if (Array.isArray(body.translateData[key])) {
+            translatedData[key] = await Promise.all(
+              body.translateData[key].map(async (item) => {
+                const responseType = await handleTranslate(item.display_type);
+                const responseValue = await handleTranslate(item.value);
 
-          if (response.$response.error) {
-            throw response.$response.error;
+                if (responseType.$response.error) {
+                  throw responseType.$response.error;
+                }
+
+                if (responseValue.$response.error) {
+                  throw responseValue.$response.error;
+                }
+
+                return {
+                  trait_type: item.trait_type,
+                  display_type: responseType.TranslatedText,
+                  value: responseValue.TranslatedText,
+                };
+              }),
+            );
           } else {
-            translatedData[key] = response.TranslatedText;
+            const response = await handleTranslate(body.translateData[key]);
+
+            if (response.$response.error) {
+              throw response.$response.error;
+            } else {
+              translatedData[key] = response.TranslatedText;
+            }
           }
         }
 
