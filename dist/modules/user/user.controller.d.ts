@@ -32,7 +32,11 @@ export declare class UserController {
             avatar: string;
         };
     }>;
-    getUserProfileFromCognito(request: Request): Promise<unknown>;
+    getUserProfileFromCognito(request: Request): Promise<{
+        code: number;
+        message: string;
+        data: Promise<unknown>;
+    }>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
         message: string;

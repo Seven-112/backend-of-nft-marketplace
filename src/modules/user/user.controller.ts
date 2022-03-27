@@ -42,7 +42,13 @@ export class UserController {
   async getUserProfileFromCognito(@Req() request: Request) {
     const accessToken = request.headers.authorization.split(' ')[1];
 
-    return this.userService.getUserFromCognito(accessToken);
+    const data = this.userService.getUserFromCognito(accessToken);
+
+    return {
+      code: 200,
+      message: 'Get user success',
+      data,
+    };
   }
 
   @Patch('/profile')

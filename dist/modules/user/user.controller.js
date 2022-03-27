@@ -36,7 +36,12 @@ let UserController = class UserController {
     }
     async getUserProfileFromCognito(request) {
         const accessToken = request.headers.authorization.split(' ')[1];
-        return this.userService.getUserFromCognito(accessToken);
+        const data = this.userService.getUserFromCognito(accessToken);
+        return {
+            code: 200,
+            message: 'Get user success',
+            data,
+        };
     }
     async updateProfile(request, body) {
         const user = await this.userService.getUserById(request.user.sub);
