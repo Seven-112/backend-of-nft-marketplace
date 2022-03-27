@@ -11,7 +11,25 @@ export declare class UserController {
     getUserProfile(request: any): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: {
+            sub: any;
+            populate(): Promise<import("nestjs-dynamoose").Document<User>>;
+            populate(callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<User>, import("aws-sdk").AWSError>): void;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings): Promise<import("nestjs-dynamoose").Document<User>>;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings, callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<User>, import("aws-sdk").AWSError>): void;
+            serialize(nameOrOptions: string | import("nestjs-dynamoose").SerializerOptions): import("nestjs-dynamoose").ObjectType;
+            toJSON(): import("nestjs-dynamoose").ObjectType;
+            original(): import("nestjs-dynamoose").ObjectType;
+            id: string;
+            walletAddress?: string;
+            email: string;
+            username: string;
+            job: string;
+            personalWebsite: string;
+            phoneNumber: string;
+            timezone: string;
+            avatar: string;
+        };
     }>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;

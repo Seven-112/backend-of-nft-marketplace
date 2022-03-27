@@ -31,7 +31,7 @@ let UserController = class UserController {
         return {
             code: 200,
             message: '',
-            data: user,
+            data: Object.assign(Object.assign({}, user), { sub: request.user.sub }),
         };
     }
     async updateProfile(request, body) {

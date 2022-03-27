@@ -30,7 +30,10 @@ export class UserController {
     return {
       code: 200,
       message: '',
-      data: user,
+      data: {
+        ...user,
+        sub: request.user.sub,
+      },
     };
   }
 
