@@ -35,7 +35,7 @@ export declare class UserController {
     getUserProfileFromCognito(request: Request): Promise<{
         code: number;
         message: string;
-        data: Promise<unknown>;
+        data: unknown;
     }>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
