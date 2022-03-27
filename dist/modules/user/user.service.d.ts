@@ -12,6 +12,6 @@ export declare class UserService {
     updateUser(user: User): Promise<import("nestjs-dynamoose").Document<User>>;
     updateWalletAddress(id: string, email: string, walletAddress: string): Promise<import("nestjs-dynamoose").Document<User>>;
     getUsers(ids: string[]): Promise<import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<User>>>;
-    test(): Promise<void>;
+    getUserFromCognito(accessToken: string): Promise<unknown>;
     searchUsers(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
 }

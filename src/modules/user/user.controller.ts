@@ -18,6 +18,7 @@ import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 import { User } from './user.interface';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -35,6 +36,13 @@ export class UserController {
         sub: request.user.sub,
       },
     };
+  }
+
+  @Get('/profile/cognito')
+  async getUserProfileFromCognito(@Req() request: Request) {
+    const accessToken = request.headers.authorization.split(' ')[1];
+
+    return this.userService.getUserFromCognito(accessToken);
   }
 
   @Patch('/profile')
@@ -106,12 +114,12 @@ export class UserController {
     };
   }
 
-  @Public()
-  @Get('/test')
-  async test() {
-    this.userService.test();
-    return {};
-  }
+  // @Public()
+  // @Get('/test')
+  // async test() {
+  //   this.userService.test();
+  //   return {};
+  // }
 
   @Post('/info')
   @UsePipes(new ValidationPipe())

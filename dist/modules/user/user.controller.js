@@ -34,6 +34,10 @@ let UserController = class UserController {
             data: Object.assign(Object.assign({}, user), { sub: request.user.sub }),
         };
     }
+    async getUserProfileFromCognito(request) {
+        const accessToken = request.headers.authorization.split(' ')[1];
+        return this.userService.getUserFromCognito(accessToken);
+    }
     async updateProfile(request, body) {
         const user = await this.userService.getUserById(request.user.sub);
         if (!user) {
@@ -74,10 +78,6 @@ let UserController = class UserController {
             message: '',
             data: updatedUser,
         };
-    }
-    async test() {
-        this.userService.test();
-        return {};
     }
     async getUserInformation(body) {
         const users = await this.userService.getUsers(body.userIds);
@@ -133,6 +133,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
+    (0, common_1.Get)('/profile/cognito'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserProfileFromCognito", null);
+__decorate([
     (0, common_1.Patch)('/profile'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
@@ -151,13 +158,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, update_user_dto_1.UpdateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
-__decorate([
-    (0, jwt_auth_guard_1.Public)(),
-    (0, common_1.Get)('/test'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "test", null);
 __decorate([
     (0, common_1.Post)('/info'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

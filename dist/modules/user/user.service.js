@@ -16,6 +16,7 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const aws = require("aws-sdk");
+const transformCognitoUser_1 = require("../../utils/transformCognitoUser");
 let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -49,14 +50,15 @@ let UserService = class UserService {
     async getUsers(ids) {
         return this.userModel.batchGet(ids);
     }
-    async test() {
-        const params = {
-            UserPoolId: process.env.USER_POOL_ID,
-            AttributesToGet: ['email'],
-        };
+    async getUserFromCognito(accessToken) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
-        cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
-            console.log(err, data);
+        return new Promise((resolve, reject) => {
+            cognitoIdentityServiceProvider.getUser({ AccessToken: accessToken }, function (error, data) {
+                if (error) {
+                    reject(error);
+                }
+                resolve((0, transformCognitoUser_1.transformCognitoUser)(data));
+            });
         });
     }
     async searchUsers(address) {

@@ -5,6 +5,7 @@ import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 import { User } from './user.interface';
+import { Request } from 'express';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
@@ -31,6 +32,7 @@ export declare class UserController {
             avatar: string;
         };
     }>;
+    getUserProfileFromCognito(request: Request): Promise<unknown>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
         message: string;
@@ -45,7 +47,6 @@ export declare class UserController {
         message: string;
         data: import("nestjs-dynamoose").Document<User>;
     }>;
-    test(): Promise<{}>;
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;
         data: {

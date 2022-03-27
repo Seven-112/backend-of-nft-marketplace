@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
 import * as aws from 'aws-sdk';
+import { transformCognitoUser } from 'src/utils/transformCognitoUser';
 
 @Injectable()
 export class UserService {
@@ -50,18 +51,31 @@ export class UserService {
     return this.userModel.batchGet(ids);
   }
 
-  async test() {
-    const params = {
-      UserPoolId: process.env.USER_POOL_ID,
-      AttributesToGet: ['email'],
-    };
+  async getUserFromCognito(accessToken: string) {
+    // const params = {
+    //   UserPoolId: process.env.USER_POOL_ID,
+    //   AttributesToGet: ['email'],
+    // };
 
     const cognitoIdentityServiceProvider =
       new aws.CognitoIdentityServiceProvider();
 
-    cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
-      console.log(err, data);
+    return new Promise((resolve, reject) => {
+      cognitoIdentityServiceProvider.getUser(
+        { AccessToken: accessToken },
+        function (error, data) {
+          if (error) {
+            reject(error);
+          }
+
+          resolve(transformCognitoUser(data));
+        },
+      );
     });
+
+    // cognitoIdentityServiceProvider.listUsers(params, (err, data) => {
+    //   console.log(err, data);
+    // });
   }
 
   async searchUsers(address: string) {
