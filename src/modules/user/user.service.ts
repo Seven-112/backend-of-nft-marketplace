@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
 import * as aws from 'aws-sdk';
@@ -68,7 +68,13 @@ export class UserService {
             reject(error);
           }
 
+          if (!data) {
+            throw new ForbiddenException();
+          }
+
           resolve(transformCognitoUser(data));
+
+          // resolve(transformCognitoUser(data));
         },
       );
     });
