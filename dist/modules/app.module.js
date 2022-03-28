@@ -22,6 +22,7 @@ const notification_module_1 = require("./notification/notification.module");
 const ioredis_1 = require("@nestjs-modules/ioredis");
 const chat_module_1 = require("./chat/chat.module");
 const aws_module_1 = require("./aws/aws.module");
+const event_module_1 = require("./event/event.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -44,6 +45,7 @@ AppModule = __decorate([
                 isGlobal: true,
                 envFilePath: '.env',
             }),
+            event_module_1.EventModule,
             todo_module_1.TodoModule,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
