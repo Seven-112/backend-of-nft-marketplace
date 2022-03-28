@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UsePipes,
 } from '@nestjs/common';
@@ -149,6 +150,25 @@ export class UserController {
       code: 200,
       message: 'Updated',
       data: updatedUser,
+    };
+  }
+
+  @Get('/admin/accounts')
+  async getAllAccounts(@Req() request: AnyDocument, @Query('limit') limit = 5) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if (user.role !== UserRole.Admin)
+      return {
+        code: 403,
+        msg: 'Not allowed',
+        data: null,
+      };
+
+    const allAccounts = await this.userService.getAllUsers(+limit);
+
+    return {
+      code: 200,
+      data: allAccounts,
     };
   }
 

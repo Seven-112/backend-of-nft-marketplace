@@ -51,6 +51,10 @@ export class UserService {
     return this.userModel.batchGet(ids);
   }
 
+  async getAllUsers(limit: number) {
+    return this.userModel.scan().limit(limit).exec();
+  }
+
   async getUserFromCognito(accessToken: string) {
     // const params = {
     //   UserPoolId: process.env.USER_POOL_ID,

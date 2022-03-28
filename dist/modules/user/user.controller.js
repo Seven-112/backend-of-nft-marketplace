@@ -107,6 +107,20 @@ let UserController = class UserController {
             data: updatedUser,
         };
     }
+    async getAllAccounts(request, limit = 5) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (user.role !== user_interface_1.UserRole.Admin)
+            return {
+                code: 403,
+                msg: 'Not allowed',
+                data: null,
+            };
+        const allAccounts = await this.userService.getAllUsers(+limit);
+        return {
+            code: 200,
+            data: allAccounts,
+        };
+    }
     async getUserInformation(body) {
         const users = await this.userService.getUsers(body.userIds);
         return {
@@ -201,6 +215,14 @@ __decorate([
     __metadata("design:paramtypes", [Document_1.AnyDocument, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.Get)('/admin/accounts'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Document_1.AnyDocument, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllAccounts", null);
 __decorate([
     (0, common_1.Post)('/info'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
