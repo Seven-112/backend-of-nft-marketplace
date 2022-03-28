@@ -31,6 +31,7 @@ export declare class UserController {
             timezone: string;
             avatar: string;
             role: string;
+            status: string;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{
@@ -51,6 +52,17 @@ export declare class UserController {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<User>;
+    }>;
+    updateUser(request: AnyDocument, body: any): Promise<{
+        code: number;
+        msg: string;
+        data: any;
+        message?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").Document<User>;
+        msg?: undefined;
     }>;
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;

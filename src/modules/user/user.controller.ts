@@ -17,7 +17,7 @@ import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { User, UserRole } from './user.interface';
+import { User, UserRole, UserStatus } from './user.interface';
 import { Request } from 'express';
 
 @Controller('user')
@@ -107,19 +107,47 @@ export class UserController {
       };
     }
 
-    const bodyWithRole = {
+    const updatedBody = {
       ...body,
       role: UserRole.User,
+      status: UserStatus.active,
     };
 
     const updatedUser = await this.userService.updateWalletAddress(
       request.user.sub,
-      bodyWithRole,
+      updatedBody,
     );
 
     return {
       code: 200,
       message: '',
+      data: updatedUser,
+    };
+  }
+
+  @Patch('/admin/update')
+  async updateUser(@Req() request: AnyDocument, @Body() body: any) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if (!user)
+      return {
+        code: 404,
+        msg: 'User not found',
+        data: null,
+      };
+
+    if (user.role !== UserRole.Admin)
+      return {
+        code: 403,
+        msg: 'Not allowed',
+        data: null,
+      };
+
+    const updatedUser = await this.userService.updateUser(body);
+
+    return {
+      code: 200,
+      message: 'Updated',
       data: updatedUser,
     };
   }

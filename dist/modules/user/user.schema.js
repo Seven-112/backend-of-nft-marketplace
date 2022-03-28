@@ -41,5 +41,8 @@ exports.UserSchema = new dynamoose_1.Schema({
     role: {
         type: String,
     },
+    status: {
+        type: String,
+    },
 });
 //# sourceMappingURL=user.schema.js.map

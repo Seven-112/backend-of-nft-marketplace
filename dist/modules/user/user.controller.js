@@ -78,11 +78,32 @@ let UserController = class UserController {
                 message: 'Wallet not avaiable',
             };
         }
-        const bodyWithRole = Object.assign(Object.assign({}, body), { role: user_interface_1.UserRole.User });
-        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, bodyWithRole);
+        const updatedBody = Object.assign(Object.assign({}, body), { role: user_interface_1.UserRole.User, status: user_interface_1.UserStatus.active });
+        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
         return {
             code: 200,
             message: '',
+            data: updatedUser,
+        };
+    }
+    async updateUser(request, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user)
+            return {
+                code: 404,
+                msg: 'User not found',
+                data: null,
+            };
+        if (user.role !== user_interface_1.UserRole.Admin)
+            return {
+                code: 403,
+                msg: 'Not allowed',
+                data: null,
+            };
+        const updatedUser = await this.userService.updateUser(body);
+        return {
+            code: 200,
+            message: 'Updated',
             data: updatedUser,
         };
     }
@@ -172,6 +193,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, update_user_dto_1.UpdateUserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
+__decorate([
+    (0, common_1.Patch)('/admin/update'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Document_1.AnyDocument, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateUser", null);
 __decorate([
     (0, common_1.Post)('/info'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

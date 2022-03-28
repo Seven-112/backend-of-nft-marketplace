@@ -39,4 +39,7 @@ export const UserSchema = new Schema({
   role: {
     type: String,
   },
+  status: {
+    type: String,
+  },
 });

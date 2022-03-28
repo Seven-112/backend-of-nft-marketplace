@@ -4,6 +4,12 @@ export enum UserRole {
   User = 'user',
 }
 
+export enum UserStatus {
+  active = 'active',
+  banned = 'banned',
+  freeze = 'freeze',
+  nft_owner = 'nft owner',
+}
 export interface User {
   id: string;
   walletAddress?: string;
@@ -15,4 +21,5 @@ export interface User {
   timezone: string;
   avatar: string;
   role: string;
+  status: string;
 }
