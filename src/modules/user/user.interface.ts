@@ -1,3 +1,9 @@
+export enum UserRole {
+  Admin = 'admin',
+  Creator = 'creator',
+  User = 'user',
+}
+
 export interface User {
   id: string;
   walletAddress?: string;
@@ -8,4 +14,5 @@ export interface User {
   phoneNumber: string;
   timezone: string;
   avatar: string;
+  role: string;
 }

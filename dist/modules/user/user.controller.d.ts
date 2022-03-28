@@ -30,6 +30,7 @@ export declare class UserController {
             phoneNumber: string;
             timezone: string;
             avatar: string;
+            role: string;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{
@@ -60,6 +61,11 @@ export declare class UserController {
     getUserById(id: string): Promise<{
         code: number;
         data: import("nestjs-dynamoose").Document<User>;
+        message?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: any;
     }>;
     search(body: SearchUserDTO): Promise<{
         code: number;

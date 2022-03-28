@@ -22,6 +22,7 @@ const search_user_dto_1 = require("./DTO/search-user.dto");
 const update_profile_1 = require("./DTO/update-profile");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
+const user_interface_1 = require("./user.interface");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -77,7 +78,8 @@ let UserController = class UserController {
                 message: 'Wallet not avaiable',
             };
         }
-        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, body.email, body.walletAddress);
+        const bodyWithRole = Object.assign(Object.assign({}, body), { role: user_interface_1.UserRole.User });
+        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, bodyWithRole);
         return {
             code: 200,
             message: '',
@@ -95,9 +97,16 @@ let UserController = class UserController {
     }
     async getUserById(id) {
         const user = await this.userService.getUserById(id);
+        if (user) {
+            return {
+                code: 200,
+                data: user,
+            };
+        }
         return {
-            code: 200,
-            data: user,
+            code: 404,
+            message: 'User not found',
+            data: null,
         };
     }
     async search(body) {

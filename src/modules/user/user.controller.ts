@@ -17,7 +17,7 @@ import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { User } from './user.interface';
+import { User, UserRole } from './user.interface';
 import { Request } from 'express';
 
 @Controller('user')
@@ -107,10 +107,14 @@ export class UserController {
       };
     }
 
+    const bodyWithRole = {
+      ...body,
+      role: UserRole.User,
+    };
+
     const updatedUser = await this.userService.updateWalletAddress(
       request.user.sub,
-      body.email,
-      body.walletAddress,
+      bodyWithRole,
     );
 
     return {
@@ -144,9 +148,17 @@ export class UserController {
   async getUserById(@Param('id') id: string) {
     const user = await this.userService.getUserById(id);
 
+    if (user) {
+      return {
+        code: 200,
+        data: user,
+      };
+    }
+
     return {
-      code: 200,
-      data: user,
+      code: 404,
+      message: 'User not found',
+      data: null,
     };
   }
 
