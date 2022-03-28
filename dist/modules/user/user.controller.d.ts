@@ -64,6 +64,15 @@ export declare class UserController {
         data: import("nestjs-dynamoose").Document<User>;
         msg?: undefined;
     }>;
+    getAllAccounts(request: AnyDocument, limit?: number): Promise<{
+        code: number;
+        msg: string;
+        data: any;
+    } | {
+        code: number;
+        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
+        msg?: undefined;
+    }>;
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;
         data: {
