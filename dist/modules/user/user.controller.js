@@ -75,10 +75,11 @@ let UserController = class UserController {
         if (!isWalletAvailable) {
             return {
                 code: 401,
-                message: 'Wallet not avaiable',
+                message: 'Wallet not available',
             };
         }
-        const updatedBody = Object.assign(Object.assign({}, body), { role: user_interface_1.UserRole.User, status: user_interface_1.UserStatus.active });
+        const foundUser = await this.userService.getUserById(request.user.sub);
+        const updatedBody = Object.assign(Object.assign({}, body), { role: foundUser.role || user_interface_1.UserRole.User, status: foundUser.status || user_interface_1.UserStatus.active, createdAt: foundUser.createdAt || new Date().toISOString() });
         const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
         return {
             code: 200,

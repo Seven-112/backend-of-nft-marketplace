@@ -104,14 +104,17 @@ export class UserController {
     if (!isWalletAvailable) {
       return {
         code: 401,
-        message: 'Wallet not avaiable',
+        message: 'Wallet not available',
       };
     }
 
+    const foundUser = await this.userService.getUserById(request.user.sub);
+
     const updatedBody = {
       ...body,
-      role: UserRole.User,
-      status: UserStatus.active,
+      role: foundUser.role || UserRole.User,
+      status: foundUser.status || UserStatus.active,
+      createdAt: foundUser.createdAt || new Date().toISOString(),
     };
 
     const updatedUser = await this.userService.updateWalletAddress(

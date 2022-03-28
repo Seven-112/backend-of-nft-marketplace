@@ -32,6 +32,7 @@ export declare class UserController {
             avatar: string;
             role: string;
             status: string;
+            createdAt: string;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{
