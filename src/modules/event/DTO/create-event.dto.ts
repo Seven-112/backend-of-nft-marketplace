@@ -1,6 +1,42 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEnum, IsString } from 'class-validator';
-import { EEventType } from '../event.interface';
+import { Type } from 'class-transformer';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { EEventType, ETicketType } from '../event.interface';
+
+export class TicketDTO {
+  @IsString()
+  @ApiProperty()
+  name: string;
+
+  @IsEnum(ETicketType)
+  @ApiProperty()
+  type: ETicketType;
+
+  @IsNumber()
+  @ApiProperty()
+  @Min(1)
+  price: Number;
+
+  @IsNumber()
+  @ApiProperty()
+  @Min(1)
+  quantity: Number;
+
+  @IsDateString()
+  @ApiProperty()
+  saleStart: Date;
+
+  @IsDateString()
+  @ApiProperty()
+  saleEnd: Date;
+}
 
 export class CreateEventDTO {
   @IsString()
@@ -24,5 +60,15 @@ export class CreateEventDTO {
   type: EEventType;
 
   @IsString()
+  @ApiProperty()
   location: string;
+
+  @IsDateString()
+  @ApiProperty()
+  publishDate: Date;
+
+  @ValidateNested()
+  @ApiProperty()
+  @Type(() => TicketDTO)
+  ticket: TicketDTO;
 }

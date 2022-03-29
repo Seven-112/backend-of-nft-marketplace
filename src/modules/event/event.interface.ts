@@ -5,6 +5,21 @@ export enum EEventType {
   venue = 'venue',
 }
 
+export enum ETicketType {
+  paid = 'paid',
+  venue = 'venue',
+}
+
+export class Ticket {
+  id: string;
+  type: ETicketType;
+  name: string;
+  price: number;
+  quantity: number;
+  saleStart: Date;
+  saleEnd: Date;
+}
+
 export class Event {
   id: string;
   title: string;
@@ -14,6 +29,8 @@ export class Event {
   type: EEventType;
   location: string;
   userId: string;
+  publishDate: Date;
+  ticket: Ticket;
 
   constructor() {
     this.id = nanoid(12);

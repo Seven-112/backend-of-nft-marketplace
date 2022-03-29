@@ -41,7 +41,7 @@ export class ValidationPipe implements PipeTransform<any> {
 
     errors.forEach((el) => {
       const prop = el.property;
-      Object.entries(el.constraints).forEach((constraint) => {
+      Object.entries(el.constraints || {}).forEach((constraint) => {
         result[prop] = `${capitalizeFirstLetter(
           constraint[1].substring(constraint[1].indexOf(' ') + 1),
         )}`;

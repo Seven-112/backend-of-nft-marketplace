@@ -1,7 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventSchema = void 0;
+exports.EventSchema = exports.TicketSchema = void 0;
 const dynamoose_1 = require("dynamoose");
+exports.TicketSchema = new dynamoose_1.Schema({
+    id: {
+        type: String,
+    },
+    type: {
+        type: String,
+        enum: ['paid', 'free'],
+    },
+    name: {
+        type: String,
+    },
+    price: {
+        type: Number,
+    },
+    quantity: {
+        type: Number,
+    },
+    saleStart: {
+        type: Date,
+    },
+    saleEnd: {
+        type: Date,
+    },
+});
 exports.EventSchema = new dynamoose_1.Schema({
     id: {
         type: String,
@@ -28,6 +52,10 @@ exports.EventSchema = new dynamoose_1.Schema({
     },
     location: {
         type: String,
+    },
+    ticket: exports.TicketSchema,
+    publishDate: {
+        type: Date,
     },
 });
 //# sourceMappingURL=event.schema.js.map
