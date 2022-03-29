@@ -38,9 +38,7 @@ async function bootstrap() {
         .setVersion('1.0')
         .addBearerAuth()
         .build();
-    const document = swagger_1.SwaggerModule.createDocument(app, config, {
-        ignoreGlobalPrefix: true,
-    });
+    const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
     await app.listen(constants_1.PORT);
     console.info(`server running on port ${constants_1.PORT}`);

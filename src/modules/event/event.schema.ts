@@ -1,5 +1,26 @@
 import { Schema } from 'dynamoose';
 
+export const TicketSchema = new Schema({
+  id: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  price: {
+    type: Number,
+  },
+  quantity: {
+    type: Number,
+  },
+  saleStart: {
+    type: Date,
+  },
+  saleEnd: {
+    type: Date,
+  },
+});
+
 export const EventSchema = new Schema({
   id: {
     type: String,
@@ -26,5 +47,9 @@ export const EventSchema = new Schema({
   },
   location: {
     type: String,
+  },
+  ticket: TicketSchema,
+  publishDate: {
+    type: Date,
   },
 });
