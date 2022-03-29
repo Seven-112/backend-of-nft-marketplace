@@ -6,6 +6,10 @@ exports.TicketSchema = new dynamoose_1.Schema({
     id: {
         type: String,
     },
+    type: {
+        type: String,
+        enum: ['paid', 'free'],
+    },
     name: {
         type: String,
     },

@@ -8,12 +8,16 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { EEventType } from '../event.interface';
+import { EEventType, ETicketType } from '../event.interface';
 
 export class TicketDTO {
   @IsString()
   @ApiProperty()
   name: string;
+
+  @IsEnum(ETicketType)
+  @ApiProperty()
+  type: ETicketType;
 
   @IsNumber()
   @ApiProperty()

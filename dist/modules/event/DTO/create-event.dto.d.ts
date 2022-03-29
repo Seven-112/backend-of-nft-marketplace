@@ -1,6 +1,7 @@
-import { EEventType } from '../event.interface';
+import { EEventType, ETicketType } from '../event.interface';
 export declare class TicketDTO {
     name: string;
+    type: ETicketType;
     price: Number;
     quantity: Number;
     saleStart: Date;

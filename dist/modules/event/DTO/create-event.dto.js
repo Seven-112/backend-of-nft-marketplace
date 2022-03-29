@@ -22,6 +22,11 @@ __decorate([
     __metadata("design:type", String)
 ], TicketDTO.prototype, "name", void 0);
 __decorate([
+    (0, class_validator_1.IsEnum)(event_interface_1.ETicketType),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], TicketDTO.prototype, "type", void 0);
+__decorate([
     (0, class_validator_1.IsNumber)(),
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.Min)(1),

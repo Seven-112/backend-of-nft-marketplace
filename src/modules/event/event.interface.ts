@@ -5,8 +5,14 @@ export enum EEventType {
   venue = 'venue',
 }
 
+export enum ETicketType {
+  paid = 'paid',
+  venue = 'venue',
+}
+
 export class Ticket {
   id: string;
+  type: ETicketType;
   name: string;
   price: number;
   quantity: number;

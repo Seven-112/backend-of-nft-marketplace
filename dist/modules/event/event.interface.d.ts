@@ -2,8 +2,13 @@ export declare enum EEventType {
     online = "online",
     venue = "venue"
 }
+export declare enum ETicketType {
+    paid = "paid",
+    venue = "venue"
+}
 export declare class Ticket {
     id: string;
+    type: ETicketType;
     name: string;
     price: number;
     quantity: number;

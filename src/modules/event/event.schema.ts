@@ -4,6 +4,10 @@ export const TicketSchema = new Schema({
   id: {
     type: String,
   },
+  type: {
+    type: String,
+    enum: ['paid', 'free'],
+  },
   name: {
     type: String,
   },
