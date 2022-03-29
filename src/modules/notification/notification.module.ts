@@ -6,7 +6,7 @@ import { EventsService } from './events.service';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { NotificationSchema } from './notification.schema';
 import { RedisModule } from '../redis/redis.module';
-
+import { EventEmitterModule } from '@nestjs/event-emitter';
 @Module({
   imports: [
     HttpModule,
@@ -17,8 +17,9 @@ import { RedisModule } from '../redis/redis.module';
       },
     ]),
     RedisModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [NotificationController],
   providers: [NotificationService, EventsService],
-}) 
+})
 export class NotificationModule {}

@@ -21,12 +21,14 @@ import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 import { nanoid } from 'nanoid';
 import { MarkReadDTO } from './DTO/markRead.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Controller('noti')
 export class NotificationController {
   constructor(
     private readonly notiService: NotificationService,
     private readonly eventService: EventsService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Public()
@@ -52,7 +54,8 @@ export class NotificationController {
         // console.log(payload);
 
         const { userId, msg, type, sender } = JSON.parse(payload.Message);
-        // const allNoti = await this.notiService.getAllNotification();
+        const allNotiToSendBack = [];
+
         userId.forEach((id: string) => {
           const idx = nanoid();
           const noti = {
@@ -65,13 +68,16 @@ export class NotificationController {
             isRead: false,
           };
 
+          allNotiToSendBack.push(noti);
+
           // console.log(noti);
 
           this.notiService.createNotification(noti).then(() => {
-            this.eventService.emit(`noti.created${id}`, {
-              code: 200,
-              ...noti,
-            });
+            this.eventEmitter.emit('noti.created', noti);
+            // this.eventService.emit(`noti.created${id}`, {
+            //   code: 200,
+            //   ...noti,
+            // });
           });
         });
         // notication format:

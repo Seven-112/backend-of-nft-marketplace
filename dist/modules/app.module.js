@@ -23,6 +23,7 @@ const ioredis_1 = require("@nestjs-modules/ioredis");
 const chat_module_1 = require("./chat/chat.module");
 const aws_module_1 = require("./aws/aws.module");
 const event_module_1 = require("./event/event.module");
+const socket_module_1 = require("./socket/socket.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -59,6 +60,7 @@ AppModule = __decorate([
                     host: process.env.REDIS_HOST,
                 },
             }),
+            socket_module_1.SocketModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

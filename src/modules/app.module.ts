@@ -22,6 +22,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { ChatModule } from './chat/chat.module';
 import { AWSModule } from './aws/aws.module';
 import { EventModule } from './event/event.module';
+import { SocketModule } from './socket/socket.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -51,6 +52,7 @@ import { EventModule } from './event/event.module';
         host: process.env.REDIS_HOST,
       },
     }),
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [

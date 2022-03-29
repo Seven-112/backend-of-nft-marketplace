@@ -3,10 +3,12 @@ import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
 import { NotificationService } from './notification.service';
 import { MarkReadDTO } from './DTO/markRead.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 export declare class NotificationController {
     private readonly notiService;
     private readonly eventService;
-    constructor(notiService: NotificationService, eventService: EventsService);
+    private eventEmitter;
+    constructor(notiService: NotificationService, eventService: EventsService, eventEmitter: EventEmitter2);
     subscribeTopic(req: Request): Promise<void>;
     sse(id: string): import("rxjs").Observable<unknown>;
     getNotiByReceiver(req: Request, type: string, limit?: number): Promise<{
