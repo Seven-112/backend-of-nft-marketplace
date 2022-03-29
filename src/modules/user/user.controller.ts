@@ -136,14 +136,14 @@ export class UserController {
     if (!user)
       return {
         code: 404,
-        msg: 'User not found',
+        message: 'User not found',
         data: null,
       };
 
     if (user.role !== UserRole.Admin)
       return {
         code: 403,
-        msg: 'Not allowed',
+        message: 'Not allowed',
         data: null,
       };
 
@@ -163,7 +163,7 @@ export class UserController {
     if (user.role !== UserRole.Admin)
       return {
         code: 403,
-        msg: 'Not allowed',
+        message: 'Not allowed',
         data: null,
       };
 

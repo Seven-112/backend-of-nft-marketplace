@@ -17,7 +17,7 @@ export class EventService {
     return this.eventModel.get(id);
   }
 
-  async getAllEvents() {
-    return this.eventModel.scan().exec();
+  async getAllEvents(limit = 3) {
+    return this.eventModel.scan().limit(limit).exec();
   }
 }

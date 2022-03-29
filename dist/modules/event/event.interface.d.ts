@@ -4,7 +4,7 @@ export declare enum EEventType {
 }
 export declare enum ETicketType {
     paid = "paid",
-    venue = "venue"
+    free = "free"
 }
 export declare class Ticket {
     id: string;
@@ -14,6 +14,7 @@ export declare class Ticket {
     quantity: number;
     saleStart: Date;
     saleEnd: Date;
+    constructor();
 }
 export declare class Event {
     id: string;

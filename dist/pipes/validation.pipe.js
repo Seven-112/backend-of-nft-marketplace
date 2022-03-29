@@ -34,6 +34,7 @@ let ValidationPipe = class ValidationPipe {
     }
     buildError(errors) {
         const result = {};
+        errors.forEach((err) => console.log(err));
         errors.forEach((el) => {
             const prop = el.property;
             Object.entries(el.constraints || {}).forEach((constraint) => {

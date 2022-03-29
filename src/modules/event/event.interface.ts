@@ -7,7 +7,7 @@ export enum EEventType {
 
 export enum ETicketType {
   paid = 'paid',
-  venue = 'venue',
+  free = 'free',
 }
 
 export class Ticket {
@@ -18,6 +18,10 @@ export class Ticket {
   quantity: number;
   saleStart: Date;
   saleEnd: Date;
+
+  constructor() {
+    this.id = nanoid(12);
+  }
 }
 
 export class Event {

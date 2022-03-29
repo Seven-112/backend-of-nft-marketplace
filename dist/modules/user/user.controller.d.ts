@@ -56,23 +56,17 @@ export declare class UserController {
     }>;
     updateUser(request: AnyDocument, body: any): Promise<{
         code: number;
-        msg: string;
-        data: any;
-        message?: undefined;
-    } | {
-        code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<User>;
-        msg?: undefined;
     }>;
     getAllAccounts(request: AnyDocument, limit?: number): Promise<{
         code: number;
-        msg: string;
+        message: string;
         data: any;
     } | {
         code: number;
         data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
-        msg?: undefined;
+        message?: undefined;
     }>;
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;

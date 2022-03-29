@@ -30,6 +30,9 @@ export const EventSchema = new Schema({
     type: String,
     hashKey: true,
   },
+  image: {
+    type: String,
+  },
   userId: {
     type: String,
   },
@@ -55,5 +58,10 @@ export const EventSchema = new Schema({
   ticket: TicketSchema,
   publishDate: {
     type: Date,
+  },
+  createdAt: {
+    type: Date,
+    default: new Date(),
+    rangeKey: true,
   },
 });

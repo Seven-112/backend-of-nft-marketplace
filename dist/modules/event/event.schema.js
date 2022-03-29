@@ -31,6 +31,9 @@ exports.EventSchema = new dynamoose_1.Schema({
         type: String,
         hashKey: true,
     },
+    image: {
+        type: String,
+    },
     userId: {
         type: String,
     },
@@ -56,6 +59,11 @@ exports.EventSchema = new dynamoose_1.Schema({
     ticket: exports.TicketSchema,
     publishDate: {
         type: Date,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date(),
+        rangeKey: true,
     },
 });
 //# sourceMappingURL=event.schema.js.map

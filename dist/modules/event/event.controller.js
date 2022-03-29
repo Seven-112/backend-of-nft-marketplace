@@ -43,8 +43,8 @@ let EventController = class EventController {
             data: newEvent,
         };
     }
-    async getEvents() {
-        const events = await this.eventService.getAllEvents();
+    async getEvents(limit = 3) {
+        const events = await this.eventService.getAllEvents(limit);
         return {
             code: 200,
             message: '',
@@ -73,8 +73,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('/'),
     (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEvents", null);
 __decorate([

@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UsePipes,
 } from '@nestjs/common';
@@ -45,8 +46,8 @@ export class EventController {
 
   @Get('/')
   @Public()
-  async getEvents() {
-    const events = await this.eventService.getAllEvents();
+  async getEvents(@Query('limit') limit = 3) {
+    const events = await this.eventService.getAllEvents(limit);
 
     return {
       code: 200,

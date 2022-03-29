@@ -10,9 +10,12 @@ var EEventType;
 var ETicketType;
 (function (ETicketType) {
     ETicketType["paid"] = "paid";
-    ETicketType["venue"] = "venue";
+    ETicketType["free"] = "free";
 })(ETicketType = exports.ETicketType || (exports.ETicketType = {}));
 class Ticket {
+    constructor() {
+        this.id = (0, nanoid_1.nanoid)(12);
+    }
 }
 exports.Ticket = Ticket;
 class Event {

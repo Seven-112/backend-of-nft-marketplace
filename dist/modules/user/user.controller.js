@@ -92,13 +92,13 @@ let UserController = class UserController {
         if (!user)
             return {
                 code: 404,
-                msg: 'User not found',
+                message: 'User not found',
                 data: null,
             };
         if (user.role !== user_interface_1.UserRole.Admin)
             return {
                 code: 403,
-                msg: 'Not allowed',
+                message: 'Not allowed',
                 data: null,
             };
         const updatedUser = await this.userService.updateUser(body);
@@ -113,7 +113,7 @@ let UserController = class UserController {
         if (user.role !== user_interface_1.UserRole.Admin)
             return {
                 code: 403,
-                msg: 'Not allowed',
+                message: 'Not allowed',
                 data: null,
             };
         const allAccounts = await this.userService.getAllUsers(+limit);
