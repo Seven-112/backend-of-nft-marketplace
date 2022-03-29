@@ -1,7 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import { PORT } from './utils/constants';
-import * as helmet from 'helmet';
+// import * as helmet from 'helmet';
 import Amplify from 'aws-amplify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import aws from 'aws-sdk';
@@ -38,7 +38,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('v1');
   Amplify.configure(awsmobile);
-  app.use(helmet());
 
   const config = new DocumentBuilder()
     .setTitle('Metaversus API')
@@ -50,7 +49,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);
-
+  // app.use(helmet());
   await app.listen(PORT);
   console.info(`server running on port ${PORT}`);
 
