@@ -51,7 +51,9 @@ let UserService = class UserService {
         return this.userModel.batchGet(ids);
     }
     async getAllUsers(limit) {
-        return this.userModel.scan().limit(limit).exec();
+        if (limit)
+            return this.userModel.scan().limit(limit).exec();
+        return this.userModel.scan().exec();
     }
     async getUserFromCognito(accessToken) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
