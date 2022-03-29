@@ -38,7 +38,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('v1');
   Amplify.configure(awsmobile);
-  app.use(helmet());
 
   const config = new DocumentBuilder()
     .setTitle('Metaversus API')
@@ -50,7 +49,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);
-
+  app.use(helmet());
   await app.listen(PORT);
   console.info(`server running on port ${PORT}`);
 

@@ -31,7 +31,6 @@ async function bootstrap() {
     });
     app.setGlobalPrefix('v1');
     aws_amplify_1.default.configure(awsmobile);
-    app.use(helmet());
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Metaversus API')
         .setDescription('The Metaversus API description')
@@ -40,6 +39,7 @@ async function bootstrap() {
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
+    app.use(helmet());
     await app.listen(constants_1.PORT);
     console.info(`server running on port ${constants_1.PORT}`);
     if (module.hot) {
