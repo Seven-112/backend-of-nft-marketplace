@@ -29,6 +29,6 @@ export const HASH_SECRET_KEY = process.env.HASH_SECRET_KEY as string;
 
 // export const SECRET = crypto
 //   .createHash('sha256')
-//   .update(HASH_SECRET)
+//   .update(HASH_SECRET
 //   .digest('base64')
 //   .substring(0, 32);
