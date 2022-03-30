@@ -77,8 +77,6 @@ export class UserService {
           }
 
           resolve(transformCognitoUser(data));
-
-          // resolve(transformCognitoUser(data));
         },
       );
     });

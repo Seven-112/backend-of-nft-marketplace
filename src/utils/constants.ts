@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import * as crypto from 'crypto';
+// import * as crypto from 'crypto';
 dotenv.config();
 
 export enum METHOD {
@@ -27,8 +27,8 @@ export const JWT_EXPIRES_IN = 1 * 60 * 60 * 24; // in seconds , 1 day
 export const HASH_SECRET = process.env.HASH_SECRET as string;
 export const HASH_SECRET_KEY = process.env.HASH_SECRET_KEY as string;
 
-export const SECRET = crypto
-  .createHash('sha256')
-  .update(HASH_SECRET)
-  .digest('base64')
-  .substring(0, 32);
+// export const SECRET = crypto
+//   .createHash('sha256')
+//   .update(HASH_SECRET)
+//   .digest('base64')
+//   .substring(0, 32);
