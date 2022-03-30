@@ -63,7 +63,7 @@ let UserService = class UserService {
                     reject(error);
                 }
                 if (!data) {
-                    throw new common_1.ForbiddenException();
+                    resolve({});
                 }
                 resolve((0, transformCognitoUser_1.transformCognitoUser)(data));
             });
