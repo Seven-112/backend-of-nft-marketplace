@@ -65,7 +65,10 @@ export declare class UserController {
         data: any;
     } | {
         code: number;
-        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
+        data: {
+            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
+            length: number;
+        };
         message?: undefined;
     }>;
     getUserInformation(body: GetUserInformationDTO): Promise<{

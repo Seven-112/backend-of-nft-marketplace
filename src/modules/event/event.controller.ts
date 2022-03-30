@@ -46,13 +46,13 @@ export class EventController {
 
   @Get('/')
   @Public()
-  async getEvents(@Query('limit') limit = 3) {
+  async getEvents(@Query('limit') limit?: number) {
     const events = await this.eventService.getAllEvents(limit);
 
     return {
       code: 200,
       message: '',
-      data: events,
+      data: { events, length: events.length },
     };
   }
 

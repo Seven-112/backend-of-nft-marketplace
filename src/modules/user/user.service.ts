@@ -51,8 +51,10 @@ export class UserService {
     return this.userModel.batchGet(ids);
   }
 
-  async getAllUsers(limit: number) {
-    return this.userModel.scan().limit(limit).exec();
+  async getAllUsers(limit?: number) {
+    if (limit) return this.userModel.scan().limit(limit).exec();
+
+    return this.userModel.scan().exec();
   }
 
   async getUserFromCognito(accessToken: string) {

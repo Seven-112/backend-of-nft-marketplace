@@ -157,7 +157,10 @@ export class UserController {
   }
 
   @Get('/admin/accounts')
-  async getAllAccounts(@Req() request: AnyDocument, @Query('limit') limit = 5) {
+  async getAllAccounts(
+    @Req() request: AnyDocument,
+    @Query('limit') limit?: number,
+  ) {
     const user = await this.userService.getUserById(request.user.sub);
 
     if (user.role !== UserRole.Admin)
@@ -167,11 +170,11 @@ export class UserController {
         data: null,
       };
 
-    const allAccounts = await this.userService.getAllUsers(+limit);
+    const allAccounts = await this.userService.getAllUsers(limit);
 
     return {
       code: 200,
-      data: allAccounts,
+      data: { accounts: allAccounts, length: allAccounts.length },
     };
   }
 

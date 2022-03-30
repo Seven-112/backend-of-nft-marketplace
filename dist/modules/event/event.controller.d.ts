@@ -12,7 +12,10 @@ export declare class EventController {
     getEvents(limit?: number): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>;
+        data: {
+            events: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>;
+            length: number;
+        };
     }>;
     getEventById(id: string): Promise<{
         code: number;
