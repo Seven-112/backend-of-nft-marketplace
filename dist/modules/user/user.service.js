@@ -63,8 +63,9 @@ let UserService = class UserService {
                     reject(error);
                 }
                 if (!data) {
-                    resolve({});
+                    return resolve({});
                 }
+                console.log(data);
                 resolve((0, transformCognitoUser_1.transformCognitoUser)(data));
             });
         });

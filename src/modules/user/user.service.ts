@@ -77,8 +77,10 @@ export class UserService {
           if (!data) {
             // throw new ForbiddenException();
 
-            resolve({});
+            return resolve({});
           }
+
+          console.log(data);
 
           resolve(transformCognitoUser(data));
         },
