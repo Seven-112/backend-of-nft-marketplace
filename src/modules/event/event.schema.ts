@@ -23,6 +23,9 @@ export const TicketSchema = new Schema({
   saleEnd: {
     type: Date,
   },
+  sold: {
+    type: Number,
+  },
 });
 
 export const EventSchema = new Schema({

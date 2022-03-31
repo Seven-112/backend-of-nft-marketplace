@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { UserModule } from '../user/user.module';
 import { EventController } from './event.controller';
 
 import { EventSchema } from './event.schema';
@@ -13,6 +14,7 @@ import { EventService } from './event.service';
         schema: EventSchema,
       },
     ]),
+    UserModule,
   ],
   providers: [EventService],
   exports: [EventService],

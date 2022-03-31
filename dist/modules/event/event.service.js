@@ -30,6 +30,9 @@ let EventService = class EventService {
             return this.eventModel.scan().limit(limit).exec();
         return this.eventModel.scan().exec();
     }
+    async updateEvent(id, body) {
+        return this.eventModel.update(id, body);
+    }
 };
 EventService = __decorate([
     (0, common_1.Injectable)(),

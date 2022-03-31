@@ -29,6 +29,7 @@ let EventController = class EventController {
         Object.assign(ticket, body.ticket);
         ticket.saleStart = new Date(body.ticket.saleStart);
         ticket.saleEnd = new Date(body.ticket.saleEnd);
+        ticket.sold = 0;
         const event = new event_interface_1.Event();
         Object.assign(event, body);
         event.userId = request.user.sub;
@@ -41,6 +42,23 @@ let EventController = class EventController {
             code: 201,
             message: 'Event created',
             data: newEvent,
+        };
+    }
+    async updateEvent(body) {
+        const foundEvent = await this.eventService.getEventById(body.id);
+        if (!foundEvent)
+            return {
+                code: 404,
+                message: 'Event not found',
+            };
+        const { id } = body;
+        delete body.id;
+        const updateBody = Object.assign(Object.assign({}, body), { publishDate: new Date(body.publishDate), startDate: new Date(body.startDate), endDate: new Date(body.endDate), createdAt: new Date(body.createdAt), ticket: Object.assign(Object.assign({}, body.ticket), { saleStart: new Date(body.ticket.saleStart), saleEnd: new Date(body.ticket.saleEnd) }) });
+        const updatedEvent = await this.eventService.updateEvent(id, updateBody);
+        return {
+            code: 201,
+            message: 'Event updated',
+            data: updatedEvent,
         };
     }
     async getEvents(limit) {
@@ -70,6 +88,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_event_dto_1.CreateEventDTO]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "createEvent", null);
+__decorate([
+    (0, common_1.Patch)('/update'),
+    (0, swagger_1.ApiBearerAuth)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_event_dto_1.UpdateEventDTO]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "updateEvent", null);
 __decorate([
     (0, common_1.Get)('/'),
     (0, jwt_auth_guard_1.Public)(),

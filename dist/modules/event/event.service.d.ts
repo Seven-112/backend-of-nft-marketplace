@@ -6,4 +6,5 @@ export declare class EventService {
     createEvent(event: Event): Promise<import("nestjs-dynamoose").Document<Event>>;
     getEventById(id: string): Promise<import("nestjs-dynamoose").Document<Event>>;
     getAllEvents(limit?: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>>;
+    updateEvent(id: string, body: any): Promise<import("nestjs-dynamoose").Document<Event>>;
 }

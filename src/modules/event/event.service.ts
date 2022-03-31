@@ -22,4 +22,8 @@ export class EventService {
 
     return this.eventModel.scan().exec();
   }
+
+  async updateEvent(id: string, body: any) {
+    return this.eventModel.update(id, body);
+  }
 }
