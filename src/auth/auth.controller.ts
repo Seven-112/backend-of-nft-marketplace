@@ -47,9 +47,14 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Public()
   async canLogin(@Body() body: CheckCanLoginDTO) {
+    const userByEmail = await this.userService.getByEmail(body.email);
     const user = await this.userService.getByWalletAddress(body.walletAddress);
 
-    if (!user.count || user[0].email === body.email) {
+    if (
+      !user.count ||
+      user[0].email === body.email ||
+      !userByEmail[0].walletAddress
+    ) {
       return {
         code: 200,
         message: 'Can login',

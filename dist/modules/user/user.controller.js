@@ -80,7 +80,7 @@ let UserController = class UserController {
             };
         }
         const foundUser = await this.userService.getUserById(request.user.sub);
-        const updatedBody = Object.assign(Object.assign({}, body), { role: foundUser.role || user_interface_1.UserRole.User, status: foundUser.status || user_interface_1.UserStatus.active, createdAt: foundUser.createdAt || new Date().toISOString() });
+        const updatedBody = Object.assign(Object.assign({}, body), { role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
         const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
         return {
             code: 200,

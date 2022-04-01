@@ -122,9 +122,9 @@ export class UserController {
 
     const updatedBody = {
       ...body,
-      role: foundUser.role || UserRole.User,
-      status: foundUser.status || UserStatus.active,
-      createdAt: foundUser.createdAt || new Date().toISOString(),
+      role: foundUser?.role || UserRole.User,
+      status: foundUser?.status || UserStatus.active,
+      createdAt: foundUser?.createdAt || new Date().toISOString(),
     };
 
     const updatedUser = await this.userService.updateWalletAddress(

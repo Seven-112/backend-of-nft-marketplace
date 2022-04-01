@@ -39,6 +39,10 @@ export class UserService {
     return this.userModel.scan('walletAddress').eq(address).exec();
   }
 
+  async getByEmail(email: string) {
+    return this.userModel.scan('email').eq(email).exec();
+  }
+
   async updateUser(user: User) {
     return this.userModel.update(user);
   }
