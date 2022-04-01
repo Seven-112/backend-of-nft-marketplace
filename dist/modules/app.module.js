@@ -14,6 +14,8 @@ const config_1 = require("@nestjs/config");
 const auth_module_1 = require("../auth/auth.module");
 const user_module_1 = require("./user/user.module");
 const app_controller_1 = require("./app.controller");
+const core_1 = require("@nestjs/core");
+const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const nft_module_1 = require("./nft/nft.module");
 const notification_module_1 = require("./notification/notification.module");
@@ -61,7 +63,9 @@ AppModule = __decorate([
             socket_module_1.SocketModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [],
+        providers: [
+            { provide: core_1.APP_GUARD, useClass: jwt_auth_guard_1.JwtAuthGuard },
+        ],
     })
 ], AppModule);
 exports.AppModule = AppModule;

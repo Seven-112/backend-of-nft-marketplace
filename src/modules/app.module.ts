@@ -56,7 +56,7 @@ import { SocketModule } from './socket/socket.module';
   ],
   controllers: [AppController],
   providers: [
-    // { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,

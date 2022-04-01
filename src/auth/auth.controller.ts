@@ -171,14 +171,14 @@ export class AuthController {
   //   }
   // }
 
-  @Get('/twitter')
-  @UseGuards(TwitterGuard)
-  async twitterAuth() {}
+  // @Get('/twitter')
+  // @UseGuards(TwitterGuard)
+  // async twitterAuth() {}
 
-  @Get('/twitter/callback')
-  @UseGuards(TwitterGuard)
-  @Redirect('http://localhost:3000', 302)
-  async twitterGuardRedirect(@Req() req: any) {
-    console.log(req);
-  }
+  // @Get('/twitter/callback')
+  // @UseGuards(TwitterGuard)
+  // @Redirect('http://localhost:3000', 302)
+  // async twitterGuardRedirect(@Req() req: any) {
+  //   console.log(req);
+  // }
 }

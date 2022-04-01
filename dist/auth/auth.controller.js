@@ -22,7 +22,6 @@ const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const login_dto_1 = require("./DTO/login.dto");
 const validation_pipe_1 = require("../pipes/validation.pipe");
 const mail_service_1 = require("../modules/mail/mail.service");
-const twitter_guard_1 = require("./twitter.guard");
 const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService) {
@@ -69,10 +68,6 @@ let AuthController = class AuthController {
             throw new common_1.BadRequestException(error.message);
         }
     }
-    async twitterAuth() { }
-    async twitterGuardRedirect(req) {
-        console.log(req);
-    }
 };
 __decorate([
     (0, common_1.Post)('/canLogin'),
@@ -104,22 +99,6 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDTO]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
-__decorate([
-    (0, common_1.Get)('/twitter'),
-    (0, common_1.UseGuards)(twitter_guard_1.TwitterGuard),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "twitterAuth", null);
-__decorate([
-    (0, common_1.Get)('/twitter/callback'),
-    (0, common_1.UseGuards)(twitter_guard_1.TwitterGuard),
-    (0, common_1.Redirect)('http://localhost:3000', 302),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "twitterGuardRedirect", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
