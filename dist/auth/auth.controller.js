@@ -30,11 +30,13 @@ let AuthController = class AuthController {
         this.mailService = mailService;
     }
     async canLogin(body) {
+        var _a, _b, _c;
         const userByEmail = await this.userService.getByEmail(body.email);
-        const user = await this.userService.getByWalletAddress(body.walletAddress);
-        if (!user.count ||
-            user[0].email === body.email ||
-            !userByEmail[0].walletAddress) {
+        const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
+        const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
+            ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
+        const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
+        if (case1 && case2) {
             return {
                 code: 200,
                 message: 'Can login',

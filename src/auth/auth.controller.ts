@@ -48,13 +48,18 @@ export class AuthController {
   @Public()
   async canLogin(@Body() body: CheckCanLoginDTO) {
     const userByEmail = await this.userService.getByEmail(body.email);
-    const user = await this.userService.getByWalletAddress(body.walletAddress);
+    const userByWallet = await this.userService.getByWalletAddress(
+      body.walletAddress,
+    );
 
-    if (
-      !user.count ||
-      user[0].email === body.email ||
-      !userByEmail[0].walletAddress
-    ) {
+    const case1 =
+      userByWallet?.[0]?.email === body.email &&
+      userByWallet?.[0]?.walletAddress === body.walletAddress;
+
+    // wallet and email not in db
+    const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
+
+    if (case1 && case2) {
       return {
         code: 200,
         message: 'Can login',
