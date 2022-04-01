@@ -18,7 +18,7 @@ import { TwitterOauthStrategy } from './twitter.strategy';
     MailModule,
     // RedisCacheModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, TwitterOauthStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })
