@@ -17,4 +17,6 @@ export declare class AuthController {
         code: HttpStatus;
         accessToken: any;
     }>;
+    twitterAuth(): Promise<void>;
+    twitterGuardRedirect(req: any): Promise<void>;
 }

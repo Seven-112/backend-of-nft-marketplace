@@ -15,6 +15,7 @@ const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const local_strategy_1 = require("./local.strategy");
 const jwt_strategy_1 = require("./jwt.strategy");
+const twitter_strategy_1 = require("./twitter.strategy");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -24,7 +25,7 @@ AuthModule = __decorate([
             passport_1.PassportModule,
             mail_module_1.MailModule,
         ],
-        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
+        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy, twitter_strategy_1.TwitterOauthStrategy],
         exports: [auth_service_1.AuthService],
         controllers: [auth_controller_1.AuthController],
     })

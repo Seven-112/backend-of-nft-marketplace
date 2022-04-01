@@ -5,6 +5,7 @@ const app_module_1 = require("./modules/app.module");
 const constants_1 = require("./utils/constants");
 const aws_amplify_1 = require("aws-amplify");
 const swagger_1 = require("@nestjs/swagger");
+const session = require("express-session");
 const awsmobile = {
     aws_project_region: 'eu-west-2',
     aws_cognito_identity_pool_id: 'eu-west-2:4de1dd10-ef31-48de-a084-9e2285978a4e',
@@ -28,6 +29,14 @@ async function bootstrap() {
         logger: console,
         cors: true,
     });
+    app.use(session({
+        secret: 'my-secret',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            secure: false,
+        },
+    }));
     app.setGlobalPrefix('v1');
     aws_amplify_1.default.configure(awsmobile);
     const config = new swagger_1.DocumentBuilder()

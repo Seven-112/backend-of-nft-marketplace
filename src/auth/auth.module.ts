@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { TwitterOauthStrategy } from './twitter.strategy';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { JwtStrategy } from './jwt.strategy';
     MailModule,
     // RedisCacheModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, TwitterOauthStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })

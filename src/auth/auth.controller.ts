@@ -14,6 +14,7 @@ import {
   ForbiddenException,
   UseGuards,
   Res,
+  Redirect,
 } from '@nestjs/common';
 import { Auth } from 'aws-amplify';
 import * as bcrypt from 'bcrypt';
@@ -31,6 +32,7 @@ import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 // import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
 import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
+import { TwitterGuard } from './twitter.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -146,4 +148,15 @@ export class AuthController {
   //     throw error;
   //   }
   // }
+
+  @Get('/twitter')
+  @UseGuards(TwitterGuard)
+  async twitterAuth() {}
+
+  @Get('/twitter/callback')
+  @UseGuards(TwitterGuard)
+  @Redirect('http://localhost:3000', 302)
+  async twitterGuardRedirect(@Req() req: any) {
+    console.log(req);
+  }
 }
