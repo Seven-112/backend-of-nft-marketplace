@@ -33,6 +33,7 @@ import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 // import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
 import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 import { TwitterGuard } from './twitter.guard';
+import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +42,27 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
   ) {}
+
+  @Post('/canLogin')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async canLogin(@Body() body: CheckCanLoginDTO) {
+    const user = await this.userService.getByWalletAddress(body.walletAddress);
+
+    if (!user.count || user[0].email === body.email) {
+      return {
+        code: 200,
+        message: 'Can login',
+        data: true,
+      };
+    }
+
+    return {
+      code: 200,
+      message: 'Can not login',
+      data: false,
+    };
+  }
 
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)

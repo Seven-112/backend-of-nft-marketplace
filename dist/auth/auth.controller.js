@@ -23,11 +23,27 @@ const login_dto_1 = require("./DTO/login.dto");
 const validation_pipe_1 = require("../pipes/validation.pipe");
 const mail_service_1 = require("../modules/mail/mail.service");
 const twitter_guard_1 = require("./twitter.guard");
+const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService) {
         this.authService = authService;
         this.userService = userService;
         this.mailService = mailService;
+    }
+    async canLogin(body) {
+        const user = await this.userService.getByWalletAddress(body.walletAddress);
+        if (!user.count || user[0].email === body.email) {
+            return {
+                code: 200,
+                message: 'Can login',
+                data: true,
+            };
+        }
+        return {
+            code: 200,
+            message: 'Can not login',
+            data: false,
+        };
     }
     async register(body) {
         try {
@@ -58,6 +74,15 @@ let AuthController = class AuthController {
         console.log(req);
     }
 };
+__decorate([
+    (0, common_1.Post)('/canLogin'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_can_login_DTO_1.CheckCanLoginDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "canLogin", null);
 __decorate([
     (0, common_1.Post)('/register'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
