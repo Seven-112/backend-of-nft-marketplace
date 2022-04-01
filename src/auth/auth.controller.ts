@@ -59,7 +59,7 @@ export class AuthController {
     // wallet and email not in db
     const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
 
-    if (case1 && case2) {
+    if (case1 || case2) {
       return {
         code: 200,
         message: 'Can login',
