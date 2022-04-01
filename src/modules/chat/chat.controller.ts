@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Public } from 'src/guard/jwt-auth.guard';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { CreateChatDTO } from './DTO/create-chat.DTO';
 
@@ -8,6 +9,8 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post('/create')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() body: CreateChatDTO) {
     const data = await this.chatService.getChatByUserId(body.userId);
 
@@ -25,6 +28,8 @@ export class ChatController {
   }
 
   @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async getId(@Param('id') id: string) {
     return this.chatService.getChatByUserId(id);
   }

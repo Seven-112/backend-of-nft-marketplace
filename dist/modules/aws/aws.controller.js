@@ -20,6 +20,7 @@ const AWS = require("aws-sdk");
 const nanoid_1 = require("nanoid");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const translate_dto_1 = require("./DTO/translate.dto");
+const swagger_1 = require("@nestjs/swagger");
 let AWSController = class AWSController {
     async getPresign(path) {
         const s3 = new AWS.S3();
@@ -115,7 +116,8 @@ let AWSController = class AWSController {
 };
 __decorate([
     (0, common_1.Post)('/presignURL'),
-    (0, jwt_auth_guard_1.Public)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

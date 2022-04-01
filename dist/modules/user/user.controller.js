@@ -23,6 +23,7 @@ const update_profile_1 = require("./DTO/update-profile");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 const user_interface_1 = require("./user.interface");
+const swagger_1 = require("@nestjs/swagger");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -177,6 +178,8 @@ let UserController = class UserController {
 };
 __decorate([
     (0, common_1.Get)('/profile'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -184,6 +187,8 @@ __decorate([
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
     (0, common_1.Get)('/profile/cognito'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -191,6 +196,8 @@ __decorate([
 ], UserController.prototype, "getUserProfileFromCognito", null);
 __decorate([
     (0, common_1.Patch)('/profile'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -201,6 +208,8 @@ __decorate([
 ], UserController.prototype, "updateProfile", null);
 __decorate([
     (0, common_1.Patch)('/update'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -210,6 +219,8 @@ __decorate([
 ], UserController.prototype, "update", null);
 __decorate([
     (0, common_1.Patch)('/admin/update'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -218,6 +229,8 @@ __decorate([
 ], UserController.prototype, "updateUser", null);
 __decorate([
     (0, common_1.Get)('/admin/accounts'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -226,6 +239,8 @@ __decorate([
 ], UserController.prototype, "getAllAccounts", null);
 __decorate([
     (0, common_1.Post)('/info'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -234,6 +249,8 @@ __decorate([
 ], UserController.prototype, "getUserInformation", null);
 __decorate([
     (0, common_1.Get)('/id/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -250,6 +267,8 @@ __decorate([
 ], UserController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('walletAddress')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

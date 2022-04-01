@@ -7,10 +7,11 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Public } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { UserRole } from '../user/user.interface';
 import { UserService } from '../user/user.service';
@@ -27,6 +28,7 @@ export class EventController {
 
   @Post('/create')
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async createEvent(@Req() request: any, @Body() body: CreateEventDTO) {
     const ticket = new Ticket();
@@ -53,6 +55,7 @@ export class EventController {
 
   @Patch('/update')
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async updateEvent(@Req() request: any, @Body() body: UpdateEventDTO) {
     const user = await this.userService.getUserById(request.user.sub);
     const foundEvent = await this.eventService.getEventById(body.id);

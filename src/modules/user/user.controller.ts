@@ -7,11 +7,12 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { AnyDocument } from 'dynamoose/dist/Document';
 import { UserModel } from 'src/common/model';
-import { Public } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
@@ -20,12 +21,15 @@ import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 import { User, UserRole, UserStatus } from './user.interface';
 import { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async getUserProfile(@Req() request: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
@@ -40,6 +44,8 @@ export class UserController {
   }
 
   @Get('/profile/cognito')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async getUserProfileFromCognito(@Req() request: Request) {
     const accessToken = request.headers.authorization.split(' ')[1];
 
@@ -53,6 +59,8 @@ export class UserController {
   }
 
   @Patch('/profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async updateProfile(
     @Req() request: AnyDocument,
@@ -95,6 +103,8 @@ export class UserController {
   }
 
   @Patch('/update')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async update(@Req() request: any, @Body() body: UpdateUserDTO) {
     const isWalletAvailable = await this.userService.isWalletAvailable(
@@ -130,6 +140,8 @@ export class UserController {
   }
 
   @Patch('/admin/update')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async updateUser(@Req() request: AnyDocument, @Body() body: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
@@ -157,6 +169,8 @@ export class UserController {
   }
 
   @Get('/admin/accounts')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async getAllAccounts(
     @Req() request: AnyDocument,
     @Query('limit') limit?: number,
@@ -186,6 +200,8 @@ export class UserController {
   // }
 
   @Post('/info')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async getUserInformation(@Body() body: GetUserInformationDTO) {
     const users = await this.userService.getUsers(body.userIds);
@@ -199,6 +215,8 @@ export class UserController {
   }
 
   @Get('/id/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
     const user = await this.userService.getUserById(id);
 
@@ -238,6 +256,8 @@ export class UserController {
   }
 
   @Get('/:walletAddress')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async getByWalletAddress(@Param('walletAddress') walletAddress: string) {
     const user = await this.userService.getByWalletAddress(walletAddress);
 

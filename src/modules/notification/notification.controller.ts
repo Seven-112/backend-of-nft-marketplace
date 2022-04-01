@@ -11,10 +11,11 @@ import {
   Query,
   Req,
   Sse,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Public } from 'src/guard/jwt-auth.guard';
+import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { NotifyGroupDTO } from './DTO/notifyGroup.dto';
 import { EventsService } from './events.service';
@@ -154,6 +155,7 @@ export class NotificationController {
   // }
 
   @Get('/:type')
+  @UseGuards(JwtAuthGuard)
   async getNotiByReceiver(
     @Req() req: Request,
     @Param('type') type: string,
@@ -187,6 +189,7 @@ export class NotificationController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/user')
   @UsePipes(new ValidationPipe())
   async sendNotiToUsers(@Body() body: NotifyGroupDTO) {
@@ -208,6 +211,7 @@ export class NotificationController {
   }
 
   @Post('/mark-read')
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async markRead(@Body() body: MarkReadDTO) {
     return {
