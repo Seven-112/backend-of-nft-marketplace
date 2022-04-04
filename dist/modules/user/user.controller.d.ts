@@ -48,10 +48,6 @@ export declare class UserController {
     update(request: any, body: UpdateUserDTO): Promise<{
         code: number;
         message: string;
-        data?: undefined;
-    } | {
-        code: number;
-        message: string;
         data: import("nestjs-dynamoose").Document<User>;
     }>;
     updateUser(request: AnyDocument, body: any): Promise<{
