@@ -21,13 +21,16 @@ const user_service_1 = require("../modules/user/user.service");
 const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const login_dto_1 = require("./DTO/login.dto");
 const validation_pipe_1 = require("../pipes/validation.pipe");
+const forgotPassword_dto_1 = require("./DTO/forgotPassword.dto");
 const mail_service_1 = require("../modules/mail/mail.service");
+const redis_service_1 = require("../modules/redis/redis.service");
 const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 let AuthController = class AuthController {
-    constructor(authService, userService, mailService) {
+    constructor(authService, userService, mailService, redisService) {
         this.authService = authService;
         this.userService = userService;
         this.mailService = mailService;
+        this.redisService = redisService;
     }
     async canLogin(body) {
         var _a, _b, _c;
@@ -73,6 +76,50 @@ let AuthController = class AuthController {
             throw new common_1.BadRequestException(error.message);
         }
     }
+    async forgotPassword(body) {
+        try {
+            const email = body.email;
+            const user = await this.userService.getUserByEmail(email);
+            if (!user[0]) {
+                throw new common_1.NotFoundException('User not found!');
+            }
+            const otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+            const token = this.authService.hashEmailAndOtp(email, otp);
+            this.mailService.sendForgotPasswordEmail(email, otp);
+            return { token };
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async verifyOtp(body) {
+        try {
+            const { token, otp } = body;
+            try {
+                const decoded = this.authService.verifyOtp(token);
+                if (!otp || String(decoded.otp) !== String(otp)) {
+                    throw new common_1.BadRequestException('Invalid OTP!');
+                }
+                return;
+            }
+            catch (error) {
+                throw new common_1.BadRequestException('Token expired!');
+            }
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async updatePassword(body) {
+        try {
+            const { email, password } = body;
+            const data = await this.authService.updatePassword(email, password);
+            return data;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('/canLogin'),
@@ -104,11 +151,39 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDTO]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('/forgot-password'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgotPassword_dto_1.ForgotPasswordDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('/verify-otp'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgotPassword_dto_1.VerifyOtpDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyOtp", null);
+__decorate([
+    (0, common_1.Post)('/update-password'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgotPassword_dto_1.UpdatePasswordDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updatePassword", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         user_service_1.UserService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        redis_service_1.RedisService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controller.js.map

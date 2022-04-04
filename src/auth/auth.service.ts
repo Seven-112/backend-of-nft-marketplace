@@ -4,7 +4,8 @@ import { Auth, google } from 'googleapis';
 
 import { User } from 'src/modules/user/user.interface';
 import { UserService } from '../modules/user/user.service';
-import { JwtPayload } from './auth.interface';
+import { JwtPayload, JwtResponse } from './auth.interface';
+import * as aws from 'aws-sdk';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,8 @@ export class AuthService {
 
   constructor(
     private usersService: UserService,
-  ) // private jwtService: JwtService,
+    private jwtService: JwtService,
+  ) 
   {
     this.oAuthClient = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
@@ -40,5 +42,34 @@ export class AuthService {
 
   async getTokenInfo(token: string) {
     return this.oAuthClient.getTokenInfo(token);
+  }
+
+  hashEmailAndOtp(email: string, otp: Number) {
+    return this.jwtService.sign({ email, otp }, { expiresIn: '5m' });
+  }
+
+  verifyOtp(otp: string): JwtResponse {
+    return this.jwtService.verify(otp);
+  }
+
+  async updatePassword(email: string, password: string) {
+    const cognitoIdentityServiceProvider =
+    new aws.CognitoIdentityServiceProvider();
+
+    return await new Promise((res, rej) => {
+      cognitoIdentityServiceProvider.adminSetUserPassword({
+        Password: password,
+        Permanent: true,
+        Username: email,
+        UserPoolId: process.env.AWS_USER_POOL
+      }, (data, error) => {
+        if (!error || Object.keys(error).length > 0 || !(Object.getPrototypeOf(error) === Object.prototype)) {
+          console.log({ error });
+          rej(error)
+        };
+        console.log({ data })
+        res(data);
+      })
+    })
   }
 }

@@ -19,10 +19,10 @@ MailModule = __decorate([
                 transport: {
                     host: 'smtp.gmail.com',
                     secure: true,
-                    port: '465',
+                    port: 465,
                     auth: {
-                        user: process.env.MAIL_EMAIL,
-                        pass: process.env.MAIL_PASSWORD,
+                        user: 'longnguyennapa@gmail.com',
+                        pass: 'ejidpgmaaoddlmvw',
                     },
                 },
                 defaults: {

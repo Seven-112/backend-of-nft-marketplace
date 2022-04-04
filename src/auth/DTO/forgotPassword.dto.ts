@@ -6,3 +6,15 @@ export class ForgotPasswordDTO {
   @IsString()
   email: string;
 }
+
+export class VerifyOtpDTO {
+  @IsNotEmpty()
+  otp: string;
+  token: string;
+}
+
+export class UpdatePasswordDTO {
+  @IsNotEmpty()
+  email: string;
+  password: string;
+}

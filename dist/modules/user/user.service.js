@@ -76,6 +76,9 @@ let UserService = class UserService {
     async searchUsers(address) {
         return this.userModel.scan('walletAddress').contains(address).exec();
     }
+    async getUserByEmail(email) {
+        return this.userModel.scan('email').eq(email).exec();
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

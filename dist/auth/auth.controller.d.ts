@@ -3,13 +3,16 @@ import { AuthService } from './auth.service';
 import { RegisterDTO } from './DTO/register.dto';
 import { UserService } from 'src/modules/user/user.service';
 import { LoginDTO } from './DTO/login.dto';
+import { ForgotPasswordDTO, VerifyOtpDTO, UpdatePasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
+import { RedisService } from 'src/modules/redis/redis.service';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 export declare class AuthController {
     private readonly authService;
     private readonly userService;
     private readonly mailService;
-    constructor(authService: AuthService, userService: UserService, mailService: MailService);
+    private readonly redisService;
+    constructor(authService: AuthService, userService: UserService, mailService: MailService, redisService: RedisService);
     canLogin(body: CheckCanLoginDTO): Promise<{
         code: number;
         message: string;
@@ -23,4 +26,9 @@ export declare class AuthController {
         code: HttpStatus;
         accessToken: any;
     }>;
+    forgotPassword(body: ForgotPasswordDTO): Promise<{
+        token: string;
+    }>;
+    verifyOtp(body: VerifyOtpDTO): Promise<void>;
+    updatePassword(body: UpdatePasswordDTO): Promise<unknown>;
 }

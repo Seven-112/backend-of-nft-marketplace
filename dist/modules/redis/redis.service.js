@@ -40,6 +40,13 @@ let RedisService = class RedisService {
         }
         return data;
     }
+    async setOtpForgotPassword(otp, email) {
+        return await this.redis.set(`key-${email}`, otp, 'ex', 300);
+    }
+    async getOtpForgotPassword(email) {
+        const otp = await this.redis.get(`key-${email}`);
+        return otp;
+    }
 };
 RedisService = __decorate([
     (0, common_1.Injectable)(),
