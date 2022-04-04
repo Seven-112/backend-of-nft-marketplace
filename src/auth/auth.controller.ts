@@ -146,8 +146,8 @@ export class AuthController {
   async forgotPassword(@Body() body: ForgotPasswordDTO) {
     try {
       const email = body.email;
-      // const user = await this.userService.getUserByEmail(email);
-      if (!email) {
+      const user = await this.userService.getUserByEmail(email);
+      if (!user[0]) {
         throw new NotFoundException('User not found!');
       }
 

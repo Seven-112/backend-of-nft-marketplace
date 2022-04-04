@@ -79,7 +79,8 @@ let AuthController = class AuthController {
     async forgotPassword(body) {
         try {
             const email = body.email;
-            if (!email) {
+            const user = await this.userService.getUserByEmail(email);
+            if (!user[0]) {
                 throw new common_1.NotFoundException('User not found!');
             }
             const otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;

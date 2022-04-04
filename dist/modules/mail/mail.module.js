@@ -21,8 +21,8 @@ MailModule = __decorate([
                     secure: true,
                     port: 465,
                     auth: {
-                        user: process.env.MAIL_EMAIL,
-                        pass: process.env.MAIL_16_DIGIT_CODE,
+                        user: 'longnguyennapa@gmail.com',
+                        pass: 'ejidpgmaaoddlmvw',
                     },
                 },
                 defaults: {
