@@ -33,4 +33,13 @@ export class RedisService {
 
     return data;
   }
+
+  async setOtpForgotPassword(otp: any, email: string) {
+    return await this.redis.set(`key-${email}`, otp, 'ex', 300);
+  }
+
+  async getOtpForgotPassword(email: string) {
+    const otp = await this.redis.get(`key-${email}`);
+    return otp;
+  }
 }

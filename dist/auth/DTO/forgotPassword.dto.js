@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ForgotPasswordDTO = void 0;
+exports.UpdatePasswordDTO = exports.VerifyOtpDTO = exports.ForgotPasswordDTO = void 0;
 const class_validator_1 = require("class-validator");
 class ForgotPasswordDTO {
 }
@@ -20,4 +20,18 @@ __decorate([
     __metadata("design:type", String)
 ], ForgotPasswordDTO.prototype, "email", void 0);
 exports.ForgotPasswordDTO = ForgotPasswordDTO;
+class VerifyOtpDTO {
+}
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], VerifyOtpDTO.prototype, "otp", void 0);
+exports.VerifyOtpDTO = VerifyOtpDTO;
+class UpdatePasswordDTO {
+}
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UpdatePasswordDTO.prototype, "email", void 0);
+exports.UpdatePasswordDTO = UpdatePasswordDTO;
 //# sourceMappingURL=forgotPassword.dto.js.map

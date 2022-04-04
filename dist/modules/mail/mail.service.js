@@ -16,8 +16,13 @@ let MailService = class MailService {
     constructor(mailerService) {
         this.mailerService = mailerService;
     }
-    async sendForgotPasswordEmail(user) {
-        const otp = this.generateOTP();
+    async sendForgotPasswordEmail(email, otp) {
+        await this.mailerService.sendMail({
+            to: email,
+            subject: 'Forgot password email',
+            text: 'Sample email',
+            html: `OTP here ${otp}`,
+        });
     }
     generateOTP() {
         return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;

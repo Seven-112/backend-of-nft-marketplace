@@ -26,11 +26,12 @@ import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
-import { ForgotPasswordDTO } from './DTO/forgotPassword.dto';
+import { ForgotPasswordDTO, VerifyOtpDTO, UpdatePasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
-// import { RedisCacheService } from 'src/modules/redisCache/redisCache.service';
+import { RedisService } from 'src/modules/redis/redis.service';
 import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
+import { JwtResponse } from './auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +39,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
     private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
-  ) {}
+    private readonly redisService: RedisService,
+  ) { }
 
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
@@ -104,21 +106,68 @@ export class AuthController {
     }
   }
 
-  // @Post('/forgot-password')
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // @Public()
-  // async forgotPassword(@Body() body: ForgotPasswordDTO) {
-  //   try {
-  //     const user = await this.userService.getUserByEmail(body.email);
-  //     if (!user) {
-  //       throw new NotFoundException('User not found!');
-  //     }
+  @Post('/forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  async forgotPassword(@Body() body: ForgotPasswordDTO) {
+    try {
+      const email = body.email;
+      // const user = await this.userService.getUserByEmail(email);
+      if (!email) {
+        throw new NotFoundException('User not found!');
+      }
 
-  //     return this.mailService.sendForgotPasswordEmail(user);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+      const otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+      const token = this.authService.hashEmailAndOtp(email, otp);
+      this.mailService.sendForgotPasswordEmail(email, otp);
+
+      return { token };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/verify-otp')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Public()
+  async verifyOtp(@Body() body: VerifyOtpDTO) {
+    try {
+      const { token, otp } = body;
+      console.log('======================================')
+      console.log(JSON.stringify({ token, otp }, null, 4));
+      console.log('======================================')
+      try {
+        const decoded: JwtResponse = this.authService.verifyOtp(token);
+        console.log('------------------------------------')
+        console.log(JSON.stringify({ decoded, otp }));
+        console.log('------------------------------------')
+        if (!otp || String(decoded.otp) !== String(otp)) {
+          throw new BadRequestException('Invalid OTP!');
+        }
+        return;
+      } catch (error) {
+        console.log('+++++++++++++++++++++++++++++++++++++')
+        console.log(error);
+        console.log('+++++++++++++++++++++++++++++++++++++')
+        throw new BadRequestException('Token expired!');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/update-password')
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  async updatePassword(@Body() body: UpdatePasswordDTO) {
+    try {
+      const { email, password } = body;
+      const data = await this.authService.updatePassword(email, password);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // @Post('/reset-password')
   // @HttpCode(HttpStatus.OK)

@@ -9,8 +9,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
+const jwt_1 = require("@nestjs/jwt");
 const user_module_1 = require("../modules/user/user.module");
 const mail_module_1 = require("../modules/mail/mail.module");
+const redis_module_1 = require("../modules/redis/redis.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const local_strategy_1 = require("./local.strategy");
@@ -23,6 +25,8 @@ AuthModule = __decorate([
             user_module_1.UserModule,
             passport_1.PassportModule,
             mail_module_1.MailModule,
+            redis_module_1.RedisModule,
+            jwt_1.JwtModule.register({ secret: process.env.JWT_SECRET, secretOrPrivateKey: 'secret' })
         ],
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
         exports: [auth_service_1.AuthService],

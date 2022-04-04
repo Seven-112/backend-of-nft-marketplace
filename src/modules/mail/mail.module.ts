@@ -8,8 +8,8 @@ import { MailService } from './mail.service';
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
-        secure: true,
-        port: '465',
+        secure: true, // true for 465, false for other ports
+        port: 465,
         auth: {
           user: process.env.MAIL_EMAIL,
           pass: process.env.MAIL_PASSWORD,
@@ -19,7 +19,6 @@ import { MailService } from './mail.service';
         from: '"No Reply" <longnguyennapa@gmail.com>',
       },
     }),
-    // RedisCacheModule,
   ],
   providers: [MailService],
   exports: [MailService],

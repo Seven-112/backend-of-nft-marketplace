@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../modules/user/user.module';
 import { MailModule } from 'src/modules/mail/mail.module';
-// import { RedisCacheModule } from 'src/modules/redisCache/redisCache.module';
+import { RedisModule } from 'src/modules/redis/redis.module';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -15,7 +16,8 @@ import { JwtStrategy } from './jwt.strategy';
     UserModule,
     PassportModule,
     MailModule,
-    // RedisCacheModule,
+    RedisModule,
+    JwtModule.register({ secret: process.env.JWT_SECRET, secretOrPrivateKey: 'secret' })
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
