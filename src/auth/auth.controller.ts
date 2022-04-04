@@ -14,6 +14,7 @@ import {
   ForbiddenException,
   UseGuards,
   Res,
+  Redirect,
 } from '@nestjs/common';
 import { Auth } from 'aws-amplify';
 import * as bcrypt from 'bcrypt';
@@ -32,6 +33,8 @@ import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 import { RedisService } from 'src/modules/redis/redis.service';
 import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 import { JwtResponse } from './auth.interface';
+import { TwitterGuard } from './twitter.guard';
+import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +44,37 @@ export class AuthController {
     private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
     private readonly redisService: RedisService,
   ) { }
+
+  @Post('/canLogin')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async canLogin(@Body() body: CheckCanLoginDTO) {
+    const userByEmail = await this.userService.getByEmail(body.email);
+    const userByWallet = await this.userService.getByWalletAddress(
+      body.walletAddress,
+    );
+
+    const case1 =
+      userByWallet?.[0]?.email === body.email &&
+      userByWallet?.[0]?.walletAddress === body.walletAddress;
+
+    // wallet and email not in db
+    const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
+
+    if (case1 || case2) {
+      return {
+        code: 200,
+        message: 'Can login',
+        data: true,
+      };
+    }
+
+    return {
+      code: 200,
+      message: 'Can not login',
+      data: false,
+    };
+  }
 
   @Post('/register')
   @HttpCode(HttpStatus.CREATED)
@@ -133,22 +167,13 @@ export class AuthController {
   async verifyOtp(@Body() body: VerifyOtpDTO) {
     try {
       const { token, otp } = body;
-      console.log('======================================')
-      console.log(JSON.stringify({ token, otp }, null, 4));
-      console.log('======================================')
       try {
         const decoded: JwtResponse = this.authService.verifyOtp(token);
-        console.log('------------------------------------')
-        console.log(JSON.stringify({ decoded, otp }));
-        console.log('------------------------------------')
         if (!otp || String(decoded.otp) !== String(otp)) {
           throw new BadRequestException('Invalid OTP!');
         }
         return;
       } catch (error) {
-        console.log('+++++++++++++++++++++++++++++++++++++')
-        console.log(error);
-        console.log('+++++++++++++++++++++++++++++++++++++')
         throw new BadRequestException('Token expired!');
       }
     } catch (error) {
@@ -157,7 +182,7 @@ export class AuthController {
   }
 
   @Post('/update-password')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Public()
   async updatePassword(@Body() body: UpdatePasswordDTO) {
     try {
@@ -194,5 +219,16 @@ export class AuthController {
   //   } catch (error) {
   //     throw error;
   //   }
+  // }
+
+  // @Get('/twitter')
+  // @UseGuards(TwitterGuard)
+  // async twitterAuth() {}
+
+  // @Get('/twitter/callback')
+  // @UseGuards(TwitterGuard)
+  // @Redirect('http://localhost:3000', 302)
+  // async twitterGuardRedirect(@Req() req: any) {
+  //   console.log(req);
   // }
 }

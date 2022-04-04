@@ -4,6 +4,7 @@ import { PORT } from './utils/constants';
 // import * as helmet from 'helmet';
 import Amplify from 'aws-amplify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as session from 'express-session';
 import aws from 'aws-sdk';
 
 const awsmobile = {
@@ -35,7 +36,16 @@ async function bootstrap() {
     logger: console,
     cors: true,
   });
-
+  app.use(
+    session({
+      secret: 'my-secret',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: false,
+      },
+    }),
+  );
   app.setGlobalPrefix('v1');
   Amplify.configure(awsmobile);
 

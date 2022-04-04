@@ -139,6 +139,7 @@ __decorate([
 ], NotificationController.prototype, "sse", null);
 __decorate([
     (0, common_1.Get)('/:type'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('type')),
     __param(2, (0, common_1.Query)('limit')),
@@ -147,6 +148,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "getNotiByReceiver", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('/user'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
@@ -156,6 +158,7 @@ __decorate([
 ], NotificationController.prototype, "sendNotiToUsers", null);
 __decorate([
     (0, common_1.Post)('/mark-read'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

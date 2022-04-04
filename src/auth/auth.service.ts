@@ -63,7 +63,7 @@ export class AuthService {
         Username: email,
         UserPoolId: process.env.AWS_USER_POOL
       }, (data, error) => {
-        if (error) {
+        if (!error || Object.keys(error).length > 0 || !(Object.getPrototypeOf(error) === Object.prototype)) {
           console.log({ error });
           rej(error)
         };

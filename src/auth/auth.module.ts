@@ -10,6 +10,7 @@ import { AuthController } from './auth.controller';
 
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { TwitterOauthStrategy } from './twitter.strategy';
 
 @Module({
   imports: [

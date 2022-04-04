@@ -6,12 +6,18 @@ import { LoginDTO } from './DTO/login.dto';
 import { ForgotPasswordDTO, VerifyOtpDTO, UpdatePasswordDTO } from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { RedisService } from 'src/modules/redis/redis.service';
+import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 export declare class AuthController {
     private readonly authService;
     private readonly userService;
     private readonly mailService;
     private readonly redisService;
     constructor(authService: AuthService, userService: UserService, mailService: MailService, redisService: RedisService);
+    canLogin(body: CheckCanLoginDTO): Promise<{
+        code: number;
+        message: string;
+        data: boolean;
+    }>;
     register(body: RegisterDTO): Promise<{
         code: HttpStatus;
         message: string;

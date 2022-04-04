@@ -14,6 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const chat_service_1 = require("./chat.service");
 const create_chat_DTO_1 = require("./DTO/create-chat.DTO");
 let ChatController = class ChatController {
@@ -39,6 +41,8 @@ let ChatController = class ChatController {
 };
 __decorate([
     (0, common_1.Post)('/create'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_chat_DTO_1.CreateChatDTO]),
@@ -46,6 +50,8 @@ __decorate([
 ], ChatController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

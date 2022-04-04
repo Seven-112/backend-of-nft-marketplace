@@ -17,18 +17,22 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
+const user_interface_1 = require("../user/user.interface");
+const user_service_1 = require("../user/user.service");
 const create_event_dto_1 = require("./DTO/create-event.dto");
 const event_interface_1 = require("./event.interface");
 const event_service_1 = require("./event.service");
 let EventController = class EventController {
-    constructor(eventService) {
+    constructor(eventService, userService) {
         this.eventService = eventService;
+        this.userService = userService;
     }
     async createEvent(request, body) {
         const ticket = new event_interface_1.Ticket();
         Object.assign(ticket, body.ticket);
         ticket.saleStart = new Date(body.ticket.saleStart);
         ticket.saleEnd = new Date(body.ticket.saleEnd);
+        ticket.sold = 0;
         const event = new event_interface_1.Event();
         Object.assign(event, body);
         event.userId = request.user.sub;
@@ -41,6 +45,36 @@ let EventController = class EventController {
             code: 201,
             message: 'Event created',
             data: newEvent,
+        };
+    }
+    async updateEvent(request, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        const foundEvent = await this.eventService.getEventById(body.id);
+        if (!user)
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        if (user.role !== user_interface_1.UserRole.Admin)
+            return {
+                code: 403,
+                message: 'Not allowed',
+                data: null,
+            };
+        if (!foundEvent)
+            return {
+                code: 404,
+                message: 'Event not found',
+            };
+        const { id } = body;
+        delete body.id;
+        const updateBody = Object.assign(Object.assign({}, body), { publishDate: new Date(body.publishDate), startDate: new Date(body.startDate), endDate: new Date(body.endDate), createdAt: new Date(body.createdAt), ticket: Object.assign(Object.assign({}, body.ticket), { saleStart: new Date(body.ticket.saleStart), saleEnd: new Date(body.ticket.saleEnd) }) });
+        const updatedEvent = await this.eventService.updateEvent(id, updateBody);
+        return {
+            code: 201,
+            message: 'Event updated',
+            data: updatedEvent,
         };
     }
     async getEvents(limit) {
@@ -63,6 +97,7 @@ let EventController = class EventController {
 __decorate([
     (0, common_1.Post)('/create'),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -70,6 +105,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, create_event_dto_1.CreateEventDTO]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "createEvent", null);
+__decorate([
+    (0, common_1.Patch)('/update'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, create_event_dto_1.UpdateEventDTO]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "updateEvent", null);
 __decorate([
     (0, common_1.Get)('/'),
     (0, jwt_auth_guard_1.Public)(),
@@ -88,7 +133,8 @@ __decorate([
 ], EventController.prototype, "getEventById", null);
 EventController = __decorate([
     (0, common_1.Controller)('event'),
-    __metadata("design:paramtypes", [event_service_1.EventService])
+    __metadata("design:paramtypes", [event_service_1.EventService,
+        user_service_1.UserService])
 ], EventController);
 exports.EventController = EventController;
 //# sourceMappingURL=event.controller.js.map

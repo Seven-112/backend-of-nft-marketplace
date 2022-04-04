@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateEventDTO = exports.TicketDTO = void 0;
+exports.UpdateEventDTO = exports.CreateEventDTO = exports.UpdateTicketDTO = exports.TicketDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
@@ -49,6 +49,19 @@ __decorate([
     __metadata("design:type", Date)
 ], TicketDTO.prototype, "saleEnd", void 0);
 exports.TicketDTO = TicketDTO;
+class UpdateTicketDTO extends TicketDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateTicketDTO.prototype, "id", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], UpdateTicketDTO.prototype, "sold", void 0);
+exports.UpdateTicketDTO = UpdateTicketDTO;
 class CreateEventDTO {
 }
 __decorate([
@@ -93,4 +106,28 @@ __decorate([
     __metadata("design:type", TicketDTO)
 ], CreateEventDTO.prototype, "ticket", void 0);
 exports.CreateEventDTO = CreateEventDTO;
+class UpdateEventDTO extends CreateEventDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateEventDTO.prototype, "id", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateEventDTO.prototype, "userId", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Date)
+], UpdateEventDTO.prototype, "createdAt", void 0);
+__decorate([
+    (0, class_validator_1.ValidateNested)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_transformer_1.Type)(() => UpdateTicketDTO),
+    __metadata("design:type", UpdateTicketDTO)
+], UpdateEventDTO.prototype, "ticket", void 0);
+exports.UpdateEventDTO = UpdateEventDTO;
 //# sourceMappingURL=create-event.dto.js.map

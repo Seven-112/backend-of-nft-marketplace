@@ -2,10 +2,14 @@ import { EEventType, ETicketType } from '../event.interface';
 export declare class TicketDTO {
     name: string;
     type: ETicketType;
-    price: Number;
-    quantity: Number;
+    price: number;
+    quantity: number;
     saleStart: Date;
     saleEnd: Date;
+}
+export declare class UpdateTicketDTO extends TicketDTO {
+    id: string;
+    sold: number;
 }
 export declare class CreateEventDTO {
     title: string;
@@ -16,4 +20,10 @@ export declare class CreateEventDTO {
     location: string;
     publishDate: Date;
     ticket: TicketDTO;
+}
+export declare class UpdateEventDTO extends CreateEventDTO {
+    id: string;
+    userId: string;
+    createdAt: Date;
+    ticket: UpdateTicketDTO;
 }

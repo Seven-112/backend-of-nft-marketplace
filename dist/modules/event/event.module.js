@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const user_module_1 = require("../user/user.module");
 const event_controller_1 = require("./event.controller");
 const event_schema_1 = require("./event.schema");
 const event_service_1 = require("./event.service");
@@ -23,6 +24,7 @@ EventModule = __decorate([
                     schema: event_schema_1.EventSchema,
                 },
             ]),
+            user_module_1.UserModule,
         ],
         providers: [event_service_1.EventService],
         exports: [event_service_1.EventService],

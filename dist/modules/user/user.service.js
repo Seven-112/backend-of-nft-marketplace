@@ -41,6 +41,9 @@ let UserService = class UserService {
     async getByWalletAddress(address) {
         return this.userModel.scan('walletAddress').eq(address).exec();
     }
+    async getByEmail(email) {
+        return this.userModel.scan('email').eq(email).exec();
+    }
     async updateUser(user) {
         return this.userModel.update(user);
     }
@@ -63,8 +66,9 @@ let UserService = class UserService {
                     reject(error);
                 }
                 if (!data) {
-                    throw new common_1.ForbiddenException();
+                    return resolve({});
                 }
+                console.log(data);
                 resolve((0, transformCognitoUser_1.transformCognitoUser)(data));
             });
         });

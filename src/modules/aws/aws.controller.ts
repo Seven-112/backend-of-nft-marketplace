@@ -1,11 +1,11 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-import { Public } from 'src/guard/jwt-auth.guard';
+import { Body, Controller, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { PresignURLDTO } from './DTO/presign-url-dto';
 import * as AWS from 'aws-sdk';
 import { nanoid } from 'nanoid';
-import { CompleteUploadDTO } from './DTO/complete-upload-dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { TranslateBodyDTO } from './DTO/translate.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('aws')
 export class AWSController {
@@ -31,7 +31,8 @@ export class AWSController {
   }
 
   @Post('/presignURL')
-  @Public()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async getPresignURL(@Body() body: PresignURLDTO) {
     const id = nanoid();

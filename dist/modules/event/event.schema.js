@@ -25,6 +25,9 @@ exports.TicketSchema = new dynamoose_1.Schema({
     saleEnd: {
         type: Date,
     },
+    sold: {
+        type: Number,
+    },
 });
 exports.EventSchema = new dynamoose_1.Schema({
     id: {

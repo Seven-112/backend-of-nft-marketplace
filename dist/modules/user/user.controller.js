@@ -23,6 +23,7 @@ const update_profile_1 = require("./DTO/update-profile");
 const update_user_dto_1 = require("./DTO/update-user.dto");
 const user_service_1 = require("./user.service");
 const user_interface_1 = require("./user.interface");
+const swagger_1 = require("@nestjs/swagger");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -71,20 +72,26 @@ let UserController = class UserController {
         };
     }
     async update(request, body) {
-        const isWalletAvailable = await this.userService.isWalletAvailable(body.walletAddress);
-        if (!isWalletAvailable) {
+        var _a, _b, _c;
+        const userByEmail = await this.userService.getByEmail(body.email);
+        const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
+        const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
+            ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
+        const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
+        if (case1 || case2) {
+            const foundUser = await this.userService.getUserById(request.user.sub);
+            const updatedBody = Object.assign(Object.assign({}, body), { role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
+            const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
             return {
-                code: 401,
-                message: 'Wallet not available',
+                code: 200,
+                message: '',
+                data: updatedUser,
             };
         }
-        const foundUser = await this.userService.getUserById(request.user.sub);
-        const updatedBody = Object.assign(Object.assign({}, body), { role: foundUser.role || user_interface_1.UserRole.User, status: foundUser.status || user_interface_1.UserStatus.active, createdAt: foundUser.createdAt || new Date().toISOString() });
-        const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
         return {
-            code: 200,
-            message: '',
-            data: updatedUser,
+            code: 400,
+            message: 'Cannot update wallet',
+            data: null,
         };
     }
     async updateUser(request, body) {
@@ -177,6 +184,8 @@ let UserController = class UserController {
 };
 __decorate([
     (0, common_1.Get)('/profile'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -184,6 +193,8 @@ __decorate([
 ], UserController.prototype, "getUserProfile", null);
 __decorate([
     (0, common_1.Get)('/profile/cognito'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -191,6 +202,8 @@ __decorate([
 ], UserController.prototype, "getUserProfileFromCognito", null);
 __decorate([
     (0, common_1.Patch)('/profile'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -201,6 +214,8 @@ __decorate([
 ], UserController.prototype, "updateProfile", null);
 __decorate([
     (0, common_1.Patch)('/update'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -210,6 +225,8 @@ __decorate([
 ], UserController.prototype, "update", null);
 __decorate([
     (0, common_1.Patch)('/admin/update'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -218,6 +235,8 @@ __decorate([
 ], UserController.prototype, "updateUser", null);
 __decorate([
     (0, common_1.Get)('/admin/accounts'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -226,6 +245,8 @@ __decorate([
 ], UserController.prototype, "getAllAccounts", null);
 __decorate([
     (0, common_1.Post)('/info'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -234,6 +255,8 @@ __decorate([
 ], UserController.prototype, "getUserInformation", null);
 __decorate([
     (0, common_1.Get)('/id/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -250,6 +273,8 @@ __decorate([
 ], UserController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('walletAddress')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

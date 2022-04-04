@@ -39,6 +39,10 @@ export class UserService {
     return this.userModel.scan('walletAddress').eq(address).exec();
   }
 
+  async getByEmail(email: string) {
+    return this.userModel.scan('email').eq(email).exec();
+  }
+
   async updateUser(user: User) {
     return this.userModel.update(user);
   }
@@ -75,12 +79,14 @@ export class UserService {
           }
 
           if (!data) {
-            throw new ForbiddenException();
+            // throw new ForbiddenException();
+
+            return resolve({});
           }
 
-          resolve(transformCognitoUser(data));
+          console.log(data);
 
-          // resolve(transformCognitoUser(data));
+          resolve(transformCognitoUser(data));
         },
       );
     });

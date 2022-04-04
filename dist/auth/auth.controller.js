@@ -24,12 +24,33 @@ const validation_pipe_1 = require("../pipes/validation.pipe");
 const forgotPassword_dto_1 = require("./DTO/forgotPassword.dto");
 const mail_service_1 = require("../modules/mail/mail.service");
 const redis_service_1 = require("../modules/redis/redis.service");
+const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService, redisService) {
         this.authService = authService;
         this.userService = userService;
         this.mailService = mailService;
         this.redisService = redisService;
+    }
+    async canLogin(body) {
+        var _a, _b, _c;
+        const userByEmail = await this.userService.getByEmail(body.email);
+        const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
+        const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
+            ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
+        const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
+        if (case1 || case2) {
+            return {
+                code: 200,
+                message: 'Can login',
+                data: true,
+            };
+        }
+        return {
+            code: 200,
+            message: 'Can not login',
+            data: false,
+        };
     }
     async register(body) {
         try {
@@ -73,23 +94,14 @@ let AuthController = class AuthController {
     async verifyOtp(body) {
         try {
             const { token, otp } = body;
-            console.log('======================================');
-            console.log(JSON.stringify({ token, otp }, null, 4));
-            console.log('======================================');
             try {
                 const decoded = this.authService.verifyOtp(token);
-                console.log('------------------------------------');
-                console.log(JSON.stringify({ decoded, otp }));
-                console.log('------------------------------------');
                 if (!otp || String(decoded.otp) !== String(otp)) {
                     throw new common_1.BadRequestException('Invalid OTP!');
                 }
                 return;
             }
             catch (error) {
-                console.log('+++++++++++++++++++++++++++++++++++++');
-                console.log(error);
-                console.log('+++++++++++++++++++++++++++++++++++++');
                 throw new common_1.BadRequestException('Token expired!');
             }
         }
@@ -108,6 +120,15 @@ let AuthController = class AuthController {
         }
     }
 };
+__decorate([
+    (0, common_1.Post)('/canLogin'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_can_login_DTO_1.CheckCanLoginDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "canLogin", null);
 __decorate([
     (0, common_1.Post)('/register'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
@@ -149,7 +170,7 @@ __decorate([
 ], AuthController.prototype, "verifyOtp", null);
 __decorate([
     (0, common_1.Post)('/update-password'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
     (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

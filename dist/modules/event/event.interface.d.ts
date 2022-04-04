@@ -14,6 +14,7 @@ export declare class Ticket {
     quantity: number;
     saleStart: Date;
     saleEnd: Date;
+    sold: number;
     constructor();
 }
 export declare class Event {

@@ -22,12 +22,12 @@ export class TicketDTO {
   @IsNumber()
   @ApiProperty()
   @Min(1)
-  price: Number;
+  price: number;
 
   @IsNumber()
   @ApiProperty()
   @Min(1)
-  quantity: Number;
+  quantity: number;
 
   @IsDateString()
   @ApiProperty()
@@ -36,6 +36,16 @@ export class TicketDTO {
   @IsDateString()
   @ApiProperty()
   saleEnd: Date;
+}
+
+export class UpdateTicketDTO extends TicketDTO {
+  @IsString()
+  @ApiProperty()
+  id: string;
+
+  @IsNumber()
+  @ApiProperty()
+  sold: number;
 }
 
 export class CreateEventDTO {
@@ -71,4 +81,23 @@ export class CreateEventDTO {
   @ApiProperty()
   @Type(() => TicketDTO)
   ticket: TicketDTO;
+}
+
+export class UpdateEventDTO extends CreateEventDTO {
+  @IsString()
+  @ApiProperty()
+  id: string;
+
+  @IsString()
+  @ApiProperty()
+  userId: string;
+
+  @IsDateString()
+  @ApiProperty()
+  createdAt: Date;
+
+  @ValidateNested()
+  @ApiProperty()
+  @Type(() => UpdateTicketDTO)
+  ticket: UpdateTicketDTO;
 }
