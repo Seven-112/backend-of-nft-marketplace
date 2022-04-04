@@ -265,15 +265,15 @@ export class UserController {
   }
 
   @Get('/:walletAddress')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @Public()
   async getByWalletAddress(@Param('walletAddress') walletAddress: string) {
     const user = await this.userService.getByWalletAddress(walletAddress);
 
     if (!user.count) {
       return {
-        code: 401,
+        code: 404,
         message: 'User not found',
+        data: null,
       };
     }
 

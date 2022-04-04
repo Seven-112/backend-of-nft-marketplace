@@ -168,11 +168,13 @@ let UserController = class UserController {
         };
     }
     async getByWalletAddress(walletAddress) {
+        console.log('RUNNN');
         const user = await this.userService.getByWalletAddress(walletAddress);
         if (!user.count) {
             return {
-                code: 401,
+                code: 404,
                 message: 'User not found',
+                data: null,
             };
         }
         return {
@@ -273,8 +275,7 @@ __decorate([
 ], UserController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)('/:walletAddress'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Param)('walletAddress')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

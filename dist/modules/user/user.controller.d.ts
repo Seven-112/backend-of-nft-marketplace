@@ -90,10 +90,6 @@ export declare class UserController {
     getByWalletAddress(walletAddress: string): Promise<{
         code: number;
         message: string;
-        data?: undefined;
-    } | {
-        code: number;
-        message: string;
         data: import("nestjs-dynamoose").Document<User>;
     }>;
 }
