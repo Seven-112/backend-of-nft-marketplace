@@ -10,3 +10,8 @@ export class CreateNftDTO {
   @IsString()
   owner: string;
 }
+
+export class UpdateNftDTO extends CreateNftDTO {
+  price?: string;
+  usdPrice?: string;
+}

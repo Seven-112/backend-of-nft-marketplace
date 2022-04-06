@@ -3,3 +3,7 @@ export declare class CreateNftDTO {
     title: string;
     owner: string;
 }
+export declare class UpdateNftDTO extends CreateNftDTO {
+    price?: string;
+    usdPrice?: string;
+}

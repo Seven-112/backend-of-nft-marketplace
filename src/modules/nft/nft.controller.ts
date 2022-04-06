@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
-import { CreateNftDTO } from './DTO/nft.dto';
+import { CreateNftDTO, UpdateNftDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
 import { NftService } from './nft.service';
 
@@ -47,7 +47,7 @@ export class NFTController {
 
   @Public()
   @Patch('/update')
-  async updateNft(@Body() body: Partial<CreateNftDTO> & { id: string }) {
+  async updateNft(@Body() body: UpdateNftDTO) {
     const nft = await this.nftService.findNft(body.id);
 
     if (!nft) {
