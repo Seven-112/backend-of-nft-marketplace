@@ -168,7 +168,6 @@ let UserController = class UserController {
         };
     }
     async getByWalletAddress(walletAddress) {
-        console.log('RUNNN');
         const user = await this.userService.getByWalletAddress(walletAddress);
         if (!user.count) {
             return {
