@@ -37,6 +37,12 @@ let EventService = class EventService {
     async createUserTicket(userTicket) {
         return this.userTicketModel.create(userTicket);
     }
+    async getUserTicketByTime(firstTime, lastTime) {
+        return this.userTicketModel.scan('createdAt').ge(firstTime).and().where('createdAt').le(lastTime).exec();
+    }
+    async getEventAvailable(currentTime) {
+        return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
+    }
 };
 EventService = __decorate([
     (0, common_1.Injectable)(),

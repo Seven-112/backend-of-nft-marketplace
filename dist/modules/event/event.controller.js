@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventController = void 0;
 const common_1 = require("@nestjs/common");
+const moment = require("moment");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
@@ -87,6 +88,103 @@ let EventController = class EventController {
             data: { events, length: events.length },
         };
     }
+    async getEventAnalisys(request) {
+        const dailyData = [];
+        const weeklyData = [];
+        const monthlyData = [];
+        const allTimeData = [];
+        const currentTime = moment().valueOf();
+        let availableTicketSellEvents = await (await this.eventService.getEventAvailable(currentTime))['toJSON']();
+        const totalAvailableTickets = availableTicketSellEvents.map(evt => evt.ticket.remain)
+            .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+        const firstDailyTime = moment(moment().format("YYYY-MM-DD 00:00")).valueOf();
+        let userTicketDaily = await (await this.eventService.getUserTicketByTime(firstDailyTime, currentTime))['populate']();
+        userTicketDaily = await userTicketDaily['toJSON']();
+        const currentHour = moment(currentTime).format('HH');
+        for (let i = 0; i <= +currentHour; i++) {
+            const data = {
+                time: moment().subtract(+currentHour - i, 'hours').format('HH:00'),
+                total: userTicketDaily
+                    .filter(userTicket => +moment(userTicket.createdAt).format('HH') === i)
+                    .map(userTicket => userTicket.number_ticket)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            };
+            dailyData.push(data);
+        }
+        const firstWeeklyTime = moment().startOf('isoWeek').valueOf();
+        let userTicketWeekly = await (await this.eventService.getUserTicketByTime(firstWeeklyTime, currentTime))['populate']();
+        userTicketWeekly = await userTicketWeekly['toJSON']();
+        const currentDate = moment(currentTime).isoWeekday();
+        for (let i = 1; i <= +currentDate; i++) {
+            const data = {
+                time: moment().subtract(currentDate - i, 'days').format('YYYY-MM-DD'),
+                total: userTicketWeekly
+                    .filter(userTicket => moment(userTicket.createdAt).format('DD') === moment().subtract(currentDate - i, 'days').format('DD'))
+                    .map(userTicket => userTicket.number_ticket)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            };
+            weeklyData.push(data);
+        }
+        const firstMonthlyTime = moment(moment().format('YYYY-MM-01 00:00:00')).valueOf();
+        let duration = +moment(currentTime).format('DD');
+        let userTicketMonthly = await (await this.eventService.getUserTicketByTime(firstMonthlyTime, currentTime))['populate']();
+        userTicketMonthly = await userTicketMonthly['toJSON']();
+        for (let i = 1; i <= +duration; i++) {
+            const data = {
+                time: moment().subtract(duration - i, 'days').format('YYYY-MM-DD'),
+                total: userTicketMonthly
+                    .filter(userTicket => moment(userTicket.createdAt).format('DD') === moment().subtract(duration - i, 'days').format('DD'))
+                    .map(userTicket => userTicket.number_ticket)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            };
+            monthlyData.push(data);
+        }
+        const firstYearTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        duration = +moment(currentTime).format('MM');
+        let userTicketYearly = await (await this.eventService.getUserTicketByTime(firstYearTime, currentTime))['populate']();
+        userTicketYearly = await userTicketYearly['toJSON']();
+        for (let i = 1; i <= +duration; i++) {
+            const data = {
+                time: moment().subtract(duration - i, 'months').format('YYYY-MM'),
+                total: userTicketYearly
+                    .filter(userTicket => moment(userTicket.createdAt).format('MM') === moment().subtract(duration - i, 'months').format('MM'))
+                    .map(userTicket => userTicket.number_ticket)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            };
+            allTimeData.push(data);
+        }
+        const responseData = {
+            daily: {
+                data: dailyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: dailyData.map(dt => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            },
+            weekly: {
+                data: weeklyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: weeklyData.map(dt => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            },
+            monthly: {
+                data: monthlyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: monthlyData.map(dt => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            },
+            allTime: {
+                data: allTimeData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: allTimeData.map(dt => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0)
+            }
+        };
+        return {
+            code: 200,
+            message: '',
+            data: responseData
+        };
+    }
     async getEventById(id) {
         const event = await this.eventService.getEventById(id);
         return {
@@ -125,6 +223,7 @@ let EventController = class EventController {
         await this.eventService.createUserTicket(userTicketData);
         event.ticket.remain -= +body.number_ticket;
         delete event.id;
+        delete event.updatedAt;
         event = await this.eventService.updateEvent(id, event);
         return {
             code: 200,
@@ -162,6 +261,16 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEvents", null);
+__decorate([
+    (0, common_1.Get)('/analisys'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "getEventAnalisys", null);
 __decorate([
     (0, common_1.Get)('/:id'),
     (0, jwt_auth_guard_1.Public)(),
