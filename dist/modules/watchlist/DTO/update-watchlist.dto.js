@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD:dist/modules/watchlist/DTO/update-watchlist.dto.js
 exports.UpdateWatchlistDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
@@ -24,17 +23,3 @@ __decorate([
 ], UpdateWatchlistDTO.prototype, "address", void 0);
 exports.UpdateWatchlistDTO = UpdateWatchlistDTO;
 //# sourceMappingURL=update-watchlist.dto.js.map
-=======
-exports.BuyTicketDTO = void 0;
-const swagger_1 = require("@nestjs/swagger");
-const class_validator_1 = require("class-validator");
-class BuyTicketDTO {
-}
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", Number)
-], BuyTicketDTO.prototype, "number_ticket", void 0);
-exports.BuyTicketDTO = BuyTicketDTO;
-//# sourceMappingURL=buyTicket.dto.js.map
->>>>>>> c2fc07023c8f1ab195f77af88dc53e3065398202:dist/modules/event/DTO/buyTicket.dto.js
