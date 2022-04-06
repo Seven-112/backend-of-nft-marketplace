@@ -16,8 +16,9 @@ exports.NftService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 let NftService = class NftService {
-    constructor(nftModel) {
+    constructor(nftModel, userNFTBoughtModel) {
         this.nftModel = nftModel;
+        this.userNFTBoughtModel = userNFTBoughtModel;
     }
     async createNft(data) {
         return this.nftModel.create(data);
@@ -35,11 +36,21 @@ let NftService = class NftService {
     async findNft(id) {
         return this.nftModel.get(id);
     }
+    async createUserNftBought(data) {
+        return this.userNFTBoughtModel.create(data);
+    }
+    async getUserNftBoughtByUserAndNft(nftId, userId) {
+        return this.userNFTBoughtModel.scan('nft').eq(nftId).and().where('user').eq(userId).limit(1).exec();
+    }
+    async getBoughtNftByUser(userId) {
+        return this.userNFTBoughtModel.scan('user').eq(userId).exec();
+    }
 };
 NftService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_dynamoose_1.InjectModel)('Nft')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, nestjs_dynamoose_1.InjectModel)('UserNFTBought')),
+    __metadata("design:paramtypes", [Object, Object])
 ], NftService);
 exports.NftService = NftService;
 //# sourceMappingURL=nft.service.js.map

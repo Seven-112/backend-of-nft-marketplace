@@ -1,4 +1,4 @@
-import { Schema } from 'dynamoose';
+import { Schema, model } from 'dynamoose';
 
 export const NftSchema = new Schema(
   {
@@ -20,8 +20,13 @@ export const NftSchema = new Schema(
       type: Number,
       required: false,
     },
+    imgLink: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   },
 );
+
+export const Nft = model('Nft', NftSchema);

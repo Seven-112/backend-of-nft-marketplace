@@ -9,6 +9,9 @@ export class CreateNftDTO {
 
   @IsString()
   owner: string;
+
+  @IsString()
+  imgLink: string;
 }
 
 export class UpdateNftDTO extends CreateNftDTO {

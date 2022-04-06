@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NftSchema = void 0;
+exports.Nft = exports.NftSchema = void 0;
 const dynamoose_1 = require("dynamoose");
 exports.NftSchema = new dynamoose_1.Schema({
     id: {
@@ -21,7 +21,11 @@ exports.NftSchema = new dynamoose_1.Schema({
         type: Number,
         required: false,
     },
+    imgLink: {
+        type: String,
+    },
 }, {
     timestamps: true,
 });
+exports.Nft = (0, dynamoose_1.model)('Nft', exports.NftSchema);
 //# sourceMappingURL=nft.schema.js.map

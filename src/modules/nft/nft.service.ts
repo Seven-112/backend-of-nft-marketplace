@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model, Document } from 'nestjs-dynamoose';
 import { Nft } from './nft.interface';
+import { UserNFTBought } from './userNFTBought.interface';
 
 @Injectable()
 export class NftService {
   constructor(
     @InjectModel('Nft')
     private nftModel: Model<Nft, Nft['id']>,
+    @InjectModel('UserNFTBought')
+    private userNFTBoughtModel: Model<UserNFTBought, UserNFTBought['id']>,
   ) {}
 
   async createNft(
@@ -30,5 +33,17 @@ export class NftService {
 
   async findNft(id: string) {
     return this.nftModel.get(id);
+  }
+
+  async createUserNftBought(data: UserNFTBought) {
+    return this.userNFTBoughtModel.create(data);
+  }
+
+  async getUserNftBoughtByUserAndNft(nftId: string, userId: string) {
+    return this.userNFTBoughtModel.scan('nft').eq(nftId).and().where('user').eq(userId).limit(1).exec();
+  }
+
+  async getBoughtNftByUser(userId: string) {
+    return this.userNFTBoughtModel.scan('user').eq(userId).exec();
   }
 }
