@@ -20,6 +20,9 @@ export const NftSchema = new Schema(
       type: Number,
       required: false,
     },
+    imgLink: {
+      type: String,
+    },
   },
   {
     timestamps: true,

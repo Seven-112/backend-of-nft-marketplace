@@ -8,4 +8,5 @@ export class Nft {
   usdPrice?: number;
   createdAt: number;
   updatedAt: number;
+  imgLink: string;
 }
