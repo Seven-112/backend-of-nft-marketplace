@@ -29,6 +29,32 @@ export declare class EventController {
             length: number;
         };
     }>;
+    getEventAnalisys(request: any): Promise<{
+        code: number;
+        message: string;
+        data: {
+            daily: {
+                data: any[];
+                availableTickets: any;
+                soldTickets: any;
+            };
+            weekly: {
+                data: any[];
+                availableTickets: any;
+                soldTickets: any;
+            };
+            monthly: {
+                data: any[];
+                availableTickets: any;
+                soldTickets: any;
+            };
+            allTime: {
+                data: any[];
+                availableTickets: any;
+                soldTickets: any;
+            };
+        };
+    }>;
     getEventById(id: string): Promise<{
         code: number;
         message: string;
