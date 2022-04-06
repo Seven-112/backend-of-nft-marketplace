@@ -1,5 +1,6 @@
 export declare class Nft {
     id: string;
+    idToGetImg: string;
     title: string;
     owner: string;
     price?: number;

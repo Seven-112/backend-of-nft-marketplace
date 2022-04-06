@@ -1,1 +1,1 @@
-{"version":3,"file":"nft.dto.js","sourceRoot":"","sources":["../../../../src/modules/nft/DTO/nft.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA2C;AAE3C,MAAa,YAAY;CAUxB;AARC;IADC,IAAA,0BAAQ,GAAE;;2CACG;AAGd;IADC,IAAA,0BAAQ,GAAE;;2CACG;AALhB,oCAUC"}
+{"version":3,"file":"nft.dto.js","sourceRoot":"","sources":["../../../../src/modules/nft/DTO/nft.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA2C;AAE3C,MAAa,YAAY;CAaxB;AAXC;IADC,IAAA,0BAAQ,GAAE;;gDACQ;AAGnB;IADC,IAAA,0BAAQ,GAAE;;2CACG;AAGd;IADC,IAAA,0BAAQ,GAAE;;2CACG;AARhB,oCAaC"}
