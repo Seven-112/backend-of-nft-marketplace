@@ -87,8 +87,9 @@ let EventController = class EventController {
             data: { events, length: events.length },
         };
     }
-    async getEventById(id) {
-        const event = await this.eventService.getEventById(id);
+    async getEventById(id, relations) {
+        let event = await this.eventService.getEventById(id);
+        event = await event.populate({ properties: relations });
         return {
             code: 200,
             message: '',
@@ -108,14 +109,14 @@ let EventController = class EventController {
             return {
                 code: 400,
                 message: 'number_ticket_is_required',
-                data: null
+                data: null,
             };
         }
         if (body.number_ticket > event.ticket.remain) {
             return {
                 code: 400,
                 message: 'number_ticket_great_than_ticket_remain',
-                data: null
+                data: null,
             };
         }
         const userTicketData = new userTicket_interface_1.UserTicket();
@@ -164,10 +165,18 @@ __decorate([
 ], EventController.prototype, "getEvents", null);
 __decorate([
     (0, common_1.Get)('/:id'),
+    (0, swagger_1.ApiQuery)({
+        name: 'relations',
+        required: false,
+        explode: false,
+        type: String,
+        isArray: true,
+    }),
     (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('relations')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Array]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEventById", null);
 __decorate([

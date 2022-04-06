@@ -1,4 +1,5 @@
 import { Schema, model } from 'dynamoose';
+import { User } from '../user/user.schema';
 
 export const TicketSchema = new Schema({
   id: {
@@ -28,42 +29,43 @@ export const TicketSchema = new Schema({
   },
 });
 
-export const EventSchema = new Schema({
-  id: {
-    type: String,
-    hashKey: true,
+export const EventSchema = new Schema(
+  {
+    id: {
+      type: String,
+      hashKey: true,
+    },
+    image: {
+      type: String,
+    },
+    user: User,
+    title: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+    startDate: {
+      type: Date,
+    },
+    endDate: {
+      type: Date,
+    },
+    type: {
+      type: String,
+      enum: ['online', 'venue'],
+    },
+    location: {
+      type: String,
+    },
+    ticket: TicketSchema,
+    publishDate: {
+      type: Date,
+    },
   },
-  image: {
-    type: String,
+  {
+    timestamps: true,
   },
-  userId: {
-    type: String,
-  },
-  title: {
-    type: String,
-  },
-  description: {
-    type: String,
-  },
-  startDate: {
-    type: Date,
-  },
-  endDate: {
-    type: Date,
-  },
-  type: {
-    type: String,
-    enum: ['online', 'venue'],
-  },
-  location: {
-    type: String,
-  },
-  ticket: TicketSchema,
-  publishDate: {
-    type: Date,
-  },
-}, {
-  timestamps: true
-});
+);
 
-export const Event = model('Event', EventSchema)
+export const Event = model('Event', EventSchema);

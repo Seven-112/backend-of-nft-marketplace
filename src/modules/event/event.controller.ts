@@ -10,7 +10,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { UserRole } from '../user/user.interface';
@@ -121,9 +121,20 @@ export class EventController {
   }
 
   @Get('/:id')
+  @ApiQuery({
+    name: 'relations',
+    required: false,
+    explode: false,
+    type: String,
+    isArray: true,
+  })
   @Public()
-  async getEventById(@Param('id') id: string) {
-    const event = await this.eventService.getEventById(id);
+  async getEventById(
+    @Param('id') id: string,
+    @Query('relations') relations?: string[],
+  ) {
+    let event = await this.eventService.getEventById(id);
+    event = await event.populate({ properties: relations });
 
     return {
       code: 200,
@@ -135,7 +146,11 @@ export class EventController {
   @Post('/:id/buy-ticket')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async buyEventTicket(@Param('id') id: string, @Req() request: any, @Body() body: BuyTicketDTO) {
+  async buyEventTicket(
+    @Param('id') id: string,
+    @Req() request: any,
+    @Body() body: BuyTicketDTO,
+  ) {
     const user = await this.userService.getUserById(request.user.sub);
     let event = await this.eventService.getEventById(id);
 
@@ -146,22 +161,22 @@ export class EventController {
         message: 'User not found',
         data: null,
       };
-    
+
     // Check number ticket is required.
-    if(!body.number_ticket) {
+    if (!body.number_ticket) {
       return {
         code: 400,
         message: 'number_ticket_is_required',
-        data: null
-      }
+        data: null,
+      };
     }
     // Check if number ticket user buy great than ticket remain throw error.
     if (body.number_ticket > event.ticket.remain) {
       return {
         code: 400,
         message: 'number_ticket_great_than_ticket_remain',
-        data: null
-      }
+        data: null,
+      };
     }
 
     // Insert ticket into user ticket.

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Event = exports.EventSchema = exports.TicketSchema = void 0;
 const dynamoose_1 = require("dynamoose");
+const user_schema_1 = require("../user/user.schema");
 exports.TicketSchema = new dynamoose_1.Schema({
     id: {
         type: String,
@@ -37,9 +38,7 @@ exports.EventSchema = new dynamoose_1.Schema({
     image: {
         type: String,
     },
-    userId: {
-        type: String,
-    },
+    user: user_schema_1.User,
     title: {
         type: String,
     },
@@ -64,7 +63,7 @@ exports.EventSchema = new dynamoose_1.Schema({
         type: Date,
     },
 }, {
-    timestamps: true
+    timestamps: true,
 });
 exports.Event = (0, dynamoose_1.model)('Event', exports.EventSchema);
 //# sourceMappingURL=event.schema.js.map

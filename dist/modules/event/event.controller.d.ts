@@ -29,7 +29,7 @@ export declare class EventController {
             length: number;
         };
     }>;
-    getEventById(id: string): Promise<{
+    getEventById(id: string, relations?: string[]): Promise<{
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<Event>;
