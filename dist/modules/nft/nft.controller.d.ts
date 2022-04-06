@@ -1,4 +1,4 @@
-import { CreateNftDTO } from './DTO/nft.dto';
+import { CreateNftDTO, UpdateNftDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
 import { NftService } from './nft.service';
 export declare class NFTController {
@@ -14,9 +14,7 @@ export declare class NFTController {
         message: string;
         data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Nft>>;
     }>;
-    updateNft(body: Partial<CreateNftDTO> & {
-        id: string;
-    }): Promise<{
+    updateNft(body: UpdateNftDTO): Promise<{
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<Nft>;

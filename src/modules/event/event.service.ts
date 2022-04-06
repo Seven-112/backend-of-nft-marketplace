@@ -33,4 +33,12 @@ export class EventService {
   async createUserTicket(userTicket: UserTicket) {
     return this.userTicketModel.create(userTicket);
   }
+
+  async getUserTicketByTime(firstTime: number, lastTime: number) {
+    return this.userTicketModel.scan('createdAt').ge(firstTime).and().where('createdAt').le(lastTime).exec()
+  }
+
+  async getEventAvailable( currentTime: number) {
+    return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
+  }
 }

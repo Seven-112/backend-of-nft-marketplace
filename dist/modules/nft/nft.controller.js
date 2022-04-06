@@ -81,7 +81,7 @@ __decorate([
     (0, common_1.Patch)('/update'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [nft_dto_1.UpdateNftDTO]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "updateNft", null);
 NFTController = __decorate([

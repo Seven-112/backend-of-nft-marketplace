@@ -28,5 +28,7 @@ export declare class Event {
     userId: string;
     publishDate: Date;
     ticket: Ticket;
+    createdAt: Date;
+    updatedAt: Date;
     constructor();
 }

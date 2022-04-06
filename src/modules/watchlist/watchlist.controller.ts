@@ -12,7 +12,10 @@ import {
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import { UserService } from '../user/user.service';
-import { UpdateWatchlistDTO } from './DTO/update-watchlist.dto';
+import {
+  AddWatchlistDTO,
+  RemoveWatchlistDTO,
+} from './DTO/update-watchlist.dto';
 import { WatchlistService } from './watchlist.service';
 
 @Controller('watchlist')
@@ -26,7 +29,7 @@ export class WatchlistController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
-  async add(@Req() request: any, @Body() body: UpdateWatchlistDTO) {
+  async add(@Req() request: any, @Body() body: AddWatchlistDTO) {
     const currentWatchlist = (await this.watchlistService.get(
       request.user.sub,
     )) || {
@@ -52,7 +55,7 @@ export class WatchlistController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
-  async remove(@Req() request: any, @Body() body: UpdateWatchlistDTO) {
+  async remove(@Req() request: any, @Body() body: RemoveWatchlistDTO) {
     const currentWatchlist = (await this.watchlistService.get(
       request.user.sub,
     )) || {
@@ -61,7 +64,7 @@ export class WatchlistController {
     };
 
     const newList = new Set(currentWatchlist.list);
-    newList.delete(body.address);
+    body.addresses.forEach((address) => newList.delete(address));
 
     currentWatchlist.list = Array.from(newList.size ? newList : []);
 

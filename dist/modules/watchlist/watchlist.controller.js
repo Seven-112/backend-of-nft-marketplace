@@ -44,7 +44,7 @@ let WatchlistController = class WatchlistController {
             list: [],
         };
         const newList = new Set(currentWatchlist.list);
-        newList.delete(body.address);
+        body.addresses.forEach((address) => newList.delete(address));
         currentWatchlist.list = Array.from(newList.size ? newList : []);
         const updated = await this.watchlistService.update(currentWatchlist);
         updated.list = Array.from(updated.list);
@@ -79,7 +79,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, update_watchlist_dto_1.UpdateWatchlistDTO]),
+    __metadata("design:paramtypes", [Object, update_watchlist_dto_1.AddWatchlistDTO]),
     __metadata("design:returntype", Promise)
 ], WatchlistController.prototype, "add", null);
 __decorate([
@@ -90,7 +90,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, update_watchlist_dto_1.UpdateWatchlistDTO]),
+    __metadata("design:paramtypes", [Object, update_watchlist_dto_1.RemoveWatchlistDTO]),
     __metadata("design:returntype", Promise)
 ], WatchlistController.prototype, "remove", null);
 __decorate([
