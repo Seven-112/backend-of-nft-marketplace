@@ -1,5 +1,6 @@
 import { UserService } from '../user/user.service';
 import { CreateEventDTO, UpdateEventDTO } from './DTO/create-event.dto';
+import { BuyTicketDTO } from './DTO/buyTicket.dto';
 import { Event } from './event.interface';
 import { EventService } from './event.service';
 export declare class EventController {
@@ -29,6 +30,11 @@ export declare class EventController {
         };
     }>;
     getEventById(id: string): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").Document<Event>;
+    }>;
+    buyEventTicket(id: string, request: any, body: BuyTicketDTO): Promise<{
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<Event>;

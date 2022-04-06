@@ -13,6 +13,7 @@ const user_module_1 = require("../user/user.module");
 const event_controller_1 = require("./event.controller");
 const event_schema_1 = require("./event.schema");
 const event_service_1 = require("./event.service");
+const userTicket_schema_1 = require("./userTicket.schema");
 let EventModule = class EventModule {
 };
 EventModule = __decorate([
@@ -22,6 +23,10 @@ EventModule = __decorate([
                 {
                     name: 'Event',
                     schema: event_schema_1.EventSchema,
+                },
+                {
+                    name: 'UserTicket',
+                    schema: userTicket_schema_1.UserTicketSchema,
                 },
             ]),
             user_module_1.UserModule,

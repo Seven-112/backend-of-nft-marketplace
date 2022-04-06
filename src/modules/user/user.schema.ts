@@ -1,4 +1,4 @@
-import { Schema } from 'dynamoose';
+import { Schema, model } from 'dynamoose';
 
 export const UserSchema = new Schema({
   id: {
@@ -46,3 +46,5 @@ export const UserSchema = new Schema({
     type: String,
   },
 });
+
+export const User = model('User', UserSchema)

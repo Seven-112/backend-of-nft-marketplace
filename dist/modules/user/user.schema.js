@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserSchema = void 0;
+exports.User = exports.UserSchema = void 0;
 const dynamoose_1 = require("dynamoose");
 exports.UserSchema = new dynamoose_1.Schema({
     id: {
@@ -48,4 +48,5 @@ exports.UserSchema = new dynamoose_1.Schema({
         type: String,
     },
 });
+exports.User = (0, dynamoose_1.model)('User', exports.UserSchema);
 //# sourceMappingURL=user.schema.js.map

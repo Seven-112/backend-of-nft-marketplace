@@ -9,17 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CheckCanLoginDTO = void 0;
+exports.BuyTicketDTO = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-class CheckCanLoginDTO {
+class BuyTicketDTO {
 }
 __decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CheckCanLoginDTO.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CheckCanLoginDTO.prototype, "walletAddress", void 0);
-exports.CheckCanLoginDTO = CheckCanLoginDTO;
-//# sourceMappingURL=check-can-login.DTO.js.map
+    (0, class_validator_1.IsNumber)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], BuyTicketDTO.prototype, "number_ticket", void 0);
+exports.BuyTicketDTO = BuyTicketDTO;
+//# sourceMappingURL=buyTicket.dto.js.map

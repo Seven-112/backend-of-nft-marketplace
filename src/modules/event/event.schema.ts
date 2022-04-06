@@ -1,4 +1,4 @@
-import { Schema } from 'dynamoose';
+import { Schema, model } from 'dynamoose';
 
 export const TicketSchema = new Schema({
   id: {
@@ -23,7 +23,7 @@ export const TicketSchema = new Schema({
   saleEnd: {
     type: Date,
   },
-  sold: {
+  remain: {
     type: Number,
   },
 });
@@ -62,9 +62,8 @@ export const EventSchema = new Schema({
   publishDate: {
     type: Date,
   },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-    rangeKey: true,
-  },
+}, {
+  timestamps: true
 });
+
+export const Event = model('Event', EventSchema)
