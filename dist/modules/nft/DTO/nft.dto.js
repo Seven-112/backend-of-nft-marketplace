@@ -16,7 +16,7 @@ class CreateNftDTO {
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateNftDTO.prototype, "idToGetImg", void 0);
+], CreateNftDTO.prototype, "key", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

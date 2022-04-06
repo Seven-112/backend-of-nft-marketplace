@@ -1,7 +1,5 @@
 export declare class CreateNftDTO {
-    idToGetImg: string;
+    key: string;
     title: string;
     owner: string;
-    price?: number;
-    usdPrice?: number;
 }

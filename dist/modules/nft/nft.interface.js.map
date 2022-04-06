@@ -1,1 +1,1 @@
-{"version":3,"file":"nft.interface.js","sourceRoot":"","sources":["../../../src/modules/nft/nft.interface.ts"],"names":[],"mappings":";;;AAAA,mCAAgC;AAEhC,MAAa,GAAG;IAUd;QACE,IAAI,CAAC,EAAE,GAAG,IAAA,eAAM,GAAE,CAAC;IACrB,CAAC;CACF;AAbD,kBAaC"}
+{"version":3,"file":"nft.interface.js","sourceRoot":"","sources":["../../../src/modules/nft/nft.interface.ts"],"names":[],"mappings":";;;AAEA,MAAa,GAAG;CAQf;AARD,kBAQC"}
