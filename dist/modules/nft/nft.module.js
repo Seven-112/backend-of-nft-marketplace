@@ -9,9 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NFTModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const user_module_1 = require("../user/user.module");
 const nft_controller_1 = require("./nft.controller");
 const nft_schema_1 = require("./nft.schema");
 const nft_service_1 = require("./nft.service");
+const userNFTBought_schema_1 = require("./userNFTBought.schema");
 let NFTModule = class NFTModule {
 };
 NFTModule = __decorate([
@@ -22,7 +24,12 @@ NFTModule = __decorate([
                     name: 'Nft',
                     schema: nft_schema_1.NftSchema,
                 },
+                {
+                    name: 'UserNFTBought',
+                    schema: userNFTBought_schema_1.UserNFTBoughtSchema,
+                },
             ]),
+            user_module_1.UserModule
         ],
         providers: [nft_service_1.NftService],
         controllers: [nft_controller_1.NFTController],

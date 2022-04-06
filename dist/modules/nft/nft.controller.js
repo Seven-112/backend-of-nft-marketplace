@@ -14,14 +14,18 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NFTController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
+const user_service_1 = require("../user/user.service");
 const nft_dto_1 = require("./DTO/nft.dto");
 const nft_interface_1 = require("./nft.interface");
 const nft_service_1 = require("./nft.service");
+const userNFTBought_interface_1 = require("./userNFTBought.interface");
 let NFTController = class NFTController {
-    constructor(nftService) {
+    constructor(nftService, userService) {
         this.nftService = nftService;
+        this.userService = userService;
     }
     async createNft(body) {
         const nft = new nft_interface_1.Nft();
@@ -58,6 +62,54 @@ let NFTController = class NFTController {
             data: updatedNft,
         };
     }
+    async buyNft(request, id) {
+        const userNftBought = new userNFTBought_interface_1.UserNFTBought();
+        const user = await this.userService.getUserById(request.user.sub);
+        const nft = await this.nftService.findNft(id);
+        if (!nft) {
+            return {
+                code: 400,
+                message: 'nft_not_found'
+            };
+        }
+        if (!user) {
+            return {
+                code: 400,
+                message: 'user_not_found'
+            };
+        }
+        const checkUserBoughtNft = await (await this.nftService.getUserNftBoughtByUserAndNft(id, user.id))['toJSON']();
+        if (checkUserBoughtNft.length) {
+            return {
+                code: 400,
+                message: 'already_bought_nft'
+            };
+        }
+        userNftBought.nft = nft;
+        userNftBought.user = user;
+        await this.nftService.createUserNftBought(userNftBought);
+        return {
+            code: 201,
+            message: 'buy_nft_successful',
+            data: null,
+        };
+    }
+    async getBoughtNfts(request) {
+        const userNftBought = new userNFTBought_interface_1.UserNFTBought();
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user) {
+            return {
+                code: 400,
+                message: 'user_not_found'
+            };
+        }
+        const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id))['populate']();
+        return {
+            code: 201,
+            message: 'buy_nft_successful',
+            data: boughtNfts,
+        };
+    }
 };
 __decorate([
     (0, jwt_auth_guard_1.Public)(),
@@ -84,9 +136,29 @@ __decorate([
     __metadata("design:paramtypes", [nft_dto_1.UpdateNftDTO]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "updateNft", null);
+__decorate([
+    (0, common_1.Post)('/:id/buy'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], NFTController.prototype, "buyNft", null);
+__decorate([
+    (0, common_1.Get)('/bought'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NFTController.prototype, "getBoughtNfts", null);
 NFTController = __decorate([
     (0, common_1.Controller)('nft'),
-    __metadata("design:paramtypes", [nft_service_1.NftService])
+    __metadata("design:paramtypes", [nft_service_1.NftService,
+        user_service_1.UserService])
 ], NFTController);
 exports.NFTController = NFTController;
 //# sourceMappingURL=nft.controller.js.map
