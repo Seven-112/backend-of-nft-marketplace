@@ -1,5 +1,5 @@
 export declare class CreateNftDTO {
-    key: string;
+    id: string;
     title: string;
     owner: string;
 }

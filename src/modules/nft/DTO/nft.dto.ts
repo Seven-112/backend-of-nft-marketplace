@@ -2,7 +2,7 @@ import { IsString } from 'class-validator';
 
 export class CreateNftDTO {
   @IsString()
-  key: string;
+  id: string;
 
   @IsString()
   title: string;
