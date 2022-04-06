@@ -7,9 +7,6 @@ exports.NftSchema = new dynamoose_1.Schema({
         type: String,
         hashKey: true,
     },
-    idToGetImg: {
-        type: String,
-    },
     title: {
         type: String,
     },
