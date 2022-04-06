@@ -16,18 +16,21 @@ exports.WatchlistController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
+const user_service_1 = require("../user/user.service");
 const update_watchlist_dto_1 = require("./DTO/update-watchlist.dto");
-const watchlist_interface_1 = require("./watchlist.interface");
 const watchlist_service_1 = require("./watchlist.service");
 let WatchlistController = class WatchlistController {
-    constructor(watchlistService) {
+    constructor(watchlistService, userService) {
         this.watchlistService = watchlistService;
+        this.userService = userService;
     }
-    async update(request, body) {
-        const watchlist = new watchlist_interface_1.Watchlist();
-        watchlist.id = request.user.sub;
-        watchlist.list = body.list;
-        const updated = await this.watchlistService.update(watchlist);
+    async add(request, body) {
+        const currentWatchlist = (await this.watchlistService.get(request.user.sub)) || {
+            id: request.user.sub,
+            list: [],
+        };
+        currentWatchlist.list = Array.from(new Set(currentWatchlist.list).add(body.address));
+        const updated = await this.watchlistService.update(currentWatchlist);
         updated.list = Array.from(updated.list);
         return {
             code: 200,
@@ -35,8 +38,28 @@ let WatchlistController = class WatchlistController {
             data: updated,
         };
     }
-    async get(request) {
+    async remove(request, body) {
+        const currentWatchlist = (await this.watchlistService.get(request.user.sub)) || {
+            id: request.user.sub,
+            list: [],
+        };
+        const newList = new Set(currentWatchlist.list);
+        newList.delete(body.address);
+        currentWatchlist.list = Array.from(newList.size ? newList : []);
+        const updated = await this.watchlistService.update(currentWatchlist);
+        updated.list = Array.from(updated.list);
+        return {
+            code: 200,
+            message: 'Updated watchlist',
+            data: updated,
+        };
+    }
+    async get(request, relations) {
         const watchlist = await this.watchlistService.get(request.user.sub);
+        if (relations === null || relations === void 0 ? void 0 : relations.includes('users')) {
+            const promises = watchlist.list.map((item) => this.userService.getByWalletAddress(item));
+            watchlist.users = (await Promise.all(promises)).map((item) => item[0]);
+        }
         watchlist.list = Array.from(watchlist.list);
         return {
             code: 200,
@@ -49,7 +72,7 @@ let WatchlistController = class WatchlistController {
     }
 };
 __decorate([
-    (0, common_1.Patch)('/update'),
+    (0, common_1.Patch)('/add'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiBearerAuth)(),
@@ -58,20 +81,40 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, update_watchlist_dto_1.UpdateWatchlistDTO]),
     __metadata("design:returntype", Promise)
-], WatchlistController.prototype, "update", null);
+], WatchlistController.prototype, "add", null);
+__decorate([
+    (0, common_1.Patch)('/remove'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiBearerAuth)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, update_watchlist_dto_1.UpdateWatchlistDTO]),
+    __metadata("design:returntype", Promise)
+], WatchlistController.prototype, "remove", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiQuery)({
+        name: 'relations',
+        required: false,
+        explode: false,
+        type: String,
+        isArray: true,
+    }),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)('relations')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], WatchlistController.prototype, "get", null);
 WatchlistController = __decorate([
     (0, common_1.Controller)('watchlist'),
-    __metadata("design:paramtypes", [watchlist_service_1.WatchlistService])
+    __metadata("design:paramtypes", [watchlist_service_1.WatchlistService,
+        user_service_1.UserService])
 ], WatchlistController);
 exports.WatchlistController = WatchlistController;
 //# sourceMappingURL=watchlist.controller.js.map

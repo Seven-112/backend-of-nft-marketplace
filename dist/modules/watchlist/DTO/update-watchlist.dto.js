@@ -16,10 +16,10 @@ const valid_address_decorator_1 = require("../../../decorators/valid-address.dec
 class UpdateWatchlistDTO {
 }
 __decorate([
-    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.IsString)(),
     (0, swagger_1.ApiProperty)(),
-    (0, valid_address_decorator_1.ValidAddress)({ each: true }),
-    __metadata("design:type", Array)
-], UpdateWatchlistDTO.prototype, "list", void 0);
+    (0, valid_address_decorator_1.ValidAddress)(),
+    __metadata("design:type", String)
+], UpdateWatchlistDTO.prototype, "address", void 0);
 exports.UpdateWatchlistDTO = UpdateWatchlistDTO;
 //# sourceMappingURL=update-watchlist.dto.js.map

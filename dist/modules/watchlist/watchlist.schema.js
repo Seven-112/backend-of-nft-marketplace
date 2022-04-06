@@ -8,7 +8,7 @@ exports.WatchlistSchema = new dynamoose_1.Schema({
         hashKey: true,
     },
     list: {
-        type: Set,
+        type: Array,
         schema: [String],
         default: [],
     },

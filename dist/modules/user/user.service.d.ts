@@ -1,7 +1,7 @@
 import { Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
 export declare class UserService {
-    private userModel;
+    private readonly userModel;
     constructor(userModel: Model<User, User['id']>);
     isWalletAvailable(address: string): Promise<boolean>;
     isUserAvailable(id: string): Promise<boolean>;

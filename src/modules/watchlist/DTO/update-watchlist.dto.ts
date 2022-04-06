@@ -3,8 +3,8 @@ import { IsString, IsUUID } from 'class-validator';
 import { ValidAddress } from 'src/decorators/valid-address.decorator';
 
 export class UpdateWatchlistDTO {
-  @IsString({ each: true })
+  @IsString()
   @ApiProperty()
-  @ValidAddress({ each: true })
-  list: string[];
+  @ValidAddress()
+  address: string;
 }

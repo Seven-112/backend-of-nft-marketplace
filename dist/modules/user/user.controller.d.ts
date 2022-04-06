@@ -4,7 +4,6 @@ import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { User } from './user.interface';
 import { Request } from 'express';
 export declare class UserController {
     private userService;
@@ -14,10 +13,10 @@ export declare class UserController {
         message: string;
         data: {
             sub: any;
-            populate(): Promise<import("nestjs-dynamoose").Document<User>>;
-            populate(callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<User>, import("aws-sdk").AWSError>): void;
-            populate(settings: import("dynamoose/dist/Populate").PopulateSettings): Promise<import("nestjs-dynamoose").Document<User>>;
-            populate(settings: import("dynamoose/dist/Populate").PopulateSettings, callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<User>, import("aws-sdk").AWSError>): void;
+            populate(): Promise<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            populate(callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./user.interface").User>, import("aws-sdk").AWSError>): void;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings): Promise<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            populate(settings: import("dynamoose/dist/Populate").PopulateSettings, callback: import("nestjs-dynamoose").CallbackType<import("nestjs-dynamoose").Document<import("./user.interface").User>, import("aws-sdk").AWSError>): void;
             serialize(nameOrOptions: string | import("nestjs-dynamoose").SerializerOptions): import("nestjs-dynamoose").ObjectType;
             toJSON(): import("nestjs-dynamoose").ObjectType;
             original(): import("nestjs-dynamoose").ObjectType;
@@ -43,17 +42,17 @@ export declare class UserController {
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
     update(request: any, body: UpdateUserDTO): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
     updateUser(request: AnyDocument, body: any): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
     getAllAccounts(request: AnyDocument, limit?: number): Promise<{
         code: number;
@@ -62,7 +61,7 @@ export declare class UserController {
     } | {
         code: number;
         data: {
-            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
+            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
             length: number;
         };
         message?: undefined;
@@ -70,12 +69,12 @@ export declare class UserController {
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;
         data: {
-            users: import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<User>>;
+            users: import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
         };
     }>;
     getUserById(id: string): Promise<{
         code: number;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
         message?: undefined;
     } | {
         code: number;
@@ -85,11 +84,11 @@ export declare class UserController {
     search(body: SearchUserDTO): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>;
+        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
     }>;
     getByWalletAddress(walletAddress: string): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<User>;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
 }

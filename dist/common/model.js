@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = exports.baseSchema = exports.BaseModel = void 0;
+exports.baseSchema = exports.BaseModel = void 0;
 const nanoid_1 = require("nanoid");
 class BaseModel {
     constructor() {
@@ -33,7 +33,4 @@ exports.baseSchema = {
         },
     },
 };
-class UserModel extends BaseModel {
-}
-exports.UserModel = UserModel;
 //# sourceMappingURL=model.js.map

@@ -6,7 +6,7 @@ export const WatchlistSchema = new Schema({
     hashKey: true,
   },
   list: {
-    type: Set,
+    type: Array,
     schema: [String],
     default: [],
   },
