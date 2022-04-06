@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
 import * as aws from 'aws-sdk';
@@ -8,7 +8,7 @@ import { transformCognitoUser } from 'src/utils/transformCognitoUser';
 export class UserService {
   constructor(
     @InjectModel('User')
-    private userModel: Model<User, User['id']>,
+    private readonly userModel: Model<User, User['id']>,
   ) {}
 
   async isWalletAvailable(address: string) {

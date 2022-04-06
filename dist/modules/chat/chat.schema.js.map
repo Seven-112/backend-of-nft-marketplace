@@ -1,1 +1,0 @@
-{"version":3,"file":"chat.schema.js","sourceRoot":"","sources":["../../../src/modules/chat/chat.schema.ts"],"names":[],"mappings":";;;AAAA,yCAAmC;AAEtB,QAAA,UAAU,GAAG,IAAI,kBAAM,CAAC;IACnC,MAAM,EAAE;QACN,IAAI,EAAE,MAAM;QACZ,OAAO,EAAE,IAAI;KACd;IACD,QAAQ,EAAE;QACR,IAAI,EAAE,KAAK;QACX,MAAM,EAAE,CAAC,MAAM,CAAC;KACjB;CACF,CAAC,CAAC"}

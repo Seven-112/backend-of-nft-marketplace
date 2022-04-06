@@ -30,6 +30,7 @@
     "@nestjs/schedule": "^1.0.2",
     "@nestjs/swagger": "^5.2.0",
     "@nestjs/websockets": "^8.4.3",
+    "@solana/web3.js": "^1.37.1",
     "aws-amplify": "^4.3.14",
     "aws-sdk": "^2.1088.0",
     "axios": "^0.26.0",

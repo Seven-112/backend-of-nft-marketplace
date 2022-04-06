@@ -11,7 +11,6 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AnyDocument } from 'dynamoose/dist/Document';
-import { UserModel } from 'src/common/model';
 import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
@@ -19,7 +18,7 @@ import { SearchUserDTO } from './DTO/search-user.dto';
 import { UpdateProfileDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { User, UserRole, UserStatus } from './user.interface';
+import { UserRole, UserStatus } from './user.interface';
 import { Request } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 

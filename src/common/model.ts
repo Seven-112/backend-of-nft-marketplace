@@ -36,11 +36,3 @@ export const baseSchema = {
     },
   },
 };
-
-export class UserModel extends BaseModel {
-  firstName: string;
-  lastName: string;
-  username: string;
-  password: string;
-  isActived: boolean;
-}
