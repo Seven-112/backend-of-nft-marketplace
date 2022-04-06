@@ -18,7 +18,7 @@ export class Ticket {
   quantity: number;
   saleStart: Date;
   saleEnd: Date;
-  sold: number;
+  remain: number;
 
   constructor() {
     this.id = nanoid(12);

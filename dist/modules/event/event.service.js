@@ -16,8 +16,9 @@ exports.EventService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 let EventService = class EventService {
-    constructor(eventModel) {
+    constructor(eventModel, userTicketModel) {
         this.eventModel = eventModel;
+        this.userTicketModel = userTicketModel;
     }
     async createEvent(event) {
         return this.eventModel.create(event);
@@ -33,11 +34,15 @@ let EventService = class EventService {
     async updateEvent(id, body) {
         return this.eventModel.update(id, body);
     }
+    async createUserTicket(userTicket) {
+        return this.userTicketModel.create(userTicket);
+    }
 };
 EventService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_dynamoose_1.InjectModel)('Event')),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, nestjs_dynamoose_1.InjectModel)('UserTicket')),
+    __metadata("design:paramtypes", [Object, Object])
 ], EventService);
 exports.EventService = EventService;
 //# sourceMappingURL=event.service.js.map

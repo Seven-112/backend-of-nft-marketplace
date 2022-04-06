@@ -20,8 +20,10 @@ const validation_pipe_1 = require("../../pipes/validation.pipe");
 const user_interface_1 = require("../user/user.interface");
 const user_service_1 = require("../user/user.service");
 const create_event_dto_1 = require("./DTO/create-event.dto");
+const buyTicket_dto_1 = require("./DTO/buyTicket.dto");
 const event_interface_1 = require("./event.interface");
 const event_service_1 = require("./event.service");
+const userTicket_interface_1 = require("./userTicket.interface");
 let EventController = class EventController {
     constructor(eventService, userService) {
         this.eventService = eventService;
@@ -32,7 +34,7 @@ let EventController = class EventController {
         Object.assign(ticket, body.ticket);
         ticket.saleStart = new Date(body.ticket.saleStart);
         ticket.saleEnd = new Date(body.ticket.saleEnd);
-        ticket.sold = 0;
+        ticket.remain = body.ticket.quantity;
         const event = new event_interface_1.Event();
         Object.assign(event, body);
         event.userId = request.user.sub;
@@ -93,6 +95,43 @@ let EventController = class EventController {
             data: event,
         };
     }
+    async buyEventTicket(id, request, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        let event = await this.eventService.getEventById(id);
+        if (!user)
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        if (!body.number_ticket) {
+            return {
+                code: 400,
+                message: 'number_ticket_is_required',
+                data: null
+            };
+        }
+        if (body.number_ticket > event.ticket.remain) {
+            return {
+                code: 400,
+                message: 'number_ticket_great_than_ticket_remain',
+                data: null
+            };
+        }
+        const userTicketData = new userTicket_interface_1.UserTicket();
+        userTicketData.event = event;
+        userTicketData.user = user;
+        userTicketData.number_ticket = body.number_ticket;
+        await this.eventService.createUserTicket(userTicketData);
+        event.ticket.remain -= +body.number_ticket;
+        delete event.id;
+        event = await this.eventService.updateEvent(id, event);
+        return {
+            code: 200,
+            message: 'buy_ticket_successful',
+            data: event,
+        };
+    }
 };
 __decorate([
     (0, common_1.Post)('/create'),
@@ -131,6 +170,17 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEventById", null);
+__decorate([
+    (0, common_1.Post)('/:id/buy-ticket'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, buyTicket_dto_1.BuyTicketDTO]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "buyEventTicket", null);
 EventController = __decorate([
     (0, common_1.Controller)('event'),
     __metadata("design:paramtypes", [event_service_1.EventService,

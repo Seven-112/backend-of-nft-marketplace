@@ -1,3 +1,4 @@
+import { UserTicket } from './userTicket.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
 import { Event } from './event.interface';
@@ -7,6 +8,8 @@ export class EventService {
   constructor(
     @InjectModel('Event')
     private readonly eventModel: Model<Event, Event['id']>,
+    @InjectModel('UserTicket')
+    private readonly userTicketModel: Model<UserTicket, UserTicket['id']>
   ) {}
 
   async createEvent(event: Event) {
@@ -25,5 +28,9 @@ export class EventService {
 
   async updateEvent(id: string, body: any) {
     return this.eventModel.update(id, body);
+  }
+
+  async createUserTicket(userTicket: UserTicket) {
+    return this.userTicketModel.create(userTicket);
   }
 }

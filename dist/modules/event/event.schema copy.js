@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Event = exports.EventSchema = exports.TicketSchema = void 0;
+exports.EventSchema = exports.TicketSchema = void 0;
 const dynamoose_1 = require("dynamoose");
 exports.TicketSchema = new dynamoose_1.Schema({
     id: {
@@ -25,7 +25,7 @@ exports.TicketSchema = new dynamoose_1.Schema({
     saleEnd: {
         type: Date,
     },
-    remain: {
+    sold: {
         type: Number,
     },
 });
@@ -63,8 +63,10 @@ exports.EventSchema = new dynamoose_1.Schema({
     publishDate: {
         type: Date,
     },
-}, {
-    timestamps: true
+    createdAt: {
+        type: Date,
+        default: new Date(),
+        rangeKey: true,
+    },
 });
-exports.Event = (0, dynamoose_1.model)('Event', exports.EventSchema);
-//# sourceMappingURL=event.schema.js.map
+//# sourceMappingURL=event.schema%20copy.js.map

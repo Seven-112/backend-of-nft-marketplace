@@ -5,6 +5,7 @@ import { EventController } from './event.controller';
 
 import { EventSchema } from './event.schema';
 import { EventService } from './event.service';
+import { UserTicketSchema } from './userTicket.schema';
 
 @Module({
   imports: [
@@ -12,6 +13,10 @@ import { EventService } from './event.service';
       {
         name: 'Event',
         schema: EventSchema,
+      },
+      {
+        name: 'UserTicket',
+        schema: UserTicketSchema,
       },
     ]),
     UserModule,
