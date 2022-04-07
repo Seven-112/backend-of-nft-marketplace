@@ -12,6 +12,9 @@ export class CreateNftDTO {
 
   @IsString()
   imgLink: string;
+
+  @IsString()
+  metadataPubkey: string;
 }
 
 export class UpdateNftDTO extends CreateNftDTO {

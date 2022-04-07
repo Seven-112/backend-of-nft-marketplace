@@ -7,4 +7,5 @@ export declare class Nft {
     createdAt: number;
     updatedAt: number;
     imgLink: string;
+    metadataPubkey: string;
 }
