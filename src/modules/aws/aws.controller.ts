@@ -30,9 +30,9 @@ export class AWSController {
     });
   }
 
+  @Public()
   @Post('/presignURL')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async getPresignURL(@Body() body: PresignURLDTO) {
     const id = nanoid();

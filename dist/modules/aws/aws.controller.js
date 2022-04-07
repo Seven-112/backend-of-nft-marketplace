@@ -115,9 +115,9 @@ let AWSController = class AWSController {
     }
 };
 __decorate([
+    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Post)('/presignURL'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
