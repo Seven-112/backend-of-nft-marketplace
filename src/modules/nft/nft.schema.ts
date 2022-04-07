@@ -23,6 +23,9 @@ export const NftSchema = new Schema(
     imgLink: {
       type: String,
     },
+    metadataPubkey: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -29,6 +29,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "imgLink", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateNftDTO.prototype, "metadataPubkey", void 0);
 exports.CreateNftDTO = CreateNftDTO;
 class UpdateNftDTO extends CreateNftDTO {
 }
