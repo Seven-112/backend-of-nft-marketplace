@@ -74,7 +74,7 @@ export class SubscriptionController {
     }
     
     return {
-      code: 201,
+      code: 200,
       message: 'unsubscribe_successfully',
     };
   }
