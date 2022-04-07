@@ -4,6 +4,7 @@ export declare class CreateNftDTO {
     owner: string;
     imgLink: string;
     metadataPubkey: string;
+    type: string;
 }
 export declare class UpdateNftDTO extends CreateNftDTO {
     price?: string;

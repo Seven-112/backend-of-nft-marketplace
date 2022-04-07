@@ -8,4 +8,5 @@ export declare class Nft {
     updatedAt: number;
     imgLink: string;
     metadataPubkey: string;
+    type: string;
 }

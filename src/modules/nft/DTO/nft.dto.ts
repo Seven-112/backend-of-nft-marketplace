@@ -15,6 +15,9 @@ export class CreateNftDTO {
 
   @IsString()
   metadataPubkey: string;
+
+  @IsString()
+  type: string;
 }
 
 export class UpdateNftDTO extends CreateNftDTO {

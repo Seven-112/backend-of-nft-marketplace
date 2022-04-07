@@ -26,6 +26,9 @@ export const NftSchema = new Schema(
     metadataPubkey: {
       type: String,
     },
+    type: {
+      type: String,
+    },
   },
   {
     timestamps: true,

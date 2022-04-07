@@ -27,6 +27,9 @@ exports.NftSchema = new dynamoose_1.Schema({
     metadataPubkey: {
         type: String,
     },
+    type: {
+        type: String,
+    },
 }, {
     timestamps: true,
 });

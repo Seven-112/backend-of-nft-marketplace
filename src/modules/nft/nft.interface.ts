@@ -10,4 +10,5 @@ export class Nft {
   updatedAt: number;
   imgLink: string;
   metadataPubkey: string;
+  type: string;
 }
