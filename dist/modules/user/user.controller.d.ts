@@ -1,9 +1,10 @@
 import { AnyDocument } from 'dynamoose/dist/Document';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
-import { UpdateProfileDTO } from './DTO/update-profile';
+import { UpdateProfileDTO, UpdateSocialDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
+import { Social } from './user.interface';
 import { Request } from 'express';
 export declare class UserController {
     private userService;
@@ -32,6 +33,7 @@ export declare class UserController {
             role: string;
             status: string;
             createdAt: string;
+            social?: Social;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{
@@ -40,6 +42,11 @@ export declare class UserController {
         data: unknown;
     }>;
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
+    updateSocial(request: any, body: UpdateSocialDTO): Promise<{
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;

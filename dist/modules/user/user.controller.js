@@ -47,6 +47,7 @@ let UserController = class UserController {
     }
     async updateProfile(request, body) {
         const user = await this.userService.getUserById(request.user.sub);
+        console.log(user);
         if (!user) {
             return {
                 code: 404,
@@ -69,6 +70,23 @@ let UserController = class UserController {
             code: 200,
             message: 'Updated',
             data: updatedUser,
+        };
+    }
+    async updateSocial(request, body) {
+        let user = await this.userService.getUserById(request.user.sub);
+        if (!user) {
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        }
+        Object.assign(user, body);
+        user = await this.userService.updateUser(user);
+        return {
+            code: 200,
+            message: 'Updated',
+            data: user,
         };
     }
     async update(request, body) {
@@ -213,6 +231,17 @@ __decorate([
         update_profile_1.UpdateProfileDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Patch)('/socials'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, update_profile_1.UpdateSocialDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateSocial", null);
 __decorate([
     (0, common_1.Patch)('/update'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

@@ -15,10 +15,10 @@ import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
-import { UpdateProfileDTO } from './DTO/update-profile';
+import { UpdateProfileDTO, UpdateSocialDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { UserRole, UserStatus } from './user.interface';
+import { Social, UserRole, UserStatus } from './user.interface';
 import { Request } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -67,6 +67,8 @@ export class UserController {
   ) {
     const user = await this.userService.getUserById(request.user.sub);
 
+    console.log(user);
+
     if (!user) {
       return {
         code: 404,
@@ -98,6 +100,32 @@ export class UserController {
       code: 200,
       message: 'Updated',
       data: updatedUser,
+    };
+  }
+
+  @Patch('/socials')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UsePipes(new ValidationPipe())
+  async updateSocial(@Req() request: any, @Body() body: UpdateSocialDTO) {
+    let user = await this.userService.getUserById(request.user.sub);
+
+    if (!user) {
+      return {
+        code: 404,
+        message: 'User not found',
+        data: null,
+      };
+    }
+
+    Object.assign(user, body);
+
+    user = await this.userService.updateUser(user);
+
+    return {
+      code: 200,
+      message: 'Updated',
+      data: user,
     };
   }
 

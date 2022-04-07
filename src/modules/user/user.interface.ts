@@ -10,7 +10,17 @@ export enum UserStatus {
   freeze = 'freeze',
   nft_owner = 'nft owner',
 }
-export interface User {
+
+export class Social {
+  youtube?: string;
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  discord?: string;
+  telegram?: string;
+}
+
+export class User {
   id: string;
   walletAddress?: string;
   email: string;
@@ -23,4 +33,5 @@ export interface User {
   role: string;
   status: string;
   createdAt: string;
+  social?: Social;
 }

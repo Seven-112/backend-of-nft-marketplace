@@ -9,8 +9,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProfileDTO = void 0;
+exports.UpdateSocialDTO = exports.UpdateProfileDTO = exports.SocialDTO = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
+class SocialDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "youtube", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "facebook", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "twitter", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "instagram", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "discord", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], SocialDTO.prototype, "telegram", void 0);
+exports.SocialDTO = SocialDTO;
 class UpdateProfileDTO {
 }
 __decorate([
@@ -44,5 +78,20 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProfileDTO.prototype, "avatar", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => SocialDTO),
+    __metadata("design:type", SocialDTO)
+], UpdateProfileDTO.prototype, "social", void 0);
 exports.UpdateProfileDTO = UpdateProfileDTO;
+class UpdateSocialDTO {
+}
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.ValidateNested)(),
+    (0, class_transformer_1.Type)(() => SocialDTO),
+    __metadata("design:type", SocialDTO)
+], UpdateSocialDTO.prototype, "social", void 0);
+exports.UpdateSocialDTO = UpdateSocialDTO;
 //# sourceMappingURL=update-profile.js.map

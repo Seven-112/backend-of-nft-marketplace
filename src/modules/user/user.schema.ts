@@ -1,5 +1,32 @@
 import { Schema, model } from 'dynamoose';
 
+export const SocialSchema = new Schema({
+  youtube: {
+    type: String,
+    required: false,
+  },
+  facebook: {
+    type: String,
+    required: false,
+  },
+  twitter: {
+    type: String,
+    required: false,
+  },
+  instagram: {
+    type: String,
+    required: false,
+  },
+  discord: {
+    type: String,
+    required: false,
+  },
+  telegram: {
+    type: String,
+    required: false,
+  },
+});
+
 export const UserSchema = new Schema({
   id: {
     type: String,
@@ -45,6 +72,7 @@ export const UserSchema = new Schema({
   createdAt: {
     type: String,
   },
+  social: SocialSchema,
 });
 
-export const User = model('User', UserSchema)
+export const User = model('User', UserSchema);

@@ -1,7 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.UserSchema = void 0;
+exports.User = exports.UserSchema = exports.SocialSchema = void 0;
 const dynamoose_1 = require("dynamoose");
+exports.SocialSchema = new dynamoose_1.Schema({
+    youtube: {
+        type: String,
+        required: false,
+    },
+    facebook: {
+        type: String,
+        required: false,
+    },
+    twitter: {
+        type: String,
+        required: false,
+    },
+    instagram: {
+        type: String,
+        required: false,
+    },
+    discord: {
+        type: String,
+        required: false,
+    },
+    telegram: {
+        type: String,
+        required: false,
+    },
+});
 exports.UserSchema = new dynamoose_1.Schema({
     id: {
         type: String,
@@ -47,6 +73,7 @@ exports.UserSchema = new dynamoose_1.Schema({
     createdAt: {
         type: String,
     },
+    social: exports.SocialSchema,
 });
 exports.User = (0, dynamoose_1.model)('User', exports.UserSchema);
 //# sourceMappingURL=user.schema.js.map
