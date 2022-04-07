@@ -15,7 +15,11 @@ import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
-import { UpdateProfileDTO, UpdateSocialDTO } from './DTO/update-profile';
+import {
+  UpdatePasswordDTO,
+  UpdateProfileDTO,
+  UpdateSocialDTO,
+} from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 import { Social, UserRole, UserStatus } from './user.interface';
@@ -127,6 +131,36 @@ export class UserController {
       message: 'Updated',
       data: user,
     };
+  }
+
+  @Patch('/password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UsePipes(new ValidationPipe())
+  async updatePassword(
+    @Req() request: AnyDocument,
+    @Body() body: UpdatePasswordDTO,
+  ) {
+    try {
+      const accessToken = request.headers.authorization.split(' ')[1];
+
+      await this.userService.changePassword({
+        AccessToken: accessToken,
+        PreviousPassword: body.oldPassword,
+        ProposedPassword: body.newPassword,
+      });
+
+      return {
+        code: 201,
+        message: 'Password updated',
+      };
+    } catch (error) {
+      console.log('err', error);
+      return {
+        code: error.statusCode,
+        message: error.code,
+      };
+    }
   }
 
   @Patch('/update')

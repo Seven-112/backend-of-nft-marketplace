@@ -1,7 +1,7 @@
 import { AnyDocument } from 'dynamoose/dist/Document';
 import { GetUserInformationDTO } from './DTO/get-user-information';
 import { SearchUserDTO } from './DTO/search-user.dto';
-import { UpdateProfileDTO, UpdateSocialDTO } from './DTO/update-profile';
+import { UpdatePasswordDTO, UpdateProfileDTO, UpdateSocialDTO } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
 import { Social } from './user.interface';
@@ -50,6 +50,10 @@ export declare class UserController {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
+    updatePassword(request: AnyDocument, body: UpdatePasswordDTO): Promise<{
+        code: any;
+        message: any;
     }>;
     update(request: any, body: UpdateUserDTO): Promise<{
         code: number;

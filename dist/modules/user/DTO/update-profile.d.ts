@@ -18,3 +18,7 @@ export declare class UpdateProfileDTO {
 export declare class UpdateSocialDTO {
     social?: SocialDTO;
 }
+export declare class UpdatePasswordDTO {
+    oldPassword: string;
+    newPassword: string;
+}

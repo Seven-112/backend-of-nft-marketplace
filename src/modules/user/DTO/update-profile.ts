@@ -70,3 +70,11 @@ export class UpdateSocialDTO {
   @Type(() => SocialDTO)
   social?: SocialDTO;
 }
+
+export class UpdatePasswordDTO {
+  @IsString()
+  oldPassword: string;
+
+  @IsString()
+  newPassword: string;
+}

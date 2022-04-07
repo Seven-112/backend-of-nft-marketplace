@@ -1,5 +1,6 @@
 import { Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
+import * as aws from 'aws-sdk';
 export declare class UserService {
     private readonly userModel;
     constructor(userModel: Model<User, User['id']>);
@@ -15,6 +16,7 @@ export declare class UserService {
     getUsers(ids: string[]): Promise<import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<User>>>;
     getAllUsers(limit?: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getUserFromCognito(accessToken: string): Promise<unknown>;
+    changePassword(data: aws.CognitoIdentityServiceProvider.ChangePasswordRequest): Promise<unknown>;
     searchUsers(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getUserByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
 }

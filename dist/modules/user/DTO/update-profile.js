@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateSocialDTO = exports.UpdateProfileDTO = exports.SocialDTO = void 0;
+exports.UpdatePasswordDTO = exports.UpdateSocialDTO = exports.UpdateProfileDTO = exports.SocialDTO = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class SocialDTO {
@@ -94,4 +94,15 @@ __decorate([
     __metadata("design:type", SocialDTO)
 ], UpdateSocialDTO.prototype, "social", void 0);
 exports.UpdateSocialDTO = UpdateSocialDTO;
+class UpdatePasswordDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdatePasswordDTO.prototype, "oldPassword", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdatePasswordDTO.prototype, "newPassword", void 0);
+exports.UpdatePasswordDTO = UpdatePasswordDTO;
 //# sourceMappingURL=update-profile.js.map

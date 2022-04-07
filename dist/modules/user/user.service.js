@@ -73,6 +73,16 @@ let UserService = class UserService {
             });
         });
     }
+    async changePassword(data) {
+        const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
+        return new Promise((resolve, reject) => {
+            cognitoIdentityServiceProvider.changePassword(data, function (err, response) {
+                if (err)
+                    reject(err);
+                resolve(response);
+            });
+        });
+    }
     async searchUsers(address) {
         return this.userModel.scan('walletAddress').contains(address).exec();
     }

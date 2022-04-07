@@ -89,6 +89,27 @@ let UserController = class UserController {
             data: user,
         };
     }
+    async updatePassword(request, body) {
+        try {
+            const accessToken = request.headers.authorization.split(' ')[1];
+            await this.userService.changePassword({
+                AccessToken: accessToken,
+                PreviousPassword: body.oldPassword,
+                ProposedPassword: body.newPassword,
+            });
+            return {
+                code: 201,
+                message: 'Password updated',
+            };
+        }
+        catch (error) {
+            console.log('err', error);
+            return {
+                code: error.statusCode,
+                message: error.code,
+            };
+        }
+    }
     async update(request, body) {
         var _a, _b, _c;
         const userByEmail = await this.userService.getByEmail(body.email);
@@ -242,6 +263,18 @@ __decorate([
     __metadata("design:paramtypes", [Object, update_profile_1.UpdateSocialDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateSocial", null);
+__decorate([
+    (0, common_1.Patch)('/password'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Document_1.AnyDocument,
+        update_profile_1.UpdatePasswordDTO]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updatePassword", null);
 __decorate([
     (0, common_1.Patch)('/update'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
