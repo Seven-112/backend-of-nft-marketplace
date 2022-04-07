@@ -11,8 +11,10 @@ import { MailService } from './mail.service';
         secure: true, // true for 465, false for other ports
         port: 465,
         auth: {
-          user: process.env.MAIL_EMAIL,
-          pass: process.env.MAIL_16_DIGIT_CODE
+          // user: process.env.MAIL_EMAIL,
+          // pass: process.env.MAIL_16_DIGIT_CODE
+          user: 'longnguyennapa@gmail.com',
+          pass: 'ejidpgmaaoddlmvw'
         },
       },
       defaults: {

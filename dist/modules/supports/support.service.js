@@ -22,6 +22,15 @@ let SupportService = class SupportService {
     async create(support) {
         return this.supportModel.create(support);
     }
+    async get(limit, lastKey) {
+        if (lastKey) {
+            return this.supportModel.scan().startAt(lastKey).limit(limit).exec();
+        }
+        return this.supportModel.scan().limit(limit).exec();
+    }
+    async getSupportDetail(id) {
+        return this.supportModel.get(id);
+    }
 };
 SupportService = __decorate([
     (0, common_1.Injectable)(),

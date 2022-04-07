@@ -27,6 +27,7 @@ export class Support {
   transaction_hash: string;
   wallet: string;
   file: File;
+  timestamp: number;
   status: Status;
   constructor() {
     this.id = nanoid(12);

@@ -48,6 +48,10 @@ exports.SupportSchema = new dynamoose_1.Schema({
         required: true
     },
     file: exports.FileSchema,
+    timestamp: {
+        type: Number,
+        rangeKey: true
+    },
     status: {
         type: String,
         default: 'open',
