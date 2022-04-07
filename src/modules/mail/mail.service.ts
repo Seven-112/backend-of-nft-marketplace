@@ -17,6 +17,14 @@ export class MailService {
     });
   }
 
+  async sendEmail(email: string, subject: string, content: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: subject,
+      html: content
+    });
+  }
+
   generateOTP() {
     return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
   }

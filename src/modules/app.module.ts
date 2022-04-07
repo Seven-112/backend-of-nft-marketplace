@@ -24,6 +24,7 @@ import { AWSModule } from './aws/aws.module';
 import { EventModule } from './event/event.module';
 import { SocketModule } from './socket/socket.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
+import { SupportModule } from './supports/support.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -48,6 +49,7 @@ import { WatchlistModule } from './watchlist/watchlist.module';
     ChatModule,
     AWSModule,
     WatchlistModule,
+    SupportModule,
     RedisModule.forRoot({
       config: {
         port: +process.env.REDIS_PORT,
