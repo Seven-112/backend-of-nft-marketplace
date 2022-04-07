@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SupportController = void 0;
 const common_1 = require("@nestjs/common");
 const uuid_1 = require("uuid");
+const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const createSupport_dto_1 = require("./DTO/createSupport.dto");
@@ -31,6 +32,7 @@ let SupportController = class SupportController {
         Object.assign(support, body);
         support.ticket_uuid = (0, uuid_1.v4)();
         support.status = support_interface_1.Status.open;
+        support.timestamp = new Date().getTime();
         support = await this.supportService.create(support);
         const content = `
       Dear sir,<br>
@@ -56,6 +58,14 @@ let SupportController = class SupportController {
             data: support,
         };
     }
+    async getSupports(request, limit, lastItem) {
+        const supports = await this.supportService.get(limit, lastItem ? { id: lastItem } : null);
+        return {
+            code: 200,
+            message: 'success',
+            data: supports,
+        };
+    }
 };
 __decorate([
     (0, common_1.Post)('/'),
@@ -67,6 +77,17 @@ __decorate([
     __metadata("design:paramtypes", [Object, createSupport_dto_1.CreateSupportDTO]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "createEvent", null);
+__decorate([
+    (0, common_1.Get)('/'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('lastItem')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number, String]),
+    __metadata("design:returntype", Promise)
+], SupportController.prototype, "getSupports", null);
 SupportController = __decorate([
     (0, common_1.Controller)('supports'),
     __metadata("design:paramtypes", [support_service_1.SupportService,

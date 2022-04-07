@@ -47,6 +47,10 @@ export const SupportSchema = new Schema(
       required: true
     },
     file: FileSchema,
+    timestamp: {
+      type: Number,
+      rangeKey: true
+    },
     status: {
       type: String,
       default: 'open',

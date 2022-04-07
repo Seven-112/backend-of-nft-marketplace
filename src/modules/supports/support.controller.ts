@@ -34,6 +34,7 @@ export class SupportController {
     Object.assign(support, body);
     support.ticket_uuid = uuidv4();
     support.status = Status.open;
+    support.timestamp = new Date().getTime();
     support = await this.supportService.create(support);
     
     const content = `
@@ -60,6 +61,20 @@ export class SupportController {
       code: 201,
       message: 'support_created',
       data: support,
+    };
+  }
+
+  @Get('/')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getSupports(@Req() request: any, @Query('limit') limit?: number, @Query('lastItem') lastItem?: string) {
+
+    const supports = await this.supportService.get(limit, lastItem ? { id: lastItem } : null);
+    
+    return {
+      code: 200,
+      message: 'success',
+      data: supports,
     };
   }
 }

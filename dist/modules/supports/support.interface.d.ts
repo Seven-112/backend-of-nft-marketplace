@@ -22,6 +22,7 @@ export declare class Support {
     transaction_hash: string;
     wallet: string;
     file: File;
+    timestamp: number;
     status: Status;
     constructor();
 }

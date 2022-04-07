@@ -11,4 +11,9 @@ export declare class SupportController {
         message: string;
         data: Support;
     }>;
+    getSupports(request: any, limit?: number, lastItem?: string): Promise<{
+        code: number;
+        message: string;
+        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Support>>;
+    }>;
 }
