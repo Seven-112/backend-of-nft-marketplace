@@ -37,12 +37,12 @@ export class SubscriptionController {
     const content = `
       Dear sir,<br>
       Thanks for your subscribe our system.<br>
-      You will receive new letter from us when have new updated on Metasersus System.<br>
+      You will receive new letter from us when have new updated on MetaVersus System.<br>
       For unsubscribe. Please click at <a href="http://192.248.168.248/unsubscribe/${subscription.id}">here</a><br>
 
       <i>This is automatic email. Please don't reply this email.</i>
       Best regards,<br>
-      Metasersus
+      MetaVersus
     `
 
     const subject = `Subscribe successfully`
@@ -63,9 +63,9 @@ export class SubscriptionController {
       await this.subscriptionService.delete(id);
       const content = `
         Dear sir,<br>
-        Your unsubscribe Metasersus system succssfully.<br>
+        Your unsubscribe MetaVersus system succssfully.<br>
         Best regards,<br>
-        Metasersus
+        MetaVersus
       `
 
       const subject = `Unsubscribe successfully`
