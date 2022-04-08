@@ -72,7 +72,7 @@ export declare class UserController {
     } | {
         code: number;
         data: {
-            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>> | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
             length: number;
         };
         message?: undefined;
@@ -80,7 +80,7 @@ export declare class UserController {
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;
         data: {
-            users: import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            users: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
         };
     }>;
     getUserById(id: string): Promise<{
