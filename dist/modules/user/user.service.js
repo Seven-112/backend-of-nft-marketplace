@@ -52,7 +52,8 @@ let UserService = class UserService {
         return this.userModel.update(id, body);
     }
     async getUsers(ids) {
-        return this.userModel.scan().in(ids).or().where('wallet').in(ids).exec();
+        console.log(ids);
+        return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
     }
     async getAllUsers(limit) {
         if (limit)
