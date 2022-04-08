@@ -60,7 +60,7 @@ export class UserService {
   async getAllUsers(limit?: number) {
     if (limit) return this.userModel.scan().limit(limit).exec();
 
-    return this.userModel.query('createdAt').sort(SortOrder.descending).exec();
+    return this.userModel.scan().exec();
   }
 
   async getUserFromCognito(accessToken: string) {

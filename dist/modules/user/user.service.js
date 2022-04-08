@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const aws = require("aws-sdk");
 const transformCognitoUser_1 = require("../../utils/transformCognitoUser");
-const General_1 = require("dynamoose/dist/General");
 let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -58,7 +57,7 @@ let UserService = class UserService {
     async getAllUsers(limit) {
         if (limit)
             return this.userModel.scan().limit(limit).exec();
-        return this.userModel.query('createdAt').sort(General_1.SortOrder.descending).exec();
+        return this.userModel.scan().exec();
     }
     async getUserFromCognito(accessToken) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();

@@ -72,7 +72,7 @@ export declare class UserController {
     } | {
         code: number;
         data: {
-            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>> | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            accounts: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
             length: number;
         };
         message?: undefined;
