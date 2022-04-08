@@ -6,8 +6,13 @@ export declare class SubscriptionController {
     private readonly mailService;
     constructor(subscriptionService: SubscriptionService, mailService: MailService);
     subscribe(request: any, body: SubscribeDTO): Promise<{
+        error: number;
+        message: string;
+        code?: undefined;
+    } | {
         code: number;
         message: string;
+        error?: undefined;
     }>;
     unsubscribe(request: any, id: string): Promise<{
         code: number;

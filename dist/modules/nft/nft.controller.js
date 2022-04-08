@@ -104,7 +104,6 @@ let NFTController = class NFTController {
         };
     }
     async getBoughtNfts(request) {
-        const userNftBought = new userNFTBought_interface_1.UserNFTBought();
         const user = await this.userService.getUserById(request.user.sub);
         if (!user) {
             return {

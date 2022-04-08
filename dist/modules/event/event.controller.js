@@ -102,7 +102,7 @@ let EventController = class EventController {
         let userTicketDaily = await (await this.eventService.getUserTicketByTime(firstDailyTime, currentTime))['populate']();
         userTicketDaily = await userTicketDaily['toJSON']();
         const currentHour = moment(currentTime).format('HH');
-        for (let i = 0; i <= +currentHour; i++) {
+        for (let i = 0; i <= 23; i++) {
             const data = {
                 time: moment()
                     .subtract(+currentHour - i, 'hours')

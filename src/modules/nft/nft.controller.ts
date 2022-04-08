@@ -133,7 +133,6 @@ export class NFTController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getBoughtNfts(@Req() request: any) {
-    const userNftBought = new UserNFTBought();
     const user = await this.userService.getUserById(request.user.sub);
 
     if(!user) {

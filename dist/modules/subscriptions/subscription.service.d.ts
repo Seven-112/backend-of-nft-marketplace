@@ -7,4 +7,5 @@ export declare class SubscriptionService {
     get(limit: number, lastKey: object): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Subscription>>>;
     getSubscriptionDetail(id: string): Promise<import("nestjs-dynamoose").Document<Subscription>>;
     delete(id: string): Promise<void>;
+    getSubscriptionByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Subscription>>>;
 }

@@ -26,6 +26,13 @@ let SubscriptionController = class SubscriptionController {
         this.mailService = mailService;
     }
     async subscribe(request, body) {
+        const checkEmailIsExisted = await (await this.subscriptionService.getSubscriptionByEmail(body.email))['toJSON']();
+        if (checkEmailIsExisted.length) {
+            return {
+                error: 400,
+                message: 'you_already_subscribed'
+            };
+        }
         let subscription = new subscription_interface_1.Subscription();
         subscription.email = body.email;
         subscription = await this.subscriptionService.create(subscription);

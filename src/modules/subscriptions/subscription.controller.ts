@@ -30,6 +30,13 @@ export class SubscriptionController {
   @Public()
   @UsePipes(new ValidationPipe())
   async subscribe(@Req() request: any, @Body() body: SubscribeDTO) {
+    const checkEmailIsExisted = await (await this.subscriptionService.getSubscriptionByEmail(body.email))['toJSON']();
+    if(checkEmailIsExisted.length) {
+      return {
+        error: 400,
+        message: 'you_already_subscribed'
+      }
+    }
     let subscription = new Subscription();
     subscription.email = body.email;
     subscription = await this.subscriptionService.create(subscription);

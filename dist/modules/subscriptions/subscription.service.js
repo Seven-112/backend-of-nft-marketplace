@@ -34,6 +34,9 @@ let SubscriptionService = class SubscriptionService {
     async delete(id) {
         return this.subscriptionModel.delete(id);
     }
+    async getSubscriptionByEmail(email) {
+        return this.subscriptionModel.scan('email').eq(email).limit(1).exec();
+    }
 };
 SubscriptionService = __decorate([
     (0, common_1.Injectable)(),

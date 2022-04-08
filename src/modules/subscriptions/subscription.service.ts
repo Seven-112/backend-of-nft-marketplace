@@ -28,4 +28,8 @@ export class SubscriptionService {
   async delete(id: string) {
     return this.subscriptionModel.delete(id);
   }
+
+  async getSubscriptionByEmail(email: string) {
+    return this.subscriptionModel.scan('email').eq(email).limit(1).exec();
+  }
 }
