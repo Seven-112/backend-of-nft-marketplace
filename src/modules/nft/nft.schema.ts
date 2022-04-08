@@ -1,4 +1,5 @@
 import { Schema, model } from 'dynamoose';
+import { User } from '../user/user.schema';
 
 export const NftSchema = new Schema(
   {
@@ -29,6 +30,7 @@ export const NftSchema = new Schema(
     type: {
       type: String,
     },
+    user: User,
   },
   {
     timestamps: true,

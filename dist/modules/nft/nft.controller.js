@@ -27,9 +27,18 @@ let NFTController = class NFTController {
         this.nftService = nftService;
         this.userService = userService;
     }
-    async createNft(body) {
+    async createNft(request, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user) {
+            return {
+                code: 401,
+                message: 'unauthorized',
+                data: null,
+            };
+        }
         const nft = new nft_interface_1.Nft();
         Object.assign(nft, body);
+        nft.user = user.id;
         const newNft = await this.nftService.createNft(nft);
         return {
             code: 201,
@@ -112,12 +121,14 @@ let NFTController = class NFTController {
     }
 };
 __decorate([
-    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.Post)('/create'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [nft_dto_1.CreateNftDTO]),
+    __metadata("design:paramtypes", [Object, nft_dto_1.CreateNftDTO]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "createNft", null);
 __decorate([

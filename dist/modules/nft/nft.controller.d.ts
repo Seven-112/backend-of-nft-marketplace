@@ -6,7 +6,7 @@ export declare class NFTController {
     private readonly nftService;
     private readonly userService;
     constructor(nftService: NftService, userService: UserService);
-    createNft(body: CreateNftDTO): Promise<{
+    createNft(request: any, body: CreateNftDTO): Promise<{
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<Nft>;
