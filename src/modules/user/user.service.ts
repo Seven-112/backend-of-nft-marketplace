@@ -115,7 +115,11 @@ export class UserService {
   }
 
   async searchUsers(address: string) {
-    return this.userModel.scan('walletAddress').contains(address).exec();
+    return Promise.all([
+      this.userModel.scan('walletAddress').contains(address).exec(),
+      this.userModel.scan('username').contains(address).exec(),
+      this.userModel.scan('email').contains(address).exec(),
+    ]);
   }
 
   async getUserByEmail(email: string) {

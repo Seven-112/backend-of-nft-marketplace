@@ -17,6 +17,6 @@ export declare class UserService {
     getAllUsers(limit?: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getUserFromCognito(accessToken: string): Promise<unknown>;
     changePassword(data: aws.CognitoIdentityServiceProvider.ChangePasswordRequest): Promise<unknown>;
-    searchUsers(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
+    searchUsers(address: string): Promise<[import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>, import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>, import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>]>;
     getUserByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
 }

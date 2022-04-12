@@ -84,7 +84,11 @@ let UserService = class UserService {
         });
     }
     async searchUsers(address) {
-        return this.userModel.scan('walletAddress').contains(address).exec();
+        return Promise.all([
+            this.userModel.scan('walletAddress').contains(address).exec(),
+            this.userModel.scan('username').contains(address).exec(),
+            this.userModel.scan('email').contains(address).exec(),
+        ]);
     }
     async getUserByEmail(email) {
         return this.userModel.scan('email').eq(email).exec();

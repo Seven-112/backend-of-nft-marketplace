@@ -310,7 +310,7 @@ export class UserController {
   async search(@Body() body: SearchUserDTO) {
     const users = await this.userService.searchUsers(body.address);
 
-    if (!users.count) {
+    if (users.every((user) => !user.count)) {
       return {
         code: 404,
         message: 'User not found',
@@ -318,10 +318,34 @@ export class UserController {
       };
     }
 
+    const allUsers = users.map((user) => user[0]);
+    const filteredUsers = [];
+
+    // remove duplicated user
+    allUsers.forEach((user) => {
+      if (user) {
+        const haveUser =
+          filteredUsers.length > 0 &&
+          filteredUsers.some((u) => u?.id === user?.id);
+
+        if (!haveUser) {
+          filteredUsers.push(user);
+        }
+      }
+    });
+
+    // if (!users.count) {
+    //   return {
+    //     code: 404,
+    //     message: 'User not found',
+    //     data: null,
+    //   };
+    // }
+
     return {
       code: 200,
       message: '',
-      data: users,
+      data: filteredUsers,
     };
   }
 
