@@ -26,6 +26,7 @@ const event_module_1 = require("./event/event.module");
 const socket_module_1 = require("./socket/socket.module");
 const watchlist_module_1 = require("./watchlist/watchlist.module");
 const support_module_1 = require("./supports/support.module");
+const subscription_module_1 = require("./subscriptions/subscription.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -58,6 +59,7 @@ AppModule = __decorate([
             aws_module_1.AWSModule,
             watchlist_module_1.WatchlistModule,
             support_module_1.SupportModule,
+            subscription_module_1.SubscriptionModule,
             ioredis_1.RedisModule.forRoot({
                 config: {
                     port: +process.env.REDIS_PORT,

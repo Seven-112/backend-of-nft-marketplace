@@ -13,7 +13,7 @@ export declare class UserService {
     getByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     updateUser(user: User): Promise<import("nestjs-dynamoose").Document<User>>;
     updateWalletAddress(id: string, body: any): Promise<import("nestjs-dynamoose").Document<User>>;
-    getUsers(ids: string[]): Promise<import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<User>>>;
+    getUsers(ids: string[]): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getAllUsers(limit?: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getUserFromCognito(accessToken: string): Promise<unknown>;
     changePassword(data: aws.CognitoIdentityServiceProvider.ChangePasswordRequest): Promise<unknown>;

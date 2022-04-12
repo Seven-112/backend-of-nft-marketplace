@@ -26,12 +26,22 @@ export class NFTController {
     private readonly userService: UserService,
     ) {}
 
-  @Public()
   @Post('/create')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  async createNft(@Body() body: CreateNftDTO) {
+  async createNft(@Req() request: any, @Body() body: CreateNftDTO) {
+    const user = await this.userService.getUserById(request.user.sub);
+    if(!user) {
+      return {
+        code: 401,
+        message: 'unauthorized',
+        data: null,
+      }
+    }
     const nft = new Nft();
     Object.assign(nft, body);
+    nft.user = user.id;
 
     const newNft = await this.nftService.createNft(nft);
 
@@ -123,7 +133,6 @@ export class NFTController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getBoughtNfts(@Req() request: any) {
-    const userNftBought = new UserNFTBought();
     const user = await this.userService.getUserById(request.user.sub);
 
     if(!user) {

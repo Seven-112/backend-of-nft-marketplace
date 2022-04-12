@@ -80,7 +80,7 @@ export declare class UserController {
     getUserInformation(body: GetUserInformationDTO): Promise<{
         code: number;
         data: {
-            users: import("nestjs-dynamoose").ModelBatchGetDocumentsResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
+            users: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
         };
     }>;
     getUserById(id: string): Promise<{

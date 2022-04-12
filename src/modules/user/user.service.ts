@@ -3,6 +3,7 @@ import { InjectModel, Model } from 'nestjs-dynamoose';
 import { User } from './user.interface';
 import * as aws from 'aws-sdk';
 import { transformCognitoUser } from 'src/utils/transformCognitoUser';
+import { SortOrder } from 'dynamoose/dist/General';
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,8 @@ export class UserService {
   }
 
   async getUsers(ids: string[]) {
-    return this.userModel.batchGet(ids);
+    console.log(ids);
+    return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
   }
 
   async getAllUsers(limit?: number) {
