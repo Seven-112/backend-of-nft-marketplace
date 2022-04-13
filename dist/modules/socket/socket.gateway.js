@@ -25,7 +25,6 @@ let SocketGateway = class SocketGateway {
     }
     async handleMessage(client, payload) {
         try {
-            console.log(payload);
             const params = {
                 TopicArn: process.env.AWS_SNS_TOPIC_ARN,
                 Message: JSON.stringify(Object.assign({}, payload)),
@@ -33,23 +32,33 @@ let SocketGateway = class SocketGateway {
             const sns = await new AWS.SNS().publish(params).promise();
             if (sns.$response.error)
                 throw sns.$response.error;
-            console.log(`Message ${params.Message} sent to the topic ${params.TopicArn}`);
         }
         catch (error) {
             console.log(error);
         }
     }
     handleEmitMessage(payload) {
-        this.server.to(payload.receiver).emit('notiCreated', payload);
+        this.server
+            .to(payload.receiver)
+            .emit('notiCreated', JSON.stringify(payload));
     }
     afterInit(server) {
         this.logger.log('Init');
     }
     async handleConnection(client, ...args) {
-        const user = await this.userService.getUserFromCognito(client.handshake.headers.authorization.split(' ')[1]);
-        if (user) {
-            this.logger.log('Client connected:', client.id);
-            client.join(user.sub);
+        if (client.handshake.auth.token) {
+            const user = await this.userService.getUserFromCognito(client.handshake.auth.token);
+            if (user) {
+                this.logger.log('Client connected:', client.id);
+                const sockets = await this.server.in(user.sub).fetchSockets();
+                sockets.forEach((socket) => {
+                    socket.leave(user.sub);
+                });
+                client.join(user.sub);
+            }
+            else {
+                client.disconnect();
+            }
         }
         else {
             client.disconnect();

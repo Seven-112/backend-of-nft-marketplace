@@ -48,10 +48,10 @@ let UserService = class UserService {
         return this.userModel.update(user);
     }
     async updateWalletAddress(id, body) {
-        return this.userModel.update(id, body);
+        body.id = id;
+        return this.userModel.update(body);
     }
     async getUsers(ids) {
-        console.log(ids);
         return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
     }
     async getAllUsers(limit) {
@@ -69,7 +69,6 @@ let UserService = class UserService {
                 if (!data) {
                     return resolve({});
                 }
-                console.log(data);
                 resolve((0, transformCognitoUser_1.transformCognitoUser)(data));
             });
         });
