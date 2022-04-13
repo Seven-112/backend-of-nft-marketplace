@@ -193,28 +193,10 @@ let UserController = class UserController {
     }
     async search(body) {
         const users = await this.userService.searchUsers(body.address);
-        if (users.every((user) => !user.count)) {
-            return {
-                code: 404,
-                message: 'User not found',
-                data: null,
-            };
-        }
-        const allUsers = users.map((user) => user[0]);
-        const filteredUsers = [];
-        allUsers.forEach((user) => {
-            if (user) {
-                const haveUser = filteredUsers.length > 0 &&
-                    filteredUsers.some((u) => (u === null || u === void 0 ? void 0 : u.id) === (user === null || user === void 0 ? void 0 : user.id));
-                if (!haveUser) {
-                    filteredUsers.push(user);
-                }
-            }
-        });
         return {
             code: 200,
-            message: '',
-            data: filteredUsers,
+            message: 'successful',
+            data: users,
         };
     }
     async getByWalletAddress(walletAddress) {

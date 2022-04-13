@@ -30,7 +30,9 @@ export class SubscriptionController {
   @Public()
   @UsePipes(new ValidationPipe())
   async subscribe(@Req() request: any, @Body() body: SubscribeDTO) {
+    console.log(body.email);
     const checkEmailIsExisted = await (await this.subscriptionService.getSubscriptionByEmail(body.email))['toJSON']();
+    console.log(checkEmailIsExisted);
     if(checkEmailIsExisted.length) {
       return {
         error: 400,

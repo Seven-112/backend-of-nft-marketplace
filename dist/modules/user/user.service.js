@@ -85,11 +85,12 @@ let UserService = class UserService {
         });
     }
     async searchUsers(address) {
-        return Promise.all([
-            this.userModel.scan('walletAddress').contains(address).exec(),
-            this.userModel.scan('username').contains(address).exec(),
-            this.userModel.scan('email').contains(address).exec(),
-        ]);
+        return this.userModel.scan('walletAddress').contains(address)
+            .or()
+            .where('username').contains(address)
+            .or()
+            .where('email').contains(address)
+            .exec();
     }
     async getUserByEmail(email) {
         return this.userModel.scan('email').eq(email).exec();

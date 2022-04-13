@@ -95,7 +95,7 @@ export declare class UserController {
     search(body: SearchUserDTO): Promise<{
         code: number;
         message: string;
-        data: any[];
+        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
     }>;
     getByWalletAddress(walletAddress: string): Promise<{
         code: number;

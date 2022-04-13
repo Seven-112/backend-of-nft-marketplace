@@ -35,7 +35,7 @@ let SubscriptionService = class SubscriptionService {
         return this.subscriptionModel.delete(id);
     }
     async getSubscriptionByEmail(email) {
-        return this.subscriptionModel.scan('email').eq(email).limit(1).exec();
+        return this.subscriptionModel.scan('email').eq(email).exec();
     }
 };
 SubscriptionService = __decorate([

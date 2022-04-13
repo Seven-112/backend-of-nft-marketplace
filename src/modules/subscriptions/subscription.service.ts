@@ -30,6 +30,6 @@ export class SubscriptionService {
   }
 
   async getSubscriptionByEmail(email: string) {
-    return this.subscriptionModel.scan('email').eq(email).limit(1).exec();
+    return this.subscriptionModel.scan('email').eq(email).exec();
   }
 }
