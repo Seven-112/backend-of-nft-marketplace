@@ -35,7 +35,6 @@ let SocketAuthGuard = class SocketAuthGuard extends (0, passport_1.AuthGuard)('s
     }
     handleRequest(err, user, info) {
         if (err || !user) {
-            console.log('guard unauthorized');
             throw err || new websockets_1.WsException('Unauthorized');
         }
         return user;

@@ -47,7 +47,6 @@ let UserController = class UserController {
     }
     async updateProfile(request, body) {
         const user = await this.userService.getUserById(request.user.sub);
-        console.log(user);
         if (!user) {
             return {
                 code: 404,

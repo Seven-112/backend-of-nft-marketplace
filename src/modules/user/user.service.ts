@@ -49,11 +49,11 @@ export class UserService {
   }
 
   async updateWalletAddress(id: string, body: any) {
-    return this.userModel.update(id, body);
+    body.id = id;
+    return this.userModel.update(body);
   }
 
   async getUsers(ids: string[]) {
-    console.log(ids);
     return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
   }
 
@@ -85,8 +85,6 @@ export class UserService {
 
             return resolve({});
           }
-
-          console.log(data);
 
           resolve(transformCognitoUser(data));
         },

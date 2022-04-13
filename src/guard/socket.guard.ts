@@ -28,7 +28,6 @@ export class SocketAuthGuard extends AuthGuard('socketJwt') {
     // You can throw an exception based on either "info" or "err" arguments
 
     if (err || !user) {
-      console.log('guard unauthorized');
       throw err || new WsException('Unauthorized');
     }
     return user;

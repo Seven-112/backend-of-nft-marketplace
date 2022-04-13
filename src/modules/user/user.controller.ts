@@ -71,8 +71,6 @@ export class UserController {
   ) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    console.log(user);
-
     if (!user) {
       return {
         code: 404,
@@ -172,7 +170,6 @@ export class UserController {
     const userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
     );
-
     const case1 =
       userByWallet?.[0]?.email === body.email &&
       userByWallet?.[0]?.walletAddress === body.walletAddress;
@@ -182,7 +179,7 @@ export class UserController {
 
     if (case1 || case2) {
       const foundUser = await this.userService.getUserById(request.user.sub);
-
+      
       const updatedBody = {
         ...body,
         role: foundUser?.role || UserRole.User,
@@ -194,7 +191,7 @@ export class UserController {
         request.user.sub,
         updatedBody,
       );
-
+      
       return {
         code: 200,
         message: '',

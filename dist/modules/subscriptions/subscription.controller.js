@@ -26,9 +26,7 @@ let SubscriptionController = class SubscriptionController {
         this.mailService = mailService;
     }
     async subscribe(request, body) {
-        console.log(body.email);
         const checkEmailIsExisted = await (await this.subscriptionService.getSubscriptionByEmail(body.email))['toJSON']();
-        console.log(checkEmailIsExisted);
         if (checkEmailIsExisted.length) {
             return {
                 error: 400,

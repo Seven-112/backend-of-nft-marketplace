@@ -38,7 +38,6 @@ let NotificationController = class NotificationController {
                 const response = await this.notiService.callGetApi(url);
                 await response.forEach((value) => {
                     if (value.status === 200) {
-                        console.log('subscribed');
                         return 'Yes! We have accepted the confirmation from AWS';
                     }
                     else {
@@ -80,7 +79,6 @@ let NotificationController = class NotificationController {
         return this.eventService.subscribe(`noti.created${id}`);
     }
     async getNotiByReceiver(req, type, limit = 5) {
-        console.log(type);
         const decryptedUserInfo = req.user;
         const allNoti = [];
         const formattedType = JSON.parse(type);
