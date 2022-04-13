@@ -48,7 +48,6 @@ let SocketGateway = class SocketGateway {
     async handleConnection(client, ...args) {
         const user = await this.userService.getUserFromCognito(client.handshake.headers.authorization.split(' ')[1]);
         if (user) {
-            console.log(user);
             this.logger.log('Client connected:', client.id);
             client.join(user.sub);
         }
@@ -78,7 +77,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "handleEmitMessage", null);
 SocketGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ namespace: 'socket', cors: { origin: '*' }, transports: ['websocket'], reconnect: true }),
+    (0, websockets_1.WebSocketGateway)({
+        namespace: 'socket',
+        cors: { origin: '*' },
+        transports: ['websocket'],
+        reconnect: true,
+    }),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], SocketGateway);
 exports.SocketGateway = SocketGateway;

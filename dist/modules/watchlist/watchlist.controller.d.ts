@@ -21,6 +21,10 @@ export declare class WatchlistController {
         data: import("nestjs-dynamoose").Document<import("./watchlist.interface").Watchlist> | {
             id: any;
             list: any[];
+            users: any[];
+        } | {
+            id: any;
+            list: any[];
         };
     }>;
 }

@@ -55,9 +55,13 @@ let WatchlistController = class WatchlistController {
         };
     }
     async get(request, relations) {
-        const watchlist = await this.watchlistService.get(request.user.sub);
+        const watchlist = (await this.watchlistService.get(request.user.sub)) || {
+            id: request.user.sub,
+            list: [],
+            users: [],
+        };
         if (relations === null || relations === void 0 ? void 0 : relations.includes('users')) {
-            const promises = watchlist.list.map((item) => this.userService.getByWalletAddress(item));
+            const promises = (watchlist === null || watchlist === void 0 ? void 0 : watchlist.list.map((item) => this.userService.getByWalletAddress(item))) || [];
             watchlist.users = (await Promise.all(promises)).map((item) => item[0]);
         }
         watchlist.list = Array.from(watchlist.list);
