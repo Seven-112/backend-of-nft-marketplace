@@ -78,7 +78,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "handleEmitMessage", null);
 SocketGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ namespace: 'socket', cors: { origin: '*' } }),
+    (0, websockets_1.WebSocketGateway)({ namespace: 'socket', cors: { origin: '*' }, transports: ['websocket'], reconnect: true }),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], SocketGateway);
 exports.SocketGateway = SocketGateway;

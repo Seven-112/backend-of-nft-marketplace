@@ -14,7 +14,7 @@ import { SocketAuthGuard } from 'src/guard/socket.guard';
 import { NotifyGroupDTO } from '../notification/DTO/notifyGroup.dto';
 import { UserService } from '../user/user.service';
 
-@WebSocketGateway({ namespace: 'socket', cors: { origin: '*' } })
+@WebSocketGateway({ namespace: 'socket', cors: { origin: '*' }, transports: ['websocket'], reconnect: true })
 export class SocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
