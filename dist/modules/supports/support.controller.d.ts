@@ -29,4 +29,9 @@ export declare class SupportController {
         message: string;
         data: any;
     }>;
+    getSupportRequestByTicket(ticket: string): Promise<{
+        code: number;
+        message: string;
+        data: any;
+    }>;
 }

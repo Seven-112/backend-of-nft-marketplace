@@ -177,6 +177,21 @@ let SupportController = class SupportController {
             data: null,
         };
     }
+    async getSupportRequestByTicket(ticket) {
+        const support = await this.supportService.getSupportByTicket(ticket);
+        if (!support) {
+            return {
+                code: 400,
+                message: 'support_request_not_exited',
+                data: null
+            };
+        }
+        return {
+            code: 200,
+            message: 'success',
+            data: support,
+        };
+    }
 };
 __decorate([
     (0, common_1.Post)('/'),
@@ -220,6 +235,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, replySupport_dto_1.ReplySupportDTO]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "userReply", null);
+__decorate([
+    (0, common_1.Get)('/:ticket'),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Param)('ticket')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], SupportController.prototype, "getSupportRequestByTicket", null);
 SupportController = __decorate([
     (0, common_1.Controller)('supports'),
     __metadata("design:paramtypes", [support_service_1.SupportService,

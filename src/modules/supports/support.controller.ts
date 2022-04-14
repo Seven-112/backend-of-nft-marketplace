@@ -208,4 +208,25 @@ export class SupportController {
     };
   }
   
+
+  @Get('/:ticket')
+  @Public()
+  async getSupportRequestByTicket(@Param('ticket') ticket: string) {
+
+    const support = await this.supportService.getSupportByTicket(ticket);
+
+    if(!support) {
+      return {
+        code: 400,
+        message: 'support_request_not_exited',
+        data: null
+      }
+    }
+
+    return {
+      code: 200,
+      message: 'success',
+      data: support,
+    };
+  }
 }
