@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SortOrder } from 'dynamoose/dist/General';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-import { Support, SupportKey } from './support.interface';
+import { Status, Support, SupportKey } from './support.interface';
 import * as dynamoose from 'dynamoose';
 @Injectable()
 export class SupportService {
@@ -14,12 +14,29 @@ export class SupportService {
     return this.supportModel.create(support);
   }
 
-  async get(limit: number, lastKey: object) {
+  async get(limit: number, lastKey: object, status: string) {
+    if(status !== Status.done && status !== Status.open && status !== Status.supporting) {
+      if(lastKey) {
+        return this.supportModel.query('table').eq('support').startAt(lastKey).limit(limit).sort(SortOrder.descending).exec();
+      }
+  
+      return this.supportModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
+    }
     if(lastKey) {
-      return this.supportModel.query('table').eq('support').startAt(lastKey).limit(limit).sort(SortOrder.descending).exec();
+      return this.supportModel.query('table').eq('support')
+        .and()
+        .where('status').eq(status)
+        .startAt(lastKey)
+        .limit(limit)
+        .sort(SortOrder.descending).exec();
     }
 
-    return this.supportModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
+    return this.supportModel.query('table').eq('support')
+      .and()
+      .where('status').eq(status)
+      .limit(limit)
+      .sort(SortOrder.descending)
+      .exec();
   }
 
   async getSupportByTicket(ticket: string) {

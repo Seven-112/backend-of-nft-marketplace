@@ -16,6 +16,7 @@ exports.SupportService = void 0;
 const common_1 = require("@nestjs/common");
 const General_1 = require("dynamoose/dist/General");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const support_interface_1 = require("./support.interface");
 let SupportService = class SupportService {
     constructor(supportModel) {
         this.supportModel = supportModel;
@@ -23,11 +24,27 @@ let SupportService = class SupportService {
     async create(support) {
         return this.supportModel.create(support);
     }
-    async get(limit, lastKey) {
-        if (lastKey) {
-            return this.supportModel.query('table').eq('support').startAt(lastKey).limit(limit).sort(General_1.SortOrder.descending).exec();
+    async get(limit, lastKey, status) {
+        if (status !== support_interface_1.Status.done && status !== support_interface_1.Status.open && status !== support_interface_1.Status.supporting) {
+            if (lastKey) {
+                return this.supportModel.query('table').eq('support').startAt(lastKey).limit(limit).sort(General_1.SortOrder.descending).exec();
+            }
+            return this.supportModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
         }
-        return this.supportModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
+        if (lastKey) {
+            return this.supportModel.query('table').eq('support')
+                .and()
+                .where('status').eq(status)
+                .startAt(lastKey)
+                .limit(limit)
+                .sort(General_1.SortOrder.descending).exec();
+        }
+        return this.supportModel.query('table').eq('support')
+            .and()
+            .where('status').eq(status)
+            .limit(limit)
+            .sort(General_1.SortOrder.descending)
+            .exec();
     }
     async getSupportByTicket(ticket) {
         const supports = await (await this.supportModel.scan('ticket_uuid').eq(ticket).exec())['toJSON']();

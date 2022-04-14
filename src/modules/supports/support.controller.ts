@@ -73,9 +73,9 @@ export class SupportController {
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getSupports(@Req() request: any, @Query('limit') limit?: number, @Query('lastItem') lastItem?: string) {
+  async getSupports(@Req() request: any, @Query('limit') limit?: number, @Query('lastItem') lastItem?: string, @Query('status') status?: string) {
 
-    let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null))['toJSON']();
+    let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null, status))['toJSON']();
     const userIds = [];
     supports.forEach((support: any) => {
       if(support.replies) {
@@ -95,6 +95,7 @@ export class SupportController {
             const user = users.find(user => user.id === reply.user);
             reply.username = user?.username || reply.username;
             reply.email = user?.email || reply.eamil;
+            reply.avatar = user?.avatar || '';
           }
           return reply;
         })

@@ -63,8 +63,8 @@ let SupportController = class SupportController {
             data: support,
         };
     }
-    async getSupports(request, limit, lastItem) {
-        let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null))['toJSON']();
+    async getSupports(request, limit, lastItem, status) {
+        let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null, status))['toJSON']();
         const userIds = [];
         supports.forEach((support) => {
             if (support.replies) {
@@ -83,6 +83,7 @@ let SupportController = class SupportController {
                         const user = users.find(user => user.id === reply.user);
                         reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
                         reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.eamil;
+                        reply.avatar = (user === null || user === void 0 ? void 0 : user.avatar) || '';
                     }
                     return reply;
                 });
@@ -256,8 +257,9 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Query)('limit')),
     __param(2, (0, common_1.Query)('lastItem')),
+    __param(3, (0, common_1.Query)('status')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, String]),
+    __metadata("design:paramtypes", [Object, Number, String, String]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "getSupports", null);
 __decorate([
