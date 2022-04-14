@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NFTController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const moment = require("moment");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const user_service_1 = require("../user/user.service");
@@ -71,15 +72,14 @@ let NFTController = class NFTController {
             data: updatedNft,
         };
     }
-    async buyNft(request, id) {
+    async buyNft(request, id, body) {
         const userNftBought = new userNFTBought_interface_1.UserNFTBought();
         const user = await this.userService.getUserById(request.user.sub);
-        const nft = await this.nftService.findNft(id);
+        let nft = await this.nftService.findNft(id);
         if (!nft) {
-            return {
-                code: 400,
-                message: 'nft_not_found'
-            };
+            const nftData = new nft_interface_1.Nft();
+            Object.assign(nftData, body);
+            nft = await this.nftService.createNft(nftData);
         }
         if (!user) {
             return {
@@ -103,15 +103,46 @@ let NFTController = class NFTController {
             data: null,
         };
     }
-    async getBoughtNfts(request) {
+    async getBoughtNfts(request, filter) {
         const user = await this.userService.getUserById(request.user.sub);
+        let startTime = 0;
+        switch (filter) {
+            case 'last14Days': {
+                startTime = moment().subtract(14, 'days').valueOf();
+                break;
+            }
+            case 'last30Days': {
+                startTime = moment().subtract(30, 'days').valueOf();
+                break;
+            }
+            case 'last60Days': {
+                startTime = moment().subtract(60, 'days').valueOf();
+                break;
+            }
+            case 'last90Days': {
+                startTime = moment().subtract(90, 'days').valueOf();
+                break;
+            }
+            case 'lastYear': {
+                startTime = moment().subtract(1, 'year').valueOf();
+                break;
+            }
+            case 'allTime': {
+                startTime = 0;
+                break;
+            }
+            default: {
+                startTime = moment().subtract(7, 'days').valueOf();
+                break;
+            }
+        }
         if (!user) {
             return {
                 code: 400,
                 message: 'user_not_found'
             };
         }
-        const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id))['populate']();
+        const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, startTime))['populate']();
         return {
             code: 201,
             message: 'buy_nft_successful',
@@ -152,8 +183,9 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, String, nft_dto_1.BuyNFTDTO]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "buyNft", null);
 __decorate([
@@ -161,8 +193,9 @@ __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Query)('filter')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "getBoughtNfts", null);
 NFTController = __decorate([

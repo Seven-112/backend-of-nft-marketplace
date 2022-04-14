@@ -1,3 +1,4 @@
+import { APP_URI } from './../../utils/constants';
 import {
   Body,
   Controller,
@@ -53,6 +54,7 @@ export class SupportController {
       Blockchain: <b>${support.blockchain}</b><br>
       Transaction hash: <b>${support.transaction_hash}</b><br>
       Wallet: <b>${support.wallet}</b><br>
+      You can see your support request at <a href="${process.env.APP_URI}/support/${support.ticket_uuid}">here</a>
       <br><br>
       Best regards,<br>
       Support team
@@ -141,7 +143,31 @@ export class SupportController {
     support.replies = replies;
     
     await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
-
+    const subject = `[Reply] ${support.subject}`
+    const content = `
+      Dear sir,<br>
+      Your support request information as bellow: <br>
+      Ticket Id: <b>${support.ticket_uuid}</b><br>
+      Subject: <b>${support.subject}</b><br>
+      Description: <b>${support.description}</b><br>
+      Category: <b>${support.category}</b><br>
+      Blockchain: <b>${support.blockchain}</b><br>
+      Transaction hash: <b>${support.transaction_hash}</b><br>
+      Wallet: <b>${support.wallet}</b><br>
+      You can see your support request at <a href="${process.env.APP_URI}/support/${support.ticket_uuid}">here</a><br>
+      ----------------------<br>
+      ----------------------<br>
+      [Reply]
+      <p style="white-space: break-all;">
+        ${reply.content}
+      </p>
+      <br><br>
+      Best regards,<br>
+      Support team<br>
+      ${user.username}
+    `
+    console.log(support.email, subject)
+    await this.mailService.sendEmail(support.email, subject, content);
     return {
       code: 200,
       message: 'success',

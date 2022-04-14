@@ -40,10 +40,10 @@ export class NftService {
   }
 
   async getUserNftBoughtByUserAndNft(nftId: string, userId: string) {
-    return this.userNFTBoughtModel.scan('nft').eq(nftId).and().where('user').eq(userId).limit(1).exec();
+    return this.userNFTBoughtModel.scan('nft').eq(nftId).and().where('user').eq(userId).exec();
   }
 
-  async getBoughtNftByUser(userId: string) {
-    return this.userNFTBoughtModel.scan('user').eq(userId).exec();
+  async getBoughtNftByUser(userId: string, starttime: number) {
+    return this.userNFTBoughtModel.scan('user').eq(userId).and().where('createdAt').ge(starttime).exec();
   }
 }

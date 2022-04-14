@@ -11,10 +11,11 @@ import {
   Param,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import * as moment from 'moment';
 import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { UserService } from '../user/user.service';
-import { CreateNftDTO, UpdateNftDTO } from './DTO/nft.dto';
+import { CreateNftDTO, UpdateNftDTO, BuyNFTDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
 import { NftService } from './nft.service';
 import { UserNFTBought } from './userNFTBought.interface';
@@ -91,15 +92,16 @@ export class NFTController {
   @Post('/:id/buy')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async buyNft(@Req() request: any, @Param('id') id: string) {
+  async buyNft(@Req() request: any, @Param('id') id: string, @Body() body: BuyNFTDTO) {
     const userNftBought = new UserNFTBought();
     const user = await this.userService.getUserById(request.user.sub);
-    const nft = await this.nftService.findNft(id);
+    let nft = await this.nftService.findNft(id);
+
     if(!nft) {
-      return {
-        code: 400,
-        message: 'nft_not_found'
-      }
+      const nftData = new Nft();
+      Object.assign(nftData, body);
+
+    nft = await this.nftService.createNft(nftData);
     }
 
     if(!user) {
@@ -118,6 +120,7 @@ export class NFTController {
     }
 
     userNftBought.nft = nft;
+
     userNftBought.user = user;
 
     await this.nftService.createUserNftBought(userNftBought);
@@ -132,9 +135,41 @@ export class NFTController {
   @Get('/bought')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getBoughtNfts(@Req() request: any) {
+  async getBoughtNfts(@Req() request: any, @Query('filter') filter: string) {
     const user = await this.userService.getUserById(request.user.sub);
+    let startTime = 0;
 
+
+    switch(filter) {
+      case 'last14Days': {
+        startTime = moment().subtract(14, 'days').valueOf();
+        break;
+      }
+      case 'last30Days': {
+        startTime = moment().subtract(30, 'days').valueOf();
+        break;
+      }
+      case 'last60Days': {
+        startTime = moment().subtract(60, 'days').valueOf();
+        break;
+      }
+      case 'last90Days': {
+        startTime = moment().subtract(90, 'days').valueOf();
+        break;
+      }
+      case 'lastYear': {
+        startTime = moment().subtract(1, 'year').valueOf();
+        break;
+      }
+      case 'allTime': {
+        startTime = 0;
+        break;
+      }
+      default: {
+        startTime = moment().subtract(7, 'days').valueOf();
+        break;
+      }
+    }
     if(!user) {
       return {
         code: 400,
@@ -142,7 +177,7 @@ export class NFTController {
       }
     }
 
-    const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id))['populate']();
+    const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, startTime))['populate']();
 
     return {
       code: 201,

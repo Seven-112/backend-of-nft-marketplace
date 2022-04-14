@@ -1,5 +1,5 @@
 import { UserService } from '../user/user.service';
-import { CreateNftDTO, UpdateNftDTO } from './DTO/nft.dto';
+import { CreateNftDTO, UpdateNftDTO, BuyNFTDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
 import { NftService } from './nft.service';
 export declare class NFTController {
@@ -21,7 +21,7 @@ export declare class NFTController {
         message: string;
         data: import("nestjs-dynamoose").Document<Nft>;
     }>;
-    buyNft(request: any, id: string): Promise<{
+    buyNft(request: any, id: string, body: BuyNFTDTO): Promise<{
         code: number;
         message: string;
         data?: undefined;
@@ -30,7 +30,7 @@ export declare class NFTController {
         message: string;
         data: any;
     }>;
-    getBoughtNfts(request: any): Promise<{
+    getBoughtNfts(request: any, filter: string): Promise<{
         code: number;
         message: string;
         data?: undefined;

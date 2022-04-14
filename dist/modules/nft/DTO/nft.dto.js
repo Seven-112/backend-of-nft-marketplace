@@ -9,36 +9,61 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateNftDTO = exports.CreateNftDTO = void 0;
+exports.BuyNFTDTO = exports.UpdateNftDTO = exports.CreateNftDTO = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateNftDTO {
 }
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "owner", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "imgLink", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "metadataPubkey", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateNftDTO.prototype, "type", void 0);
 exports.CreateNftDTO = CreateNftDTO;
 class UpdateNftDTO extends CreateNftDTO {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateNftDTO.prototype, "price", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UpdateNftDTO.prototype, "usdPrice", void 0);
 exports.UpdateNftDTO = UpdateNftDTO;
+class BuyNFTDTO extends UpdateNftDTO {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], BuyNFTDTO.prototype, "user", void 0);
+exports.BuyNFTDTO = BuyNFTDTO;
 //# sourceMappingURL=nft.dto.js.map

@@ -10,3 +10,6 @@ export declare class UpdateNftDTO extends CreateNftDTO {
     price?: string;
     usdPrice?: string;
 }
+export declare class BuyNFTDTO extends UpdateNftDTO {
+    user: string;
+}
