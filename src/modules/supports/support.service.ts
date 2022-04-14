@@ -35,5 +35,9 @@ export class SupportService {
     this.supportModel.delete(table);
     this.supportModel.create(data);
   }
+
+  async resolveReport(table: SupportKey, data: any) {
+    return this.supportModel.update(table, data);
+  }
 }
 

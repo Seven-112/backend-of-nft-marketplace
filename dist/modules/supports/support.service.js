@@ -41,6 +41,9 @@ let SupportService = class SupportService {
         this.supportModel.delete(table);
         this.supportModel.create(data);
     }
+    async resolveReport(table, data) {
+        return this.supportModel.update(table, data);
+    }
 };
 SupportService = __decorate([
     (0, common_1.Injectable)(),

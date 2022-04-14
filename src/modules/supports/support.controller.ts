@@ -174,6 +174,62 @@ export class SupportController {
       data: null,
     };
   }
+
+  @Post('/:ticket/resolve')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async resolveSupport(@Req() request: any, @Param('ticket') ticket: string) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if(!user || user.role !== UserRole.Admin) {
+      return {
+        code: 400,
+        message: 'user_not_permission',
+        data: null
+      }
+    }
+
+    const support = await this.supportService.getSupportByTicket(ticket);
+
+    if(!support) {
+      return {
+        code: 400,
+        message: 'support_request_not_exited',
+        data: null
+      }
+    }
+
+    const dataUpdate = {
+      status: Status.done
+    }
+    
+    await this.supportService.resolveReport({ table: support.table, timestamp: support.timestamp }, dataUpdate);
+    const subject = `[Closed] ${support.subject}`
+    const content = `
+      Dear sir,<br>
+      <h2>Your support request is completed.</h2> <br>
+      Your support request information as bellow: <br>
+      Ticket Id: <b>${support.ticket_uuid}</b><br>
+      Subject: <b>${support.subject}</b><br>
+      Description: <b>${support.description}</b><br>
+      Category: <b>${support.category}</b><br>
+      Blockchain: <b>${support.blockchain}</b><br>
+      Transaction hash: <b>${support.transaction_hash}</b><br>
+      Wallet: <b>${support.wallet}</b><br>
+      You can see your support request at <a href="${process.env.APP_URI}/support/${support.ticket_uuid}">here</a><br>
+      <br><br>
+      Best regards,<br>
+      Support team<br>
+      ${user.username}
+    `
+
+    await this.mailService.sendEmail(support.email, subject, content);
+    return {
+      code: 200,
+      message: 'success',
+      data: null,
+    };
+  }
   
   @Post('/:ticket/user/reply')
   @Public()
