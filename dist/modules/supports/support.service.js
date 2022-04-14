@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SupportService = void 0;
 const common_1 = require("@nestjs/common");
+const General_1 = require("dynamoose/dist/General");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 let SupportService = class SupportService {
     constructor(supportModel) {
@@ -24,17 +25,26 @@ let SupportService = class SupportService {
     }
     async get(limit, lastKey) {
         if (lastKey) {
-            return this.supportModel.scan().startAt(lastKey).limit(limit).exec();
+            return this.supportModel.query('table').eq('support').startAt(lastKey).limit(limit).sort(General_1.SortOrder.descending).exec();
         }
-        return this.supportModel.scan().limit(limit).exec();
+        return this.supportModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
     }
-    async getSupportDetail(id) {
-        return this.supportModel.get(id);
+    async getSupportByTicket(ticket) {
+        const supports = await (await this.supportModel.scan('ticket_uuid').eq(ticket).exec())['toJSON']();
+        return supports[0] || null;
+    }
+    async updateSupport(table, data) {
+        console.log(data);
+        delete data.createdAt;
+        delete data.updatedAt;
+        data.timestamp = new Date().getTime();
+        this.supportModel.delete(table);
+        this.supportModel.create(data);
     }
 };
 SupportService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, nestjs_dynamoose_1.InjectModel)('Support')),
+    __param(0, (0, nestjs_dynamoose_1.InjectModel)('Supports')),
     __metadata("design:paramtypes", [Object])
 ], SupportService);
 exports.SupportService = SupportService;

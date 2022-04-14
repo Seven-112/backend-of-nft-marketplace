@@ -1,5 +1,10 @@
 import { nanoid } from 'nanoid';
 
+export type SupportKey = {
+  table: string;
+  timestamp: number;
+}
+
 export enum Status {
   open = 'open',
   supporting = 'supporting',
@@ -16,6 +21,15 @@ export class File {
   url: string
 }
 
+export class Reply {
+  user: string;
+  username: string;
+  email: string;
+  content: string;
+  timestamp: number;
+  file: File;
+}
+
 export class Support {
   id: string;
   ticket_uuid: string;
@@ -27,8 +41,10 @@ export class Support {
   transaction_hash: string;
   wallet: string;
   file: File;
+  replies: [Reply];
   timestamp: number;
   status: Status;
+  table: string;
   constructor() {
     this.id = nanoid(12);
   }

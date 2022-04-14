@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Support = exports.File = exports.ETicketType = exports.Status = void 0;
+exports.Support = exports.Reply = exports.File = exports.ETicketType = exports.Status = void 0;
 const nanoid_1 = require("nanoid");
 var Status;
 (function (Status) {
@@ -16,6 +16,9 @@ var ETicketType;
 class File {
 }
 exports.File = File;
+class Reply {
+}
+exports.Reply = Reply;
 class Support {
     constructor() {
         this.id = (0, nanoid_1.nanoid)(12);

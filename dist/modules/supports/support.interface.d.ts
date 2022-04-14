@@ -1,3 +1,7 @@
+export declare type SupportKey = {
+    table: string;
+    timestamp: number;
+};
 export declare enum Status {
     open = "open",
     supporting = "supporting",
@@ -11,6 +15,14 @@ export declare class File {
     extension: string;
     url: string;
 }
+export declare class Reply {
+    user: string;
+    username: string;
+    email: string;
+    content: string;
+    timestamp: number;
+    file: File;
+}
 export declare class Support {
     id: string;
     ticket_uuid: string;
@@ -22,7 +34,9 @@ export declare class Support {
     transaction_hash: string;
     wallet: string;
     file: File;
+    replies: [Reply];
     timestamp: number;
     status: Status;
+    table: string;
     constructor();
 }

@@ -22,10 +22,14 @@ const createSupport_dto_1 = require("./DTO/createSupport.dto");
 const support_service_1 = require("./support.service");
 const support_interface_1 = require("./support.interface");
 const mail_service_1 = require("../mail/mail.service");
+const replySupport_dto_1 = require("./DTO/replySupport.dto");
+const user_service_1 = require("../user/user.service");
+const user_interface_1 = require("../user/user.interface");
 let SupportController = class SupportController {
-    constructor(supportService, mailService) {
+    constructor(supportService, mailService, userService) {
         this.supportService = supportService;
         this.mailService = mailService;
+        this.userService = userService;
     }
     async createEvent(request, body) {
         let support = new support_interface_1.Support();
@@ -59,11 +63,92 @@ let SupportController = class SupportController {
         };
     }
     async getSupports(request, limit, lastItem) {
-        const supports = await this.supportService.get(limit, lastItem ? { id: lastItem } : null);
+        let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null))['toJSON']();
+        const userIds = [];
+        supports.forEach((support) => {
+            if (support.replies) {
+                support.replies.forEach((reply) => {
+                    if (reply.user) {
+                        userIds.push(reply.user);
+                    }
+                });
+            }
+        });
+        const users = await this.userService.getUsers(userIds);
+        supports = supports.map((support) => {
+            if (support.replies) {
+                support.replies = support.replies.map((reply) => {
+                    if (reply.user) {
+                        const user = users.find(user => user.id === reply.user);
+                        reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
+                        reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.eamil;
+                    }
+                    return reply;
+                });
+            }
+            return support;
+        });
         return {
             code: 200,
             message: 'success',
             data: supports,
+        };
+    }
+    async adminReply(request, ticket, body) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user || user.role !== user_interface_1.UserRole.Admin) {
+            return {
+                code: 400,
+                message: 'user_not_permission',
+                data: null
+            };
+        }
+        const support = await this.supportService.getSupportByTicket(ticket);
+        if (!support) {
+            return {
+                code: 400,
+                message: 'support_request_not_exited',
+                data: null
+            };
+        }
+        const replies = support.replies || [];
+        let reply = new support_interface_1.Reply();
+        Object.assign(reply, body);
+        reply.user = user.id;
+        reply.timestamp = new Date().getTime();
+        reply = JSON.parse(JSON.stringify(reply));
+        replies.push(reply);
+        support.replies = replies;
+        await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
+        return {
+            code: 200,
+            message: 'success',
+            data: null,
+        };
+    }
+    async userReply(request, ticket, body) {
+        const support = await this.supportService.getSupportByTicket(ticket);
+        if (!support) {
+            return {
+                code: 400,
+                message: 'support_request_not_exited',
+                data: null
+            };
+        }
+        const replies = support.replies || [];
+        let reply = new support_interface_1.Reply();
+        Object.assign(reply, body);
+        reply.username = support.email;
+        reply.email = support.email;
+        reply.timestamp = new Date().getTime();
+        reply = JSON.parse(JSON.stringify(reply));
+        replies.push(reply);
+        support.replies = replies;
+        await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
+        return {
+            code: 200,
+            message: 'success',
+            data: null,
         };
     }
 };
@@ -88,10 +173,32 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number, String]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "getSupports", null);
+__decorate([
+    (0, common_1.Post)('/:ticket/admin/reply'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('ticket')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, replySupport_dto_1.ReplySupportDTO]),
+    __metadata("design:returntype", Promise)
+], SupportController.prototype, "adminReply", null);
+__decorate([
+    (0, common_1.Post)('/:ticket/user/reply'),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('ticket')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, replySupport_dto_1.ReplySupportDTO]),
+    __metadata("design:returntype", Promise)
+], SupportController.prototype, "userReply", null);
 SupportController = __decorate([
     (0, common_1.Controller)('supports'),
     __metadata("design:paramtypes", [support_service_1.SupportService,
-        mail_service_1.MailService])
+        mail_service_1.MailService,
+        user_service_1.UserService])
 ], SupportController);
 exports.SupportController = SupportController;
 //# sourceMappingURL=support.controller.js.map

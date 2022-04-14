@@ -1,4 +1,5 @@
 import { Schema, model } from 'dynamoose';
+import { User } from '../user/user.schema';
 export const FileSchema = new Schema({
   extension: {
     type: String,
@@ -8,11 +9,21 @@ export const FileSchema = new Schema({
   }
 });
 
+const ReplySchema = new Schema({
+  user: User,
+  username: String,
+  email: String,
+  content: String,
+  file: FileSchema,
+  timestamp: Number
+})
+
+export const Reply = model('replies', ReplySchema);
+
 export const SupportSchema = new Schema(
   {
     id: {
       type: String,
-      hashKey: true,
     },
     ticket_uuid: {
       type: String,
@@ -51,6 +62,20 @@ export const SupportSchema = new Schema(
       type: Number,
       rangeKey: true
     },
+    table: {
+      type: String,
+      default: 'support',
+      hashKey: true
+    },
+    replies: {
+      type: Array,
+      schema: [{
+        type: Object,
+        schema: ReplySchema,
+        model: Reply,
+      }],
+      default: []
+    },
     status: {
       type: String,
       default: 'open',
@@ -62,4 +87,4 @@ export const SupportSchema = new Schema(
   },
 );
 
-export const Support = model('Support', SupportSchema);
+export const Support = model('Supports', SupportSchema);

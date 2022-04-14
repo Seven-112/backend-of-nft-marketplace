@@ -6758,7 +6758,7 @@ neo-async@^2.6.0, neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nestjs-dynamoose@^0.3.3:
+nestjs-dynamoose@0.3.4:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/nestjs-dynamoose/-/nestjs-dynamoose-0.3.4.tgz#328b5ecd846c0caf1e1ecec101db538abd52faf4"
   integrity sha512-50/eeSQfcwB3R+lUOLVp/Zjr7PaM23yoK1LkLce7nNZIeNWchehsmUa8jJWz3jXP2LVQBi4Kwfe5FmfyavKmtQ==

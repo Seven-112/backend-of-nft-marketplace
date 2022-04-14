@@ -16,14 +16,18 @@ import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateSupportDTO } from './DTO/createSupport.dto';
 import { SupportService } from './support.service';
-import { Status, Support } from './support.interface';
+import { Reply, Status, Support } from './support.interface';
 import { MailService } from '../mail/mail.service';
+import { ReplySupportDTO } from './DTO/replySupport.dto';
+import { UserService } from '../user/user.service';
+import { UserRole } from '../user/user.interface';
 
 @Controller('supports')
 export class SupportController {
   constructor(
     private readonly supportService: SupportService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('/')
@@ -69,12 +73,113 @@ export class SupportController {
   @UseGuards(JwtAuthGuard)
   async getSupports(@Req() request: any, @Query('limit') limit?: number, @Query('lastItem') lastItem?: string) {
 
-    const supports = await this.supportService.get(limit, lastItem ? { id: lastItem } : null);
-    
+    let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null))['toJSON']();
+    const userIds = [];
+    supports.forEach((support: any) => {
+      if(support.replies) {
+        support.replies.forEach((reply: any) => {
+          if(reply.user) {
+            userIds.push(reply.user)
+          }
+        })
+      }
+    })
+
+    const users = await this.userService.getUsers(userIds);
+    supports = supports.map((support: any) => {
+      if(support.replies) {
+        support.replies = support.replies.map((reply: any) => {
+          if(reply.user) {
+            const user = users.find(user => user.id === reply.user);
+            reply.username = user?.username || reply.username;
+            reply.email = user?.email || reply.eamil;
+          }
+          return reply;
+        })
+      }
+      return support;
+    })
+
     return {
       code: 200,
       message: 'success',
       data: supports,
     };
   }
+
+  @Post('/:ticket/admin/reply')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async adminReply(@Req() request: any, @Param('ticket') ticket: string, @Body() body: ReplySupportDTO) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if(!user || user.role !== UserRole.Admin) {
+      return {
+        code: 400,
+        message: 'user_not_permission',
+        data: null
+      }
+    }
+
+    const support = await this.supportService.getSupportByTicket(ticket);
+
+    if(!support) {
+      return {
+        code: 400,
+        message: 'support_request_not_exited',
+        data: null
+      }
+    }
+
+    const replies = support.replies || [];
+    let reply = new Reply();
+    Object.assign(reply, body);
+    reply.user = user.id;
+    reply.timestamp = new Date().getTime();
+    reply = JSON.parse(JSON.stringify(reply));
+    replies.push(reply);
+    support.replies = replies;
+    
+    await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
+
+    return {
+      code: 200,
+      message: 'success',
+      data: null,
+    };
+  }
+  
+  @Post('/:ticket/user/reply')
+  @Public()
+  async userReply(@Req() request: any, @Param('ticket') ticket: string, @Body() body: ReplySupportDTO) {
+
+    const support = await this.supportService.getSupportByTicket(ticket);
+
+    if(!support) {
+      return {
+        code: 400,
+        message: 'support_request_not_exited',
+        data: null
+      }
+    }
+
+    const replies = support.replies || [];
+    let reply = new Reply();
+    Object.assign(reply, body);
+    reply.username= support.email;
+    reply.email = support.email;
+    reply.timestamp = new Date().getTime();
+    reply = JSON.parse(JSON.stringify(reply));
+    replies.push(reply);
+    support.replies = replies;
+    
+    await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
+
+    return {
+      code: 200,
+      message: 'success',
+      data: null,
+    };
+  }
+  
 }
