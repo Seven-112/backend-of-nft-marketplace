@@ -18,7 +18,8 @@ export enum ETicketType {
 
 export class File {
   extension: string;
-  url: string
+  url: string;
+  name: string;
 }
 
 export class Reply {

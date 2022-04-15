@@ -14,6 +14,7 @@ export declare enum ETicketType {
 export declare class File {
     extension: string;
     url: string;
+    name: string;
 }
 export declare class Reply {
     user: string;

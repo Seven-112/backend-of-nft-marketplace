@@ -6,6 +6,9 @@ export const FileSchema = new Schema({
   },
   url: {
     type: String,
+  },
+  name: {
+    type: String,
   }
 });
 

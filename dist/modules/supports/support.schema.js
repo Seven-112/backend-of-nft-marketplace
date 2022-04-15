@@ -9,6 +9,9 @@ exports.FileSchema = new dynamoose_1.Schema({
     },
     url: {
         type: String,
+    },
+    name: {
+        type: String,
     }
 });
 const ReplySchema = new dynamoose_1.Schema({
