@@ -211,7 +211,6 @@ let SupportController = class SupportController {
         const replies = support.replies || [];
         let reply = new support_interface_1.Reply();
         Object.assign(reply, body);
-        reply.username = support.email;
         reply.email = support.email;
         reply.timestamp = new Date().getTime();
         reply = JSON.parse(JSON.stringify(reply));
@@ -245,8 +244,10 @@ let SupportController = class SupportController {
                 if (reply.user) {
                     const user = users.find(user => user.id === reply.user);
                     reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
-                    reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.eamil;
+                    reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.email;
                     reply.avatar = (user === null || user === void 0 ? void 0 : user.avatar) || '';
+                }
+                else {
                 }
                 return reply;
             });
