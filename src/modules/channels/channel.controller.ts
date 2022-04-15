@@ -90,7 +90,9 @@ export class SupportController {
       delete channel.from;
       delete channel.to;
       return channel;
-    })
+    }).sort((a, b) => {
+      return b.timestamp - a.timestamp;
+    });
 
     return {
       code: 200,
