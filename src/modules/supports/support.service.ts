@@ -22,6 +22,7 @@ export class SupportService {
   
       return this.supportModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
     }
+    console.log(limit, lastKey, status)
     if(lastKey) {
       return this.supportModel.query('table').eq('support')
         .and()
@@ -32,6 +33,8 @@ export class SupportService {
     }
 
     return this.supportModel.query('table').eq('support')
+      .and()
+      .where('timestamp').ge(0)
       .and()
       .where('status').eq(status)
       .limit(limit)

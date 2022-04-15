@@ -166,7 +166,7 @@ export class UserController {
   @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async update(@Req() request: any, @Body() body: UpdateUserDTO) {
-    const userByEmail = await this.userService.getByEmail(body.email);
+    const userByEmail = await this.userService.getByEmail(body.email.toLowerCase());
     const userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
     );
@@ -182,6 +182,7 @@ export class UserController {
       
       const updatedBody = {
         ...body,
+        email: body.email.toLowerCase(),
         role: foundUser?.role || UserRole.User,
         status: foundUser?.status || UserStatus.active,
         createdAt: foundUser?.createdAt || new Date().toISOString(),
