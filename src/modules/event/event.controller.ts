@@ -42,7 +42,7 @@ export class EventController {
 
     const event = new Event();
     Object.assign(event, body);
-    event.userId = request.user.sub;
+    event.user = request.user.sub;
     event.startDate = new Date(body.startDate);
     event.endDate = new Date(body.endDate);
     event.publishDate = new Date(body.publishDate);

@@ -33,12 +33,12 @@ let AuthController = class AuthController {
         this.redisService = redisService;
     }
     async canLogin(body) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         const userByEmail = await this.userService.getByEmail(body.email);
         const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
-        const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
-            ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
-        const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
+        const case1 = ((_b = (_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === ((_c = body.email) === null || _c === void 0 ? void 0 : _c.toLowerCase()) &&
+            ((_d = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _d === void 0 ? void 0 : _d.walletAddress) === body.walletAddress;
+        const case2 = !userByWallet.count && !((_e = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _e === void 0 ? void 0 : _e.walletAddress);
         if (case1 || case2) {
             return {
                 code: 200,

@@ -111,14 +111,14 @@ let UserController = class UserController {
     }
     async update(request, body) {
         var _a, _b, _c;
-        const userByEmail = await this.userService.getByEmail(body.email);
+        const userByEmail = await this.userService.getByEmail(body.email.toLowerCase());
         const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
         const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
             ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
         const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
         if (case1 || case2) {
             const foundUser = await this.userService.getUserById(request.user.sub);
-            const updatedBody = Object.assign(Object.assign({}, body), { role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
+            const updatedBody = Object.assign(Object.assign({}, body), { email: body.email.toLowerCase(), role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
             const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
             return {
                 code: 200,

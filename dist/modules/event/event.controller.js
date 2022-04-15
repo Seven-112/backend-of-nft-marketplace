@@ -38,7 +38,7 @@ let EventController = class EventController {
         ticket.remain = body.ticket.quantity;
         const event = new event_interface_1.Event();
         Object.assign(event, body);
-        event.userId = request.user.sub;
+        event.user = request.user.sub;
         event.startDate = new Date(body.startDate);
         event.endDate = new Date(body.endDate);
         event.publishDate = new Date(body.publishDate);

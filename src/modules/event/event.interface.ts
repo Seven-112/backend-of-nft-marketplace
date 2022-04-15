@@ -33,7 +33,7 @@ export class Event {
   endDate: Date;
   type: EEventType;
   location: string;
-  userId: string;
+  user: string;
   publishDate: Date;
   ticket: Ticket;
   createdAt: Date;

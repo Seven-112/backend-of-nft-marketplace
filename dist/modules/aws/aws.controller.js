@@ -66,6 +66,21 @@ let AWSController = class AWSController {
             })
                 .promise();
         };
+        if (Array.isArray(body.translateData)) {
+            try {
+                const translatedData = await Promise.all(body.translateData.map(async (item) => {
+                    const responseItem = await handleTranslate(item);
+                    if (responseItem.$response.error) {
+                        throw responseItem.$response.error;
+                    }
+                    return responseItem.TranslatedText;
+                }));
+                return { code: 200, data: translatedData };
+            }
+            catch (error) {
+                return error;
+            }
+        }
         if (typeof body.translateData === 'string') {
             try {
                 const response = await handleTranslate(body.translateData);
