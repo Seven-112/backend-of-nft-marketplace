@@ -19,13 +19,13 @@ import { NFTModule } from './nft/nft.module';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationController } from './notification/notification.controller';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { ChatModule } from './chat/chat.module';
 import { AWSModule } from './aws/aws.module';
 import { EventModule } from './event/event.module';
 import { SocketModule } from './socket/socket.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
 import { SupportModule } from './supports/support.module';
 import { SubscriptionModule } from './subscriptions/subscription.module';
+import { ChannelModule } from './channels/channel.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -47,11 +47,11 @@ import { SubscriptionModule } from './subscriptions/subscription.module';
     UserModule,
     NFTModule,
     NotificationModule,
-    ChatModule,
     AWSModule,
     WatchlistModule,
     SupportModule,
     SubscriptionModule,
+    ChannelModule,
     RedisModule.forRoot({
       config: {
         port: +process.env.REDIS_PORT,

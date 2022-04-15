@@ -20,13 +20,13 @@ const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const nft_module_1 = require("./nft/nft.module");
 const notification_module_1 = require("./notification/notification.module");
 const ioredis_1 = require("@nestjs-modules/ioredis");
-const chat_module_1 = require("./chat/chat.module");
 const aws_module_1 = require("./aws/aws.module");
 const event_module_1 = require("./event/event.module");
 const socket_module_1 = require("./socket/socket.module");
 const watchlist_module_1 = require("./watchlist/watchlist.module");
 const support_module_1 = require("./supports/support.module");
 const subscription_module_1 = require("./subscriptions/subscription.module");
+const channel_module_1 = require("./channels/channel.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -55,11 +55,11 @@ AppModule = __decorate([
             user_module_1.UserModule,
             nft_module_1.NFTModule,
             notification_module_1.NotificationModule,
-            chat_module_1.ChatModule,
             aws_module_1.AWSModule,
             watchlist_module_1.WatchlistModule,
             support_module_1.SupportModule,
             subscription_module_1.SubscriptionModule,
+            channel_module_1.ChannelModule,
             ioredis_1.RedisModule.forRoot({
                 config: {
                     port: +process.env.REDIS_PORT,
