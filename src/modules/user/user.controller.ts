@@ -286,19 +286,17 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
-    const user = await this.userService.getUserById(id);
-
-    if (user) {
+    const user = await this.userService.getUserByIdOrWallet(id);
+    if(!user.length) {
       return {
-        code: 200,
-        data: user,
+        code: 404,
+        message: 'User not found',
+        data: null,
       };
     }
-
     return {
-      code: 404,
-      message: 'User not found',
-      data: null,
+      code: 200,
+      data: user[0],
     };
   }
 

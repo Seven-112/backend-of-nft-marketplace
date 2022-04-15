@@ -28,6 +28,10 @@ export class UserService {
     return this.userModel.get(id);
   }
 
+  async getUserByIdOrWallet(id: string) {
+    return this.userModel.scan('id').eq(id).or().where('walletAddress').eq(id).exec();
+  }
+
   async createUser(data: User) {
     return this.userModel.create(data);
   }

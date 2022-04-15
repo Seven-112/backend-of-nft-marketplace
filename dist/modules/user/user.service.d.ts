@@ -7,6 +7,7 @@ export declare class UserService {
     isWalletAvailable(address: string): Promise<boolean>;
     isUserAvailable(id: string): Promise<boolean>;
     getUserById(id: string): Promise<import("nestjs-dynamoose").Document<User>>;
+    getUserByIdOrWallet(id: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     createUser(data: User): Promise<import("nestjs-dynamoose").Document<User>>;
     getUserByUsername(username: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getByWalletAddress(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;

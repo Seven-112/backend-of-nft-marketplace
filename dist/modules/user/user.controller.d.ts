@@ -85,12 +85,12 @@ export declare class UserController {
     }>;
     getUserById(id: string): Promise<{
         code: number;
-        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
-        message?: undefined;
-    } | {
-        code: number;
         message: string;
         data: any;
+    } | {
+        code: number;
+        data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+        message?: undefined;
     }>;
     search(body: SearchUserDTO): Promise<{
         code: number;
