@@ -27,7 +27,11 @@ import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
-import { ForgotPasswordDTO, VerifyOtpDTO, UpdatePasswordDTO } from './DTO/forgotPassword.dto';
+import {
+  ForgotPasswordDTO,
+  VerifyOtpDTO,
+  UpdatePasswordDTO,
+} from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 import { RedisService } from 'src/modules/redis/redis.service';
@@ -43,7 +47,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
     private readonly redisService: RedisService,
-  ) { }
+  ) {}
 
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
@@ -55,7 +59,7 @@ export class AuthController {
     );
 
     const case1 =
-      userByWallet?.[0]?.email === body.email &&
+      userByWallet?.[0]?.email?.toLowerCase() === body.email?.toLowerCase() &&
       userByWallet?.[0]?.walletAddress === body.walletAddress;
 
     // wallet and email not in db
