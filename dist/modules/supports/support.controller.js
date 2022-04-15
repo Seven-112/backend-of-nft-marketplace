@@ -225,13 +225,31 @@ let SupportController = class SupportController {
         };
     }
     async getSupportRequestByTicket(ticket) {
-        const support = await this.supportService.getSupportByTicket(ticket);
+        let support = await this.supportService.getSupportByTicket(ticket);
+        const userIds = [];
         if (!support) {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
                 data: null
             };
+        }
+        if (support.replies) {
+            support.replies.forEach((reply) => {
+                if (reply.user) {
+                    userIds.push(reply.user);
+                }
+            });
+            const users = await this.userService.getUsers(userIds);
+            support.replies = support.replies.map((reply) => {
+                if (reply.user) {
+                    const user = users.find(user => user.id === reply.user);
+                    reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
+                    reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.eamil;
+                    reply.avatar = (user === null || user === void 0 ? void 0 : user.avatar) || '';
+                }
+                return reply;
+            });
         }
         return {
             code: 200,

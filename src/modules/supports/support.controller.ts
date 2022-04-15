@@ -22,6 +22,7 @@ import { MailService } from '../mail/mail.service';
 import { ReplySupportDTO } from './DTO/replySupport.dto';
 import { UserService } from '../user/user.service';
 import { UserRole } from '../user/user.interface';
+import { Length } from 'class-validator';
 
 @Controller('supports')
 export class SupportController {
@@ -270,14 +271,32 @@ export class SupportController {
   @Public()
   async getSupportRequestByTicket(@Param('ticket') ticket: string) {
 
-    const support = await this.supportService.getSupportByTicket(ticket);
-
+    let support = await this.supportService.getSupportByTicket(ticket);
+    const userIds = [];
     if(!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
         data: null
       }
+    }
+
+    if(support.replies) {
+      support.replies.forEach((reply: any) => {
+        if(reply.user) {
+          userIds.push(reply.user)
+        }
+      })
+      const users = await this.userService.getUsers(userIds);
+      support.replies = support.replies.map((reply: any) => {
+        if(reply.user) {
+          const user = users.find(user => user.id === reply.user);
+          reply.username = user?.username || reply.username;
+          reply.email = user?.email || reply.eamil;
+          reply.avatar = user?.avatar || '';
+        }
+        return reply;
+      })
     }
 
     return {
