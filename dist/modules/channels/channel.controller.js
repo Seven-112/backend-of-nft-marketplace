@@ -71,6 +71,18 @@ let SupportController = class SupportController {
             };
         }
         let channels = await (await this.channelService.get(user.id))['populate']();
+        channels = channels.map(channel => {
+            var _a, _b, _c, _d, _e, _f;
+            if (((_a = channel.from) === null || _a === void 0 ? void 0 : _a.id) !== user.id) {
+                channel.channelName = ((_b = channel.from) === null || _b === void 0 ? void 0 : _b.username) || ((_c = channel.from) === null || _c === void 0 ? void 0 : _c.email);
+            }
+            if (((_d = channel.to) === null || _d === void 0 ? void 0 : _d.id) !== user.id) {
+                channel.channelName = ((_e = channel.to) === null || _e === void 0 ? void 0 : _e.username) || ((_f = channel.to) === null || _f === void 0 ? void 0 : _f.email);
+            }
+            delete channel.from;
+            delete channel.to;
+            return channel;
+        });
         return {
             code: 200,
             message: 'success',

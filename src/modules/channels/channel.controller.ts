@@ -79,6 +79,18 @@ export class SupportController {
       }
     }
     let channels = await (await this.channelService.get(user.id))['populate']();
+    channels = channels.map(channel => {
+      if(channel.from?.id !== user.id) {
+        channel.channelName = channel.from?.username || channel.from?.email;
+      }
+
+      if(channel.to?.id !== user.id) {
+        channel.channelName = channel.to?.username || channel.to?.email;
+      }
+      delete channel.from;
+      delete channel.to;
+      return channel;
+    })
 
     return {
       code: 200,
