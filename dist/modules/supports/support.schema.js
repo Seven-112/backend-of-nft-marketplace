@@ -86,9 +86,13 @@ exports.SupportSchema = new dynamoose_1.Schema({
     isRead: {
         type: Boolean,
         default: false
+    },
+    createdAt: {
+        type: Number
+    },
+    updatedAt: {
+        type: Number
     }
-}, {
-    timestamps: true,
 });
 exports.Support = (0, dynamoose_1.model)('Supports', exports.SupportSchema);
 //# sourceMappingURL=support.schema.js.map

@@ -54,10 +54,8 @@ let SupportService = class SupportService {
         return supports[0] || null;
     }
     async updateSupport(table, data) {
-        console.log(data);
-        delete data.createdAt;
-        delete data.updatedAt;
         data.timestamp = new Date().getTime();
+        console.log(data);
         this.supportModel.delete(table);
         this.supportModel.create(data);
     }

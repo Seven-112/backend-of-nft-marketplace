@@ -48,10 +48,8 @@ export class SupportService {
   }
 
   async updateSupport(table: SupportKey, data: any) {
-    console.log(data);
-    delete data.createdAt;
-    delete data.updatedAt;
     data.timestamp = new Date().getTime();
+    console.log(data);
     this.supportModel.delete(table);
     this.supportModel.create(data);
   }

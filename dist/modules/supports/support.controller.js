@@ -37,6 +37,8 @@ let SupportController = class SupportController {
         support.ticket_uuid = (0, uuid_1.v4)();
         support.status = support_interface_1.Status.open;
         support.timestamp = new Date().getTime();
+        support.createdAt = new Date().getTime();
+        support.updatedAt = new Date().getTime();
         support = await this.supportService.create(support);
         const content = `
       Dear sir,<br>

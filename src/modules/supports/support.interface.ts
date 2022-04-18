@@ -47,6 +47,8 @@ export class Support {
   status: Status;
   table: string;
   isRead: boolean;
+  createdAt: number;
+  updatedAt: number;
   constructor() {
     this.id = nanoid(12);
   }

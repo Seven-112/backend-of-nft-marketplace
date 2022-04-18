@@ -87,11 +87,14 @@ export const SupportSchema = new Schema(
     isRead: {
       type: Boolean,
       default: false
+    },
+    createdAt: {
+      type: Number
+    },
+    updatedAt: {
+      type: Number
     }
-  },
-  {
-    timestamps: true,
-  },
+  }
 );
 
 export const Support = model('Supports', SupportSchema);
