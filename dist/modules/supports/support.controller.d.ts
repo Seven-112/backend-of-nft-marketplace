@@ -29,6 +29,11 @@ export declare class SupportController {
         message: string;
         data: any;
     }>;
+    readSupport(request: any, ticket: string): Promise<{
+        code: number;
+        message: string;
+        data: any;
+    }>;
     userReply(request: any, ticket: string, body: ReplySupportDTO): Promise<{
         code: number;
         message: string;

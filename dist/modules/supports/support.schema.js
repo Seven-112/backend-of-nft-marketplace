@@ -82,6 +82,10 @@ exports.SupportSchema = new dynamoose_1.Schema({
         type: String,
         default: 'open',
         required: false
+    },
+    isRead: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

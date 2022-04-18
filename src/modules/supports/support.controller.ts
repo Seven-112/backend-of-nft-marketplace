@@ -205,7 +205,7 @@ export class SupportController {
       status: Status.done
     }
     
-    await this.supportService.resolveReport({ table: support.table, timestamp: support.timestamp }, dataUpdate);
+    await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
     const subject = `[Closed] ${support.subject}`
     const content = `
       Dear sir,<br>
@@ -226,6 +226,43 @@ export class SupportController {
     `
 
     await this.mailService.sendEmail(support.email, subject, content);
+    return {
+      code: 200,
+      message: 'success',
+      data: null,
+    };
+  }
+
+  @Post('/:ticket/read')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async readSupport(@Req() request: any, @Param('ticket') ticket: string) {
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if(!user || user.role !== UserRole.Admin) {
+      return {
+        code: 400,
+        message: 'user_not_permission',
+        data: null
+      }
+    }
+
+    const support = await this.supportService.getSupportByTicket(ticket);
+
+    if(!support) {
+      return {
+        code: 400,
+        message: 'support_request_not_exited',
+        data: null
+      }
+    }
+
+    const dataUpdate = {
+      isRead: true
+    }
+    
+    await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
+
     return {
       code: 200,
       message: 'success',

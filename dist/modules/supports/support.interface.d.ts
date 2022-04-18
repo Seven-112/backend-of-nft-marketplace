@@ -39,5 +39,6 @@ export declare class Support {
     timestamp: number;
     status: Status;
     table: string;
+    isRead: boolean;
     constructor();
 }

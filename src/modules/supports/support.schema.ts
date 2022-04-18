@@ -83,6 +83,10 @@ export const SupportSchema = new Schema(
       type: String,
       default: 'open',
       required: false
+    },
+    isRead: {
+      type: Boolean,
+      default: false
     }
   },
   {

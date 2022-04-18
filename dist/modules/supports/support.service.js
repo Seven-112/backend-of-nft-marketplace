@@ -61,7 +61,7 @@ let SupportService = class SupportService {
         this.supportModel.delete(table);
         this.supportModel.create(data);
     }
-    async resolveReport(table, data) {
+    async updateNotDelete(table, data) {
         return this.supportModel.update(table, data);
     }
 };

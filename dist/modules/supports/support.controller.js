@@ -173,7 +173,7 @@ let SupportController = class SupportController {
         const dataUpdate = {
             status: support_interface_1.Status.done
         };
-        await this.supportService.resolveReport({ table: support.table, timestamp: support.timestamp }, dataUpdate);
+        await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
         const subject = `[Closed] ${support.subject}`;
         const content = `
       Dear sir,<br>
@@ -193,6 +193,33 @@ let SupportController = class SupportController {
       ${user.username}
     `;
         await this.mailService.sendEmail(support.email, subject, content);
+        return {
+            code: 200,
+            message: 'success',
+            data: null,
+        };
+    }
+    async readSupport(request, ticket) {
+        const user = await this.userService.getUserById(request.user.sub);
+        if (!user || user.role !== user_interface_1.UserRole.Admin) {
+            return {
+                code: 400,
+                message: 'user_not_permission',
+                data: null
+            };
+        }
+        const support = await this.supportService.getSupportByTicket(ticket);
+        if (!support) {
+            return {
+                code: 400,
+                message: 'support_request_not_exited',
+                data: null
+            };
+        }
+        const dataUpdate = {
+            isRead: true
+        };
+        await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
         return {
             code: 200,
             message: 'success',
@@ -302,6 +329,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "resolveSupport", null);
+__decorate([
+    (0, common_1.Post)('/:ticket/read'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('ticket')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], SupportController.prototype, "readSupport", null);
 __decorate([
     (0, common_1.Post)('/:ticket/user/reply'),
     (0, jwt_auth_guard_1.Public)(),
