@@ -53,39 +53,62 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Public()
   async canLogin(@Body() body: CheckCanLoginDTO) {
-    const userByEmail = await this.userService.getByEmail(body.email);
-    const userByWallet = await this.userService.getByWalletAddress(
+    let userByEmail = await this.userService.getByEmail(body.email) as any;
+    let userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
-    );
+    ) as any;
 
-    const case1 =
-      userByWallet?.[0]?.email?.toLowerCase() === body.email?.toLowerCase() &&
-      userByWallet?.[0]?.walletAddress === body.walletAddress;
+    userByEmail = userByEmail.length ? userByEmail[0] : null;
+    userByWallet = userByWallet.length ? userByWallet[0] : null;
 
-    // wallet and email not in db
-    const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
-
-    if (case1 || case2) {
+    if((userByEmail.wallet === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
       return {
         code: 200,
-        message: 'Can login',
-        data: true,
-      };
+        message: 'can_message'
+      }
+    }
+    
+    if(userByEmail.walletAddress !== body.walletAddress) {
+      return {
+        code: 400,
+        message: 'wallet_and_user_not_mapping'
+      }
     }
 
-    return {
-      code: 200,
-      message: 'Can not login',
-      data: false,
-      userByEmail: {
-        email: userByEmail[0]?.email,
-        walletAddress: userByEmail[0]?.walletAddress,
-      },
-      userByWallet: {
-        email: userByWallet[0]?.email,
-        walletAddress: userByWallet[0]?.walletAddress,
-      },
-    };
+    if(userByWallet.email !== body.email) {
+      return {
+        code: 400,
+        message: 'email_and_wallet_not_mapping'
+      }
+    }
+
+    if(userByEmail.wallet !== body.walletAddress && !userByWallet) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
+      }
+    }
+
+    if(userByEmail.wallet !== body.walletAddress && userByWallet) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_wallet_connected'
+      }
+    }
+
+    if(userByWallet.email !== body.email && !userByEmail) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
+      }
+    }
+
+    if(userByWallet.email !== body.email && userByEmail) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+      }
+    }
   }
 
   @Post('/register')

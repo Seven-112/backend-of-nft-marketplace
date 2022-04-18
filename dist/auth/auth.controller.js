@@ -33,32 +33,52 @@ let AuthController = class AuthController {
         this.redisService = redisService;
     }
     async canLogin(body) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        const userByEmail = await this.userService.getByEmail(body.email);
-        const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
-        const case1 = ((_b = (_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === ((_c = body.email) === null || _c === void 0 ? void 0 : _c.toLowerCase()) &&
-            ((_d = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _d === void 0 ? void 0 : _d.walletAddress) === body.walletAddress;
-        const case2 = !userByWallet.count && !((_e = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _e === void 0 ? void 0 : _e.walletAddress);
-        if (case1 || case2) {
+        let userByEmail = await this.userService.getByEmail(body.email);
+        let userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
+        userByEmail = userByEmail.length ? userByEmail[0] : null;
+        userByWallet = userByWallet.length ? userByWallet[0] : null;
+        if ((userByEmail.wallet === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
             return {
                 code: 200,
-                message: 'Can login',
-                data: true,
+                message: 'can_message'
             };
         }
-        return {
-            code: 200,
-            message: 'Can not login',
-            data: false,
-            userByEmail: {
-                email: (_f = userByEmail[0]) === null || _f === void 0 ? void 0 : _f.email,
-                walletAddress: (_g = userByEmail[0]) === null || _g === void 0 ? void 0 : _g.walletAddress,
-            },
-            userByWallet: {
-                email: (_h = userByWallet[0]) === null || _h === void 0 ? void 0 : _h.email,
-                walletAddress: (_j = userByWallet[0]) === null || _j === void 0 ? void 0 : _j.walletAddress,
-            },
-        };
+        if (userByEmail.walletAddress !== body.walletAddress) {
+            return {
+                code: 400,
+                message: 'wallet_and_user_not_mapping'
+            };
+        }
+        if (userByWallet.email !== body.email) {
+            return {
+                code: 400,
+                message: 'email_and_wallet_not_mapping'
+            };
+        }
+        if (userByEmail.wallet !== body.walletAddress && !userByWallet) {
+            return {
+                code: 400,
+                message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
+            };
+        }
+        if (userByEmail.wallet !== body.walletAddress && userByWallet) {
+            return {
+                code: 400,
+                message: 'user_and_wallet_not_mapping_and_wallet_connected'
+            };
+        }
+        if (userByWallet.email !== body.email && !userByEmail) {
+            return {
+                code: 400,
+                message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
+            };
+        }
+        if (userByWallet.email !== body.email && userByEmail) {
+            return {
+                code: 400,
+                message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+            };
+        }
     }
     async register(body) {
         try {
