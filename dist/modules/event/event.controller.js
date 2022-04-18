@@ -81,7 +81,7 @@ let EventController = class EventController {
         };
     }
     async getEvents(limit) {
-        const events = await this.eventService.getAllEvents(limit);
+        const events = await (await this.eventService.getAllEvents(limit))['populate']();
         return {
             code: 200,
             message: '',
