@@ -33,7 +33,7 @@ let AuthController = class AuthController {
         this.redisService = redisService;
     }
     async canLogin(body) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         const userByEmail = await this.userService.getByEmail(body.email);
         const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
         const case1 = ((_b = (_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === ((_c = body.email) === null || _c === void 0 ? void 0 : _c.toLowerCase()) &&
@@ -50,6 +50,14 @@ let AuthController = class AuthController {
             code: 200,
             message: 'Can not login',
             data: false,
+            userByEmail: {
+                email: (_f = userByEmail[0]) === null || _f === void 0 ? void 0 : _f.email,
+                walletAddress: (_g = userByEmail[0]) === null || _g === void 0 ? void 0 : _g.walletAddress,
+            },
+            userByWallet: {
+                email: (_h = userByWallet[0]) === null || _h === void 0 ? void 0 : _h.email,
+                walletAddress: (_j = userByWallet[0]) === null || _j === void 0 ? void 0 : _j.walletAddress,
+            },
         };
     }
     async register(body) {

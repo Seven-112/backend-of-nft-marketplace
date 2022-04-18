@@ -21,6 +21,7 @@ const nanoid_1 = require("nanoid");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const translate_dto_1 = require("./DTO/translate.dto");
 const swagger_1 = require("@nestjs/swagger");
+const path_1 = require("path");
 let AWSController = class AWSController {
     async getPresign(path) {
         const s3 = new AWS.S3();
@@ -39,7 +40,8 @@ let AWSController = class AWSController {
     }
     async getPresignURL(body) {
         const id = (0, nanoid_1.nanoid)();
-        const path = `${body.folder}/${id + '_' + body.fileName}`;
+        console.log((0, path_1.extname)(body.fileName));
+        const path = `${body.folder}/${id}`;
         const url = await this.getPresign(path);
         return {
             code: 200,

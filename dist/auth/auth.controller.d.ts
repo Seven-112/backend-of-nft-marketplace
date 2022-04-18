@@ -17,6 +17,20 @@ export declare class AuthController {
         code: number;
         message: string;
         data: boolean;
+        userByEmail?: undefined;
+        userByWallet?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: boolean;
+        userByEmail: {
+            email: string;
+            walletAddress: string;
+        };
+        userByWallet: {
+            email: string;
+            walletAddress: string;
+        };
     }>;
     register(body: RegisterDTO): Promise<{
         code: HttpStatus;

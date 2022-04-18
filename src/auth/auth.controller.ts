@@ -77,6 +77,14 @@ export class AuthController {
       code: 200,
       message: 'Can not login',
       data: false,
+      userByEmail: {
+        email: userByEmail[0]?.email,
+        walletAddress: userByEmail[0]?.walletAddress,
+      },
+      userByWallet: {
+        email: userByWallet[0]?.email,
+        walletAddress: userByWallet[0]?.walletAddress,
+      },
     };
   }
 
