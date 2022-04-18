@@ -37,7 +37,7 @@ let AuthController = class AuthController {
         let userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
         userByEmail = userByEmail.length ? userByEmail[0] : null;
         userByWallet = userByWallet.length ? userByWallet[0] : null;
-        if ((userByEmail.wallet === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
+        if ((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
             return {
                 code: 200,
                 message: 'can_message'
@@ -55,13 +55,13 @@ let AuthController = class AuthController {
                 message: 'email_and_wallet_not_mapping'
             };
         }
-        if (userByEmail.wallet !== body.walletAddress && !userByWallet) {
+        if (userByEmail.walletAddress !== body.walletAddress && !userByWallet) {
             return {
                 code: 400,
                 message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
             };
         }
-        if (userByEmail.wallet !== body.walletAddress && userByWallet) {
+        if (userByEmail.walletAddress !== body.walletAddress && userByWallet) {
             return {
                 code: 400,
                 message: 'user_and_wallet_not_mapping_and_wallet_connected'
