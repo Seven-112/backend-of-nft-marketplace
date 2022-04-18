@@ -40,7 +40,7 @@ let AuthController = class AuthController {
         if ((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
             return {
                 code: 200,
-                message: 'can_message'
+                message: 'can_login'
             };
         }
         if (userByEmail.walletAddress !== body.walletAddress) {
