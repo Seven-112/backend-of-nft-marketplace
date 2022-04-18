@@ -12,4 +12,5 @@ export declare class EventService {
     createUserTicket(userTicket: UserTicket): Promise<import("nestjs-dynamoose").Document<UserTicket>>;
     getUserTicketByTime(firstTime: number, lastTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
     getEventAvailable(currentTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>>;
+    formatEventData(initData: any[], currentTime: number, subtractType: any, formatType: string, formatCompare: string): any[];
 }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const moment = require("moment");
 let EventService = class EventService {
     constructor(eventModel, userTicketModel) {
         this.eventModel = eventModel;
@@ -42,6 +43,25 @@ let EventService = class EventService {
     }
     async getEventAvailable(currentTime) {
         return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
+    }
+    formatEventData(initData, currentTime, subtractType, formatType, formatCompare) {
+        const formattedData = [];
+        for (let i = subtractType === 'hours' ? 0 : 1; i <= (subtractType === 'hours' ? 23 : currentTime); i++) {
+            const data = {
+                time: moment()
+                    .subtract(currentTime - i, subtractType)
+                    .format(formatType),
+                total: initData
+                    .filter((userTicket) => +moment(userTicket.createdAt)
+                    .format(formatCompare) === +(subtractType === 'hours' ? i : moment()
+                    .subtract(currentTime - i, subtractType)
+                    .format(formatCompare)))
+                    .map((userTicket) => userTicket.number_ticket)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            };
+            formattedData.push(data);
+        }
+        return formattedData;
     }
 };
 EventService = __decorate([
