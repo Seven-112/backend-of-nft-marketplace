@@ -36,6 +36,15 @@ export class WatchlistController {
       id: request.user.sub,
       list: [],
     };
+    const user = await this.userService.getUserById(request.user.sub);
+
+    if (user.walletAddress === body.address) {
+      return {
+        code: 200,
+        message: "Can't not add your self to watchlist",
+        data: null,
+      };
+    }
 
     currentWatchlist.list = Array.from(
       new Set(currentWatchlist.list).add(body.address),
