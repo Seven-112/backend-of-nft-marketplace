@@ -1,18 +1,32 @@
 import { Schema, model } from 'dynamoose';
+import { User } from '../user/user.schema';
 export const FileSchema = new Schema({
   extension: {
     type: String,
   },
   url: {
     type: String,
+  },
+  name: {
+    type: String,
   }
 });
+
+const ReplySchema = new Schema({
+  user: User,
+  username: String,
+  email: String,
+  content: String,
+  file: FileSchema,
+  timestamp: Number
+})
+
+export const Reply = model('replies', ReplySchema);
 
 export const SupportSchema = new Schema(
   {
     id: {
       type: String,
-      hashKey: true,
     },
     ticket_uuid: {
       type: String,
@@ -51,15 +65,36 @@ export const SupportSchema = new Schema(
       type: Number,
       rangeKey: true
     },
+    table: {
+      type: String,
+      default: 'support',
+      hashKey: true
+    },
+    replies: {
+      type: Array,
+      schema: [{
+        type: Object,
+        schema: ReplySchema,
+        model: Reply,
+      }],
+      default: []
+    },
     status: {
       type: String,
       default: 'open',
       required: false
+    },
+    isRead: {
+      type: Boolean,
+      default: false
+    },
+    createdAt: {
+      type: Number
+    },
+    updatedAt: {
+      type: Number
     }
-  },
-  {
-    timestamps: true,
-  },
+  }
 );
 
-export const Support = model('Support', SupportSchema);
+export const Support = model('Supports', SupportSchema);

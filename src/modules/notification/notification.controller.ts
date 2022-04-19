@@ -38,22 +38,18 @@ export class NotificationController {
     try {
       const payloadStr = req.body;
       const payload = JSON.parse(payloadStr);
-
       if (req.header('x-amz-sns-message-type') === 'SubscriptionConfirmation') {
         const url = payload.SubscribeURL;
         const response = await this.notiService.callGetApi(url);
 
         await response.forEach((value) => {
           if (value.status === 200) {
-            console.log('subscribed');
             return 'Yes! We have accepted the confirmation from AWS';
           } else {
             throw new HttpException('Unable to subscribe to given URL', 400);
           }
         });
       } else if (req.header('x-amz-sns-message-type') === 'Notification') {
-        // console.log(payload);
-
         const { userId, msg, type, sender } = JSON.parse(payload.Message);
         const allNotiToSendBack = [];
 
@@ -161,7 +157,6 @@ export class NotificationController {
     @Param('type') type: string,
     @Query('limit') limit = 5,
   ) {
-    console.log(type);
     const decryptedUserInfo = req.user as any;
     // console.log(decryptedUserInfo);
     const allNoti = [];

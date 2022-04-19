@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { TranslateBodyDTO } from './DTO/translate.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { extname } from 'path';
 
 @Controller('aws')
 export class AWSController {
@@ -36,7 +37,9 @@ export class AWSController {
   @UsePipes(new ValidationPipe())
   async getPresignURL(@Body() body: PresignURLDTO) {
     const id = nanoid();
-    const path = `${body.folder}/${id + '_' + body.fileName}`;
+    console.log(extname(body.fileName));
+
+    const path = `${body.folder}/${id}`;
     const url = await this.getPresign(path);
 
     return {
@@ -70,6 +73,26 @@ export class AWSController {
         })
         .promise();
     };
+
+    if (Array.isArray(body.translateData)) {
+      try {
+        const translatedData = await Promise.all(
+          body.translateData.map(async (item) => {
+            const responseItem = await handleTranslate(item);
+
+            if (responseItem.$response.error) {
+              throw responseItem.$response.error;
+            }
+
+            return responseItem.TranslatedText;
+          }),
+        );
+
+        return { code: 200, data: translatedData };
+      } catch (error) {
+        return error;
+      }
+    }
 
     if (typeof body.translateData === 'string') {
       try {

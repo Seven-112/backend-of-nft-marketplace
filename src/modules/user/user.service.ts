@@ -28,6 +28,10 @@ export class UserService {
     return this.userModel.get(id);
   }
 
+  async getUserByIdOrWallet(id: string) {
+    return this.userModel.scan('id').eq(id).or().where('walletAddress').eq(id).exec();
+  }
+
   async createUser(data: User) {
     return this.userModel.create(data);
   }
@@ -49,11 +53,11 @@ export class UserService {
   }
 
   async updateWalletAddress(id: string, body: any) {
-    return this.userModel.update(id, body);
+    body.id = id;
+    return this.userModel.update(body);
   }
 
   async getUsers(ids: string[]) {
-    console.log(ids);
     return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
   }
 
@@ -86,8 +90,6 @@ export class UserService {
             return resolve({});
           }
 
-          console.log(data);
-
           resolve(transformCognitoUser(data));
         },
       );
@@ -117,11 +119,12 @@ export class UserService {
   }
 
   async searchUsers(address: string) {
-    return Promise.all([
-      this.userModel.scan('walletAddress').contains(address).exec(),
-      this.userModel.scan('username').contains(address).exec(),
-      this.userModel.scan('email').contains(address).exec(),
-    ]);
+    return this.userModel.scan('walletAddress').contains(address)
+      .or()
+      .where('username').contains(address)
+      .or()
+      .where('email').contains(address)
+      .exec()
   }
 
   async getUserByEmail(email: string) {

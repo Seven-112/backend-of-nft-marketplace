@@ -71,8 +71,6 @@ export class UserController {
   ) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    console.log(user);
-
     if (!user) {
       return {
         code: 404,
@@ -168,11 +166,10 @@ export class UserController {
   @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async update(@Req() request: any, @Body() body: UpdateUserDTO) {
-    const userByEmail = await this.userService.getByEmail(body.email);
+    const userByEmail = await this.userService.getByEmail(body.email.toLowerCase());
     const userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
     );
-
     const case1 =
       userByWallet?.[0]?.email === body.email &&
       userByWallet?.[0]?.walletAddress === body.walletAddress;
@@ -182,9 +179,10 @@ export class UserController {
 
     if (case1 || case2) {
       const foundUser = await this.userService.getUserById(request.user.sub);
-
+      
       const updatedBody = {
         ...body,
+        email: body.email.toLowerCase(),
         role: foundUser?.role || UserRole.User,
         status: foundUser?.status || UserStatus.active,
         createdAt: foundUser?.createdAt || new Date().toISOString(),
@@ -194,7 +192,7 @@ export class UserController {
         request.user.sub,
         updatedBody,
       );
-
+      
       return {
         code: 200,
         message: '',
@@ -288,19 +286,17 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
-    const user = await this.userService.getUserById(id);
-
-    if (user) {
+    const user = await this.userService.getUserByIdOrWallet(id);
+    if(!user.length) {
       return {
-        code: 200,
-        data: user,
+        code: 404,
+        message: 'User not found',
+        data: null,
       };
     }
-
     return {
-      code: 404,
-      message: 'User not found',
-      data: null,
+      code: 200,
+      data: user[0],
     };
   }
 
@@ -310,42 +306,10 @@ export class UserController {
   async search(@Body() body: SearchUserDTO) {
     const users = await this.userService.searchUsers(body.address);
 
-    if (users.every((user) => !user.count)) {
-      return {
-        code: 404,
-        message: 'User not found',
-        data: null,
-      };
-    }
-
-    const allUsers = users.map((user) => user[0]);
-    const filteredUsers = [];
-
-    // remove duplicated user
-    allUsers.forEach((user) => {
-      if (user) {
-        const haveUser =
-          filteredUsers.length > 0 &&
-          filteredUsers.some((u) => u?.id === user?.id);
-
-        if (!haveUser) {
-          filteredUsers.push(user);
-        }
-      }
-    });
-
-    // if (!users.count) {
-    //   return {
-    //     code: 404,
-    //     message: 'User not found',
-    //     data: null,
-    //   };
-    // }
-
     return {
       code: 200,
-      message: '',
-      data: filteredUsers,
+      message: 'successful',
+      data: users,
     };
   }
 

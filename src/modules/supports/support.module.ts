@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MailModule } from '../mail/mail.module';
+import { UserModule } from '../user/user.module';
 import { SupportController } from './support.controller';
 import { SupportSchema } from './support.schema';
 import { SupportService } from './support.service';
@@ -8,11 +9,12 @@ import { SupportService } from './support.service';
   imports: [
     DynamooseModule.forFeature([
       {
-        name: 'Support',
+        name: 'Supports',
         schema: SupportSchema,
       },
     ]),
     MailModule,
+    UserModule
   ],
   providers: [SupportService],
   exports: [SupportService],

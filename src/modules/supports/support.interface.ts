@@ -1,5 +1,10 @@
 import { nanoid } from 'nanoid';
 
+export type SupportKey = {
+  table: string;
+  timestamp: number;
+}
+
 export enum Status {
   open = 'open',
   supporting = 'supporting',
@@ -13,7 +18,17 @@ export enum ETicketType {
 
 export class File {
   extension: string;
-  url: string
+  url: string;
+  name: string;
+}
+
+export class Reply {
+  user: string;
+  username: string;
+  email: string;
+  content: string;
+  timestamp: number;
+  file: File;
 }
 
 export class Support {
@@ -27,8 +42,13 @@ export class Support {
   transaction_hash: string;
   wallet: string;
   file: File;
+  replies: [Reply];
   timestamp: number;
   status: Status;
+  table: string;
+  isRead: boolean;
+  createdAt: number;
+  updatedAt: number;
   constructor() {
     this.id = nanoid(12);
   }

@@ -15,6 +15,7 @@ import {
   UseGuards,
   Res,
   Redirect,
+  Query,
 } from '@nestjs/common';
 import { Auth } from 'aws-amplify';
 import * as bcrypt from 'bcrypt';
@@ -27,7 +28,11 @@ import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { WalletVerifyDTO } from './DTO/walletVerify.dto';
-import { ForgotPasswordDTO, VerifyOtpDTO, UpdatePasswordDTO } from './DTO/forgotPassword.dto';
+import {
+  ForgotPasswordDTO,
+  VerifyOtpDTO,
+  UpdatePasswordDTO,
+} from './DTO/forgotPassword.dto';
 import { MailService } from 'src/modules/mail/mail.service';
 import { ResetPasswordDTO } from './DTO/resetPassword.dto';
 import { RedisService } from 'src/modules/redis/redis.service';
@@ -43,37 +48,70 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly mailService: MailService, // private readonly redisCacheService: RedisCacheService,
     private readonly redisService: RedisService,
-  ) { }
+  ) {}
 
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
   @Public()
-  async canLogin(@Body() body: CheckCanLoginDTO) {
-    const userByEmail = await this.userService.getByEmail(body.email);
-    const userByWallet = await this.userService.getByWalletAddress(
+  async canLogin(@Body() body: CheckCanLoginDTO, @Query('type') type: String) {
+    let userByEmail = await this.userService.getByEmail(body.email) as any;
+    let userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
-    );
+    ) as any;
 
-    const case1 =
-      userByWallet?.[0]?.email === body.email &&
-      userByWallet?.[0]?.walletAddress === body.walletAddress;
+    userByEmail = userByEmail.length ? userByEmail[0] : null;
+    userByWallet = userByWallet.length ? userByWallet[0] : null;
 
-    // wallet and email not in db
-    const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
-
-    if (case1 || case2) {
+    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
       return {
         code: 200,
-        message: 'Can login',
-        data: true,
-      };
+        message: 'can_login'
+      }
     }
 
-    return {
-      code: 200,
-      message: 'Can not login',
-      data: false,
-    };
+    if(type === 'walletFirst') {
+      if(userByWallet.email !== body.email) {
+        return {
+          code: 400,
+          message: 'email_and_wallet_not_mapping'
+        }
+      }
+
+      if(userByEmail.walletAddress !== body.walletAddress && !userByWallet) {
+        return {
+          code: 400,
+          message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
+        }
+      }
+  
+      if(userByEmail.walletAddress !== body.walletAddress && userByWallet) {
+        return {
+          code: 400,
+          message: 'user_and_wallet_not_mapping_and_wallet_connected'
+        }
+      }
+    }
+    
+    if(userByEmail.walletAddress !== body.walletAddress) {
+      return {
+        code: 400,
+        message: 'wallet_and_user_not_mapping'
+      }
+    }
+
+    if(userByWallet.email !== body.email && !userByEmail) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
+      }
+    }
+
+    if(userByWallet.email !== body.email && userByEmail) {
+      return {
+        code: 400,
+        message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+      }
+    }
   }
 
   @Post('/register')
