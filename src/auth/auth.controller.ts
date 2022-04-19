@@ -69,7 +69,7 @@ export class AuthController {
       }
     }
 
-    if(type === 'walletFirst') {
+    if(type === 'loginFirst') {
       if(userByWallet.email !== body.email) {
         return {
           code: 400,
