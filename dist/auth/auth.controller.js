@@ -43,7 +43,7 @@ let AuthController = class AuthController {
                 message: 'can_login'
             };
         }
-        if (type === 'loginFirst') {
+        if (type === 'emailFirst') {
             if (userByWallet.email !== body.email) {
                 return {
                     code: 400,
