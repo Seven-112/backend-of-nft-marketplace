@@ -25,6 +25,7 @@ const forgotPassword_dto_1 = require("./DTO/forgotPassword.dto");
 const mail_service_1 = require("../modules/mail/mail.service");
 const redis_service_1 = require("../modules/redis/redis.service");
 const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
+const check_username_DTO_1 = require("./DTO/check-username.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService, redisService) {
         this.authService = authService;
@@ -81,6 +82,19 @@ let AuthController = class AuthController {
                 message: 'can_login'
             };
         }
+    }
+    async checkUsername(body) {
+        const user = await this.userService.getUserByUsername(body.username);
+        if (user.length) {
+            return {
+                code: 400,
+                message: 'username_is_existed'
+            };
+        }
+        return {
+            code: 200,
+            message: 'successful'
+        };
     }
     async register(body) {
         try {
@@ -161,6 +175,15 @@ __decorate([
     __metadata("design:paramtypes", [check_can_login_DTO_1.CheckCanLoginDTO, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "canLogin", null);
+__decorate([
+    (0, common_1.Post)('/check-username'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_username_DTO_1.CheckUsernameDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkUsername", null);
 __decorate([
     (0, common_1.Post)('/register'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),

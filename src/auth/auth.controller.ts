@@ -40,6 +40,7 @@ import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 import { JwtResponse } from './auth.interface';
 import { TwitterGuard } from './twitter.guard';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
+import { CheckUsernameDTO } from './DTO/check-username.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -111,6 +112,25 @@ export class AuthController {
         code: 200,
         message: 'can_login'
       }
+    }
+  }
+
+  @Post('/check-username')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async checkUsername(@Body() body: CheckUsernameDTO) {
+    const user = await this.userService.getUserByUsername(body.username)
+
+    if(user.length) {
+      return {
+        code: 400,
+        message: 'username_is_existed'
+      }
+    }
+
+    return {
+      code: 200,
+      message: 'successful'
     }
   }
 
@@ -231,6 +251,8 @@ export class AuthController {
       throw error;
     }
   }
+
+  
 
   // @Post('/reset-password')
   // @HttpCode(HttpStatus.OK)
