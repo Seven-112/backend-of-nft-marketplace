@@ -111,6 +111,13 @@ export class NFTController {
       }
     }
 
+    if(nft.user === user.id) {
+      return {
+        code: 400,
+        message: 'cant_buy_your_self'
+      }
+    }
+
     const checkUserBoughtNft = await (await this.nftService.getUserNftBoughtByUserAndNft(id, user.id))['toJSON']();
     if(checkUserBoughtNft.length) {
       return {
