@@ -53,7 +53,7 @@ export class AuthController {
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
   @Public()
-  async canLogin(@Body() body: CheckCanLoginDTO, @Query('type') type: String) {
+  async canLogin(@Body() body: CheckCanLoginDTO, @Query() type?: string) {
     let userByEmail = await this.userService.getByEmail(body.email) as any;
     let userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
@@ -61,13 +61,6 @@ export class AuthController {
 
     userByEmail = userByEmail.length ? userByEmail[0] : null;
     userByWallet = userByWallet.length ? userByWallet[0] : null;
-
-    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
-      return {
-        code: 200,
-        message: 'can_login'
-      }
-    }
 
     if(type === 'emailFirst') {
       if(userByWallet.email !== body.email) {
@@ -110,6 +103,13 @@ export class AuthController {
       return {
         code: 400,
         message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+      }
+    }
+
+    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
+      return {
+        code: 200,
+        message: 'can_login'
       }
     }
   }

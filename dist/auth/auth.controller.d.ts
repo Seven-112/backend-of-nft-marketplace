@@ -13,7 +13,7 @@ export declare class AuthController {
     private readonly mailService;
     private readonly redisService;
     constructor(authService: AuthService, userService: UserService, mailService: MailService, redisService: RedisService);
-    canLogin(body: CheckCanLoginDTO, type: String): Promise<{
+    canLogin(body: CheckCanLoginDTO, type?: string): Promise<{
         code: number;
         message: string;
     }>;
