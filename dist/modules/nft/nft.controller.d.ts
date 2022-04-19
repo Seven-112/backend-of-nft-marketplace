@@ -1,3 +1,4 @@
+import { NotificationService } from './../notification/notification.service';
 import { UserService } from '../user/user.service';
 import { CreateNftDTO, UpdateNftDTO, BuyNFTDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
@@ -5,7 +6,8 @@ import { NftService } from './nft.service';
 export declare class NFTController {
     private readonly nftService;
     private readonly userService;
-    constructor(nftService: NftService, userService: UserService);
+    private readonly notificationService;
+    constructor(nftService: NftService, userService: UserService, notificationService: NotificationService);
     createNft(request: any, body: CreateNftDTO): Promise<{
         code: number;
         message: string;
