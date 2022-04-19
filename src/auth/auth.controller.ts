@@ -40,6 +40,7 @@ import { LoginGoogleDTO } from './DTO/loginGoogle.dto';
 import { JwtResponse } from './auth.interface';
 import { TwitterGuard } from './twitter.guard';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
+import { CheckUsernameDTO } from './DTO/check-username.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -53,7 +54,7 @@ export class AuthController {
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
   @Public()
-  async canLogin(@Body() body: CheckCanLoginDTO, @Query('type') type: String) {
+  async canLogin(@Body() body: CheckCanLoginDTO, @Query() type?: string) {
     let userByEmail = await this.userService.getByEmail(body.email) as any;
     let userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
@@ -62,14 +63,7 @@ export class AuthController {
     userByEmail = userByEmail.length ? userByEmail[0] : null;
     userByWallet = userByWallet.length ? userByWallet[0] : null;
 
-    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
-      return {
-        code: 200,
-        message: 'can_login'
-      }
-    }
-
-    if(type === 'walletFirst') {
+    if(type === 'emailFirst') {
       if(userByWallet.email !== body.email) {
         return {
           code: 400,
@@ -111,6 +105,32 @@ export class AuthController {
         code: 400,
         message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
       }
+    }
+
+    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
+      return {
+        code: 200,
+        message: 'can_login'
+      }
+    }
+  }
+
+  @Post('/check-username')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async checkUsername(@Body() body: CheckUsernameDTO) {
+    const user = await this.userService.getUserByUsername(body.username)
+
+    if(user.length) {
+      return {
+        code: 400,
+        message: 'username_is_existed'
+      }
+    }
+
+    return {
+      code: 200,
+      message: 'successful'
     }
   }
 
@@ -231,6 +251,8 @@ export class AuthController {
       throw error;
     }
   }
+
+  
 
   // @Post('/reset-password')
   // @HttpCode(HttpStatus.OK)

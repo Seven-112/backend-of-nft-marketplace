@@ -1,3 +1,4 @@
+import { NotificationService } from './../notification/notification.service';
 import {
   Body,
   Controller,
@@ -19,12 +20,14 @@ import { CreateNftDTO, UpdateNftDTO, BuyNFTDTO } from './DTO/nft.dto';
 import { Nft } from './nft.interface';
 import { NftService } from './nft.service';
 import { UserNFTBought } from './userNFTBought.interface';
+import { PublishCommand } from '@aws-sdk/client-sns';
 
 @Controller('nft')
 export class NFTController {
   constructor(
     private readonly nftService: NftService,
     private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
     ) {}
 
   @Post('/create')
@@ -111,6 +114,13 @@ export class NFTController {
       }
     }
 
+    if(nft.user === user.id) {
+      return {
+        code: 400,
+        message: 'cant_buy_your_self'
+      }
+    }
+
     const checkUserBoughtNft = await (await this.nftService.getUserNftBoughtByUserAndNft(id, user.id))['toJSON']();
     if(checkUserBoughtNft.length) {
       return {
@@ -124,6 +134,34 @@ export class NFTController {
     userNftBought.user = user;
 
     await this.nftService.createUserNftBought(userNftBought);
+    const notificationForOwner = {
+      userId: [nft.user],
+      type: 'buy',
+      msg: `${nft.title} has been sold`,
+      sender: user.id
+    }
+
+    const notificationForBuyer = {
+      userId: [user.id],
+      type: 'buy',
+      msg: `${nft.title} has been purchased`,
+      sender: user.id
+    }
+
+    await Promise.all([
+      this.notificationService.snsClient.send(
+        new PublishCommand({
+          TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+          Message: JSON.stringify(notificationForOwner),
+        }),
+      ),
+      this.notificationService.snsClient.send(
+        new PublishCommand({
+          TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+          Message: JSON.stringify(notificationForBuyer),
+        }),
+      ),
+    ]);
 
     return {
       code: 201,

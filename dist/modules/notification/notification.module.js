@@ -32,6 +32,7 @@ NotificationModule = __decorate([
             event_emitter_1.EventEmitterModule.forRoot(),
         ],
         controllers: [notification_controller_1.NotificationController],
+        exports: [notification_service_1.NotificationService],
         providers: [notification_service_1.NotificationService, events_service_1.EventsService],
     })
 ], NotificationModule);

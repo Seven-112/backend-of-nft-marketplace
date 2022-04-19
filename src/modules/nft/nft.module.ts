@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { NotificationModule } from '../notification/notification.module';
 import { UserModule } from '../user/user.module';
 import { NFTController } from './nft.controller';
 import { NftSchema } from './nft.schema';
@@ -18,7 +19,8 @@ import { UserNFTBoughtSchema } from './userNFTBought.schema';
         schema: UserNFTBoughtSchema,
       },
     ]),
-    UserModule
+    UserModule,
+    NotificationModule
   ],
   providers: [NftService],
   controllers: [NFTController],

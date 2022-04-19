@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NFTController = void 0;
+const notification_service_1 = require("./../notification/notification.service");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const moment = require("moment");
@@ -23,10 +24,12 @@ const nft_dto_1 = require("./DTO/nft.dto");
 const nft_interface_1 = require("./nft.interface");
 const nft_service_1 = require("./nft.service");
 const userNFTBought_interface_1 = require("./userNFTBought.interface");
+const client_sns_1 = require("@aws-sdk/client-sns");
 let NFTController = class NFTController {
-    constructor(nftService, userService) {
+    constructor(nftService, userService, notificationService) {
         this.nftService = nftService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
     async createNft(request, body) {
         const user = await this.userService.getUserById(request.user.sub);
@@ -87,6 +90,12 @@ let NFTController = class NFTController {
                 message: 'user_not_found'
             };
         }
+        if (nft.user === user.id) {
+            return {
+                code: 400,
+                message: 'cant_buy_your_self'
+            };
+        }
         const checkUserBoughtNft = await (await this.nftService.getUserNftBoughtByUserAndNft(id, user.id))['toJSON']();
         if (checkUserBoughtNft.length) {
             return {
@@ -97,6 +106,28 @@ let NFTController = class NFTController {
         userNftBought.nft = nft;
         userNftBought.user = user;
         await this.nftService.createUserNftBought(userNftBought);
+        const notificationForOwner = {
+            userId: [nft.user],
+            type: 'buy',
+            msg: `${nft.title} has been sold`,
+            sender: user.id
+        };
+        const notificationForBuyer = {
+            userId: [user.id],
+            type: 'buy',
+            msg: `${nft.title} has been purchased`,
+            sender: user.id
+        };
+        await Promise.all([
+            this.notificationService.snsClient.send(new client_sns_1.PublishCommand({
+                TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+                Message: JSON.stringify(notificationForOwner),
+            })),
+            this.notificationService.snsClient.send(new client_sns_1.PublishCommand({
+                TopicArn: process.env.AWS_SNS_TOPIC_ARN,
+                Message: JSON.stringify(notificationForBuyer),
+            })),
+        ]);
         return {
             code: 201,
             message: 'buy_nft_successful',
@@ -201,7 +232,8 @@ __decorate([
 NFTController = __decorate([
     (0, common_1.Controller)('nft'),
     __metadata("design:paramtypes", [nft_service_1.NftService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        notification_service_1.NotificationService])
 ], NFTController);
 exports.NFTController = NFTController;
 //# sourceMappingURL=nft.controller.js.map
