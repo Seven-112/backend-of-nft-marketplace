@@ -72,12 +72,14 @@ let SupportController = class SupportController {
         }
         let channels = await (await this.channelService.get(user.id))['populate']();
         channels = channels.map(channel => {
-            var _a, _b, _c, _d, _e, _f;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
             if (((_a = channel.from) === null || _a === void 0 ? void 0 : _a.id) !== user.id) {
                 channel.channelName = ((_b = channel.from) === null || _b === void 0 ? void 0 : _b.username) || ((_c = channel.from) === null || _c === void 0 ? void 0 : _c.email);
+                channel.avatar = ((_d = channel.from) === null || _d === void 0 ? void 0 : _d.avatar) || null;
             }
-            if (((_d = channel.to) === null || _d === void 0 ? void 0 : _d.id) !== user.id) {
-                channel.channelName = ((_e = channel.to) === null || _e === void 0 ? void 0 : _e.username) || ((_f = channel.to) === null || _f === void 0 ? void 0 : _f.email);
+            if (((_e = channel.to) === null || _e === void 0 ? void 0 : _e.id) !== user.id) {
+                channel.channelName = ((_f = channel.to) === null || _f === void 0 ? void 0 : _f.username) || ((_g = channel.to) === null || _g === void 0 ? void 0 : _g.email);
+                channel.avatar = ((_h = channel.to) === null || _h === void 0 ? void 0 : _h.avatar) || null;
             }
             delete channel.from;
             delete channel.to;

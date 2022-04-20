@@ -82,10 +82,12 @@ export class SupportController {
     channels = channels.map(channel => {
       if(channel.from?.id !== user.id) {
         channel.channelName = channel.from?.username || channel.from?.email;
+        channel.avatar = channel.from?.avatar || null;
       }
 
       if(channel.to?.id !== user.id) {
         channel.channelName = channel.to?.username || channel.to?.email;
+        channel.avatar = channel.to?.avatar || null;
       }
       delete channel.from;
       delete channel.to;

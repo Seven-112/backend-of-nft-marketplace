@@ -102,7 +102,7 @@ let AuthController = class AuthController {
         if (user.length) {
             return {
                 code: 400,
-                message: 'email_is_existed'
+                message: 'username_is_existed'
             };
         }
         return {
