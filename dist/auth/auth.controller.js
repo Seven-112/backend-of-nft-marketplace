@@ -26,6 +26,7 @@ const mail_service_1 = require("../modules/mail/mail.service");
 const redis_service_1 = require("../modules/redis/redis.service");
 const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 const check_username_DTO_1 = require("./DTO/check-username.DTO");
+const check_email_DTO_1 = require("./DTO/check-email.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService, redisService) {
         this.authService = authService;
@@ -89,6 +90,19 @@ let AuthController = class AuthController {
             return {
                 code: 400,
                 message: 'username_is_existed'
+            };
+        }
+        return {
+            code: 200,
+            message: 'successful'
+        };
+    }
+    async checkEmail(body) {
+        const user = await this.userService.getUserByEmail(body.email);
+        if (user.length) {
+            return {
+                code: 400,
+                message: 'email_is_existed'
             };
         }
         return {
@@ -184,6 +198,15 @@ __decorate([
     __metadata("design:paramtypes", [check_username_DTO_1.CheckUsernameDTO]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "checkUsername", null);
+__decorate([
+    (0, common_1.Post)('/check-email'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_email_DTO_1.CheckEmailDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkEmail", null);
 __decorate([
     (0, common_1.Post)('/register'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),

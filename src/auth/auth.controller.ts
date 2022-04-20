@@ -41,6 +41,7 @@ import { JwtResponse } from './auth.interface';
 import { TwitterGuard } from './twitter.guard';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 import { CheckUsernameDTO } from './DTO/check-username.DTO';
+import { CheckEmailDTO } from './DTO/check-email.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -125,6 +126,25 @@ export class AuthController {
       return {
         code: 400,
         message: 'username_is_existed'
+      }
+    }
+
+    return {
+      code: 200,
+      message: 'successful'
+    }
+  }
+
+  @Post('/check-email')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async checkEmail(@Body() body: CheckEmailDTO) {
+    const user = await this.userService.getUserByEmail(body.email)
+
+    if(user.length) {
+      return {
+        code: 400,
+        message: 'email_is_existed'
       }
     }
 
