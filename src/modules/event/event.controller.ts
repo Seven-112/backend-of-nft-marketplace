@@ -254,7 +254,12 @@ export class EventController {
     @Query('relations') relations?: string[],
   ) {
     let event = await this.eventService.getEventById(id);
+    console.log(event); 
     event = await event.populate({ properties: relations });
+    let userTickets = await (await this.eventService.getUserTicketByEventId(id))['populate']();
+    userTickets = await userTickets['toJSON']();
+    userTickets = userTickets.sort((a, b) => b.timestamp - a.timestamp).map(userTicket => userTicket.user);
+    event.boughtTicketUsers = userTickets;
 
     return {
       code: 200,

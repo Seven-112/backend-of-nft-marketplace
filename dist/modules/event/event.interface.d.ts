@@ -30,5 +30,6 @@ export declare class Event {
     ticket: Ticket;
     createdAt: Date;
     updatedAt: Date;
+    boughtTicketUsers?: any;
     constructor();
 }

@@ -38,6 +38,7 @@ export class Event {
   ticket: Ticket;
   createdAt: Date;
   updatedAt: Date;
+  boughtTicketUsers?: any;
   constructor() {
     this.id = nanoid(12);
   }

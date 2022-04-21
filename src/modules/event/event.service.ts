@@ -66,5 +66,9 @@ export class EventService {
     }
     return formattedData;
   }
+
+  async getUserTicketByEventId(id: string) {
+    return this.userTicketModel.scan('event').eq(id).exec();
+  }
   
 }
