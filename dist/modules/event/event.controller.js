@@ -114,36 +114,7 @@ let EventController = class EventController {
         const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'days', 'YYYY-MM-DD', 'DD');
         duration = +moment(currentTime).format('MM');
         const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM');
-        const responseData = {
-            daily: {
-                data: dailyData,
-                availableTickets: totalAvailableTickets,
-                soldTickets: dailyData
-                    .map((dt) => dt.total)
-                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
-            },
-            weekly: {
-                data: weeklyData,
-                availableTickets: totalAvailableTickets,
-                soldTickets: weeklyData
-                    .map((dt) => dt.total)
-                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
-            },
-            monthly: {
-                data: monthlyData,
-                availableTickets: totalAvailableTickets,
-                soldTickets: monthlyData
-                    .map((dt) => dt.total)
-                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
-            },
-            allTime: {
-                data: allTimeData,
-                availableTickets: totalAvailableTickets,
-                soldTickets: allTimeData
-                    .map((dt) => dt.total)
-                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
-            },
-        };
+        const responseData = this.eventService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets);
         return {
             code: 200,
             message: '',
@@ -152,7 +123,6 @@ let EventController = class EventController {
     }
     async getEventById(id, relations) {
         let event = await this.eventService.getEventById(id);
-        console.log(event);
         event = await event.populate({ properties: relations });
         let userTickets = await (await this.eventService.getUserTicketByEventId(id))['populate']();
         userTickets = await userTickets['toJSON']();
@@ -162,6 +132,44 @@ let EventController = class EventController {
             code: 200,
             message: '',
             data: event,
+        };
+    }
+    async eventAnalysis(id, relations) {
+        var _a;
+        let event = await this.eventService.getEventById(id);
+        if (!event) {
+            return {
+                error: 400,
+                message: 'event_not_existed'
+            };
+        }
+        const currentTime = moment().valueOf();
+        let totalAvailableTickets = ((_a = event.ticket) === null || _a === void 0 ? void 0 : _a.remain) || 0;
+        const firstDailyTime = moment(moment().format('YYYY-MM-DD 00:00')).valueOf();
+        const firstWeeklyTime = moment().startOf('isoWeek').valueOf();
+        const firstMonthlyTime = moment(moment().format('YYYY-MM-01 00:00:00')).valueOf();
+        const firstYearTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        let results = await Promise.all([
+            this.eventService.getUserTicketByTimeAndEvent(firstDailyTime, currentTime, id),
+            this.eventService.getUserTicketByTimeAndEvent(firstWeeklyTime, currentTime, id),
+            this.eventService.getUserTicketByTimeAndEvent(firstMonthlyTime, currentTime, id),
+            this.eventService.getUserTicketByTimeAndEvent(firstYearTime, currentTime, id)
+        ]);
+        results = await Promise.all(results.map(result => result['populate']()));
+        let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly] = await Promise.all(results.map(result => result['toJSON']()));
+        const currentHour = moment(currentTime).format('HH');
+        const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
+        const currentDate = moment(currentTime).isoWeekday();
+        const weeklyData = this.eventService.formatEventData(userTicketWeekly, currentDate, 'days', 'YYYY-MM-DD', 'DD');
+        let duration = +moment(currentTime).format('DD');
+        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'days', 'YYYY-MM-DD', 'DD');
+        duration = +moment(currentTime).format('MM');
+        const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM');
+        const responseData = this.eventService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets);
+        return {
+            code: 200,
+            message: 'successful',
+            data: responseData,
         };
     }
     async buyEventTicket(id, request, body) {
@@ -258,6 +266,22 @@ __decorate([
     __metadata("design:paramtypes", [String, Array]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEventById", null);
+__decorate([
+    (0, common_1.Get)('/:id/analysis'),
+    (0, swagger_1.ApiQuery)({
+        name: 'relations',
+        required: false,
+        explode: false,
+        type: String,
+        isArray: true,
+    }),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('relations')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], EventController.prototype, "eventAnalysis", null);
 __decorate([
     (0, common_1.Post)('/:id/buy-ticket'),
     (0, swagger_1.ApiBearerAuth)(),

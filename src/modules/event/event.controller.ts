@@ -189,48 +189,13 @@ export class EventController {
     const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM')
 
     // format data response.
-    const responseData = {
-      daily: {
-        data: dailyData,
-        availableTickets: totalAvailableTickets,
-        soldTickets: dailyData
-          .map((dt) => dt.total)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0,
-          ),
-      },
-      weekly: {
-        data: weeklyData,
-        availableTickets: totalAvailableTickets,
-        soldTickets: weeklyData
-          .map((dt) => dt.total)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0,
-          ),
-      },
-      monthly: {
-        data: monthlyData,
-        availableTickets: totalAvailableTickets,
-        soldTickets: monthlyData
-          .map((dt) => dt.total)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0,
-          ),
-      },
-      allTime: {
-        data: allTimeData,
-        availableTickets: totalAvailableTickets,
-        soldTickets: allTimeData
-          .map((dt) => dt.total)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0,
-          ),
-      },
-    };
+    const responseData = this.eventService.formatDataAnalysisResponse(
+      dailyData,
+      weeklyData, 
+      monthlyData, 
+      allTimeData, 
+      totalAvailableTickets
+    );
 
     // response.
     return {
@@ -254,7 +219,6 @@ export class EventController {
     @Query('relations') relations?: string[],
   ) {
     let event = await this.eventService.getEventById(id);
-    console.log(event); 
     event = await event.populate({ properties: relations });
     let userTickets = await (await this.eventService.getUserTicketByEventId(id))['populate']();
     userTickets = await userTickets['toJSON']();
@@ -265,6 +229,92 @@ export class EventController {
       code: 200,
       message: '',
       data: event,
+    };
+  }
+
+  @Get('/:id/analysis')
+  @ApiQuery({
+    name: 'relations',
+    required: false,
+    explode: false,
+    type: String,
+    isArray: true,
+  })
+  @Public()
+  async eventAnalysis(
+    @Param('id') id: string,
+    @Query('relations') relations?: string[],
+  ) {
+    let event = await this.eventService.getEventById(id);
+    if(!event) {
+      return {
+        error: 400,
+        message: 'event_not_existed'
+      }
+    }
+
+    const currentTime = moment().valueOf();
+
+    // Get all available tickets.
+    let totalAvailableTickets = event.ticket?.remain || 0;
+    const firstDailyTime = moment(
+      moment().format('YYYY-MM-DD 00:00'),
+    ).valueOf();
+
+    const firstWeeklyTime = moment().startOf('isoWeek').valueOf();
+    const firstMonthlyTime = moment(
+      moment().format('YYYY-MM-01 00:00:00'),
+    ).valueOf();
+    const firstYearTime = moment(
+      moment().format('YYYY-01-01 00:00:00'),
+    ).valueOf();
+
+    let results = await Promise.all([
+      this.eventService.getUserTicketByTimeAndEvent(firstDailyTime, currentTime, id),
+      this.eventService.getUserTicketByTimeAndEvent(firstWeeklyTime, currentTime, id),
+      this.eventService.getUserTicketByTimeAndEvent(firstMonthlyTime, currentTime, id),
+      this.eventService.getUserTicketByTimeAndEvent(firstYearTime, currentTime, id)
+    ]) as any;
+
+    results = await Promise.all(results.map(result => result['populate']()));
+
+    let [
+      userTicketDaily,
+      userTicketWeekly,
+      userTicketMonthly,
+      userTicketYearly
+    ] = await Promise.all(results.map(result => result['toJSON']()));
+
+    // Get data daily.
+    const currentHour = moment(currentTime).format('HH');
+    const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
+
+
+    // Get data weekly.
+    const currentDate = moment(currentTime).isoWeekday();
+    const weeklyData = this.eventService.formatEventData(userTicketWeekly, currentDate, 'days', 'YYYY-MM-DD', 'DD');
+
+    // // Get data monthly.
+    let duration = +moment(currentTime).format('DD');
+    const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'days', 'YYYY-MM-DD', 'DD')
+
+    // // Get data yearly.
+    duration = +moment(currentTime).format('MM');
+    const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM')
+
+    // format data response.
+    const responseData = this.eventService.formatDataAnalysisResponse(
+      dailyData,
+      weeklyData, 
+      monthlyData, 
+      allTimeData, 
+      totalAvailableTickets
+    );
+
+    return {
+      code: 200,
+      message: 'successful',
+      data: responseData,
     };
   }
 

@@ -34,23 +34,23 @@ export declare class EventController {
         message: string;
         data: {
             daily: {
-                data: any[];
-                availableTickets: any;
+                data: any;
+                availableTickets: number;
                 soldTickets: any;
             };
             weekly: {
-                data: any[];
-                availableTickets: any;
+                data: any;
+                availableTickets: number;
                 soldTickets: any;
             };
             monthly: {
-                data: any[];
-                availableTickets: any;
+                data: any;
+                availableTickets: number;
                 soldTickets: any;
             };
             allTime: {
-                data: any[];
-                availableTickets: any;
+                data: any;
+                availableTickets: number;
                 soldTickets: any;
             };
         };
@@ -59,6 +59,38 @@ export declare class EventController {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<Event>;
+    }>;
+    eventAnalysis(id: string, relations?: string[]): Promise<{
+        error: number;
+        message: string;
+        code?: undefined;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: {
+            daily: {
+                data: any;
+                availableTickets: number;
+                soldTickets: any;
+            };
+            weekly: {
+                data: any;
+                availableTickets: number;
+                soldTickets: any;
+            };
+            monthly: {
+                data: any;
+                availableTickets: number;
+                soldTickets: any;
+            };
+            allTime: {
+                data: any;
+                availableTickets: number;
+                soldTickets: any;
+            };
+        };
+        error?: undefined;
     }>;
     buyEventTicket(id: string, request: any, body: BuyTicketDTO): Promise<{
         code: number;

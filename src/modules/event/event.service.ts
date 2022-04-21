@@ -38,6 +38,15 @@ export class EventService {
     return this.userTicketModel.scan('createdAt').ge(firstTime).and().where('createdAt').le(lastTime).exec()
   }
 
+  async getUserTicketByTimeAndEvent(firstTime: number, lastTime: number, id: string) {
+    return this.userTicketModel.scan('createdAt').ge(firstTime)
+      .and()
+      .where('createdAt').le(lastTime)
+      .and()
+      .where('event').eq(id)
+      .exec()
+  }
+
   async getEventAvailable( currentTime: number) {
     return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
   }
@@ -65,6 +74,51 @@ export class EventService {
       formattedData.push(data);
     }
     return formattedData;
+  }
+
+  formatDataAnalysisResponse(dailyData: any, weeklyData: any, monthlyData: any, allTimeData: any, totalAvailableTickets: number) {
+    return {
+      daily: {
+        data: dailyData,
+        availableTickets: totalAvailableTickets,
+        soldTickets: dailyData
+          .map((dt) => dt.total)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0,
+          ),
+      },
+      weekly: {
+        data: weeklyData,
+        availableTickets: totalAvailableTickets,
+        soldTickets: weeklyData
+          .map((dt) => dt.total)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0,
+          ),
+      },
+      monthly: {
+        data: monthlyData,
+        availableTickets: totalAvailableTickets,
+        soldTickets: monthlyData
+          .map((dt) => dt.total)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0,
+          ),
+      },
+      allTime: {
+        data: allTimeData,
+        availableTickets: totalAvailableTickets,
+        soldTickets: allTimeData
+          .map((dt) => dt.total)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0,
+          ),
+      },
+    };
   }
 
   async getUserTicketByEventId(id: string) {

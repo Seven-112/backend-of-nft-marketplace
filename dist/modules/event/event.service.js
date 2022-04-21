@@ -41,6 +41,14 @@ let EventService = class EventService {
     async getUserTicketByTime(firstTime, lastTime) {
         return this.userTicketModel.scan('createdAt').ge(firstTime).and().where('createdAt').le(lastTime).exec();
     }
+    async getUserTicketByTimeAndEvent(firstTime, lastTime, id) {
+        return this.userTicketModel.scan('createdAt').ge(firstTime)
+            .and()
+            .where('createdAt').le(lastTime)
+            .and()
+            .where('event').eq(id)
+            .exec();
+    }
     async getEventAvailable(currentTime) {
         return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
     }
@@ -62,6 +70,38 @@ let EventService = class EventService {
             formattedData.push(data);
         }
         return formattedData;
+    }
+    formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets) {
+        return {
+            daily: {
+                data: dailyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: dailyData
+                    .map((dt) => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            },
+            weekly: {
+                data: weeklyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: weeklyData
+                    .map((dt) => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            },
+            monthly: {
+                data: monthlyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: monthlyData
+                    .map((dt) => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            },
+            allTime: {
+                data: allTimeData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: allTimeData
+                    .map((dt) => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            },
+        };
     }
     async getUserTicketByEventId(id) {
         return this.userTicketModel.scan('event').eq(id).exec();
