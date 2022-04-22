@@ -33,7 +33,6 @@ exports.TicketSchema = new dynamoose_1.Schema({
 exports.EventSchema = new dynamoose_1.Schema({
     id: {
         type: String,
-        hashKey: true,
     },
     image: {
         type: String,
@@ -58,12 +57,25 @@ exports.EventSchema = new dynamoose_1.Schema({
     location: {
         type: String,
     },
+    table: {
+        type: String,
+        default: 'event',
+        hashKey: true,
+    },
+    timestamp: {
+        type: Number,
+        rangeKey: true
+    },
     ticket: exports.TicketSchema,
     publishDate: {
         type: Date,
     },
-}, {
-    timestamps: true,
+    createdAt: {
+        type: Number
+    },
+    updatedAt: {
+        type: Number
+    }
 });
 exports.Event = (0, dynamoose_1.model)('Event', exports.EventSchema);
 //# sourceMappingURL=event.schema.js.map

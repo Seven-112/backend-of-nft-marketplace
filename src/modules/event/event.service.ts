@@ -1,13 +1,14 @@
 import { UserTicket } from './userTicket.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectModel, Model } from 'nestjs-dynamoose';
-import { Event } from './event.interface';
+import { Event, EventKey } from './event.interface';
 import * as moment from 'moment';
+import { SortOrder } from 'dynamoose/dist/General';
 @Injectable()
 export class EventService {
   constructor(
     @InjectModel('Event')
-    private readonly eventModel: Model<Event, Event['id']>,
+    private readonly eventModel: Model<Event, EventKey>,
     @InjectModel('UserTicket')
     private readonly userTicketModel: Model<UserTicket, UserTicket['id']>
   ) {}
@@ -17,17 +18,20 @@ export class EventService {
   }
 
   async getEventById(id: string) {
-    return this.eventModel.get(id);
+    const event = await this.eventModel.scan('id').eq(id).exec();
+    return event.length ? event[0] : null;
   }
 
   async getAllEvents(limit?: number) {
-    if (limit) return this.eventModel.scan().limit(limit).exec();
+    if (limit) return this.eventModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
 
     return this.eventModel.scan().exec();
   }
 
-  async updateEvent(id: string, body: any) {
-    return this.eventModel.update(id, body);
+  async updateEvent(eventKey: EventKey, body: any) {
+    delete body.table;
+    delete body.timestamp;
+    return this.eventModel.update(eventKey, body);
   }
 
   async createUserTicket(userTicket: UserTicket) {

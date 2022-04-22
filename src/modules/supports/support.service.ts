@@ -22,7 +22,6 @@ export class SupportService {
   
       return this.supportModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
     }
-    console.log(limit, lastKey, status)
     if(lastKey) {
       return this.supportModel.query('table').eq('support')
         .and()
@@ -49,7 +48,6 @@ export class SupportService {
 
   async updateSupport(table: SupportKey, data: any) {
     data.timestamp = new Date().getTime();
-    console.log(data);
     this.supportModel.delete(table);
     this.supportModel.create(data);
   }

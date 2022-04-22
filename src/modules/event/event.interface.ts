@@ -1,5 +1,11 @@
 import { nanoid } from 'nanoid';
 
+export type EventKey = {
+  table: string;
+  timestamp: number;
+}
+
+
 export enum EEventType {
   online = 'online',
   venue = 'venue',
@@ -36,8 +42,10 @@ export class Event {
   user: string;
   publishDate: Date;
   ticket: Ticket;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: number;
+  updatedAt: number;
+  timestamp: number;
+  table: string;
   boughtTicketUsers?: any;
   constructor() {
     this.id = nanoid(12);

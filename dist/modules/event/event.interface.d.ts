@@ -1,3 +1,7 @@
+export declare type EventKey = {
+    table: string;
+    timestamp: number;
+};
 export declare enum EEventType {
     online = "online",
     venue = "venue"
@@ -28,8 +32,10 @@ export declare class Event {
     user: string;
     publishDate: Date;
     ticket: Ticket;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: number;
+    updatedAt: number;
+    timestamp: number;
+    table: string;
     boughtTicketUsers?: any;
     constructor();
 }

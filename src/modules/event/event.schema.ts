@@ -33,7 +33,6 @@ export const EventSchema = new Schema(
   {
     id: {
       type: String,
-      hashKey: true,
     },
     image: {
       type: String,
@@ -58,14 +57,26 @@ export const EventSchema = new Schema(
     location: {
       type: String,
     },
+    table: {
+      type: String,
+      default: 'event',
+      hashKey: true,
+    },
+    timestamp: {
+      type: Number,
+      rangeKey: true
+    },
     ticket: TicketSchema,
     publishDate: {
       type: Date,
     },
-  },
-  {
-    timestamps: true,
-  },
+    createdAt: {
+      type: Number
+    },
+    updatedAt: {
+      type: Number
+    }
+  }
 );
 
 export const Event = model('Event', EventSchema);

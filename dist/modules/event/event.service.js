@@ -16,6 +16,7 @@ exports.EventService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const moment = require("moment");
+const General_1 = require("dynamoose/dist/General");
 let EventService = class EventService {
     constructor(eventModel, userTicketModel) {
         this.eventModel = eventModel;
@@ -25,15 +26,18 @@ let EventService = class EventService {
         return this.eventModel.create(event);
     }
     async getEventById(id) {
-        return this.eventModel.get(id);
+        const event = await this.eventModel.scan('id').eq(id).exec();
+        return event.length ? event[0] : null;
     }
     async getAllEvents(limit) {
         if (limit)
-            return this.eventModel.scan().limit(limit).exec();
+            return this.eventModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
         return this.eventModel.scan().exec();
     }
-    async updateEvent(id, body) {
-        return this.eventModel.update(id, body);
+    async updateEvent(eventKey, body) {
+        delete body.table;
+        delete body.timestamp;
+        return this.eventModel.update(eventKey, body);
     }
     async createUserTicket(userTicket) {
         return this.userTicketModel.create(userTicket);

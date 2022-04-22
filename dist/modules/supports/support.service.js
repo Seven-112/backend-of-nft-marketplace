@@ -31,7 +31,6 @@ let SupportService = class SupportService {
             }
             return this.supportModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
         }
-        console.log(limit, lastKey, status);
         if (lastKey) {
             return this.supportModel.query('table').eq('support')
                 .and()
@@ -55,7 +54,6 @@ let SupportService = class SupportService {
     }
     async updateSupport(table, data) {
         data.timestamp = new Date().getTime();
-        console.log(data);
         this.supportModel.delete(table);
         this.supportModel.create(data);
     }

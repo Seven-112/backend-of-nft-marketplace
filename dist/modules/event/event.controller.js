@@ -42,6 +42,9 @@ let EventController = class EventController {
         event.startDate = new Date(body.startDate);
         event.endDate = new Date(body.endDate);
         event.publishDate = new Date(body.publishDate);
+        event.timestamp = new Date().getTime();
+        event.createdAt = new Date().getTime();
+        event.updatedAt = new Date().getTime();
         event.ticket = Object.assign({}, ticket);
         const newEvent = await this.eventService.createEvent(event);
         return {
@@ -73,7 +76,10 @@ let EventController = class EventController {
         const { id } = body;
         delete body.id;
         const updateBody = Object.assign(Object.assign({}, body), { publishDate: new Date(body.publishDate), startDate: new Date(body.startDate), endDate: new Date(body.endDate), createdAt: new Date(body.createdAt), ticket: Object.assign(Object.assign({}, body.ticket), { saleStart: new Date(body.ticket.saleStart), saleEnd: new Date(body.ticket.saleEnd) }) });
-        const updatedEvent = await this.eventService.updateEvent(id, updateBody);
+        const updatedEvent = await this.eventService.updateEvent({
+            table: foundEvent.table,
+            timestamp: foundEvent.timestamp
+        }, updateBody);
         return {
             code: 201,
             message: 'Event updated',
@@ -214,7 +220,10 @@ let EventController = class EventController {
         event.ticket.remain -= +body.number_ticket;
         delete event.id;
         delete event.updatedAt;
-        event = await this.eventService.updateEvent(id, event);
+        event = await this.eventService.updateEvent({
+            table: event.table,
+            timestamp: event.timestamp
+        }, event);
         return {
             code: 200,
             message: 'buy_ticket_successful',

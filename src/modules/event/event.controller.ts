@@ -46,6 +46,9 @@ export class EventController {
     event.startDate = new Date(body.startDate);
     event.endDate = new Date(body.endDate);
     event.publishDate = new Date(body.publishDate);
+    event.timestamp = new Date().getTime();
+    event.createdAt = new Date().getTime();
+    event.updatedAt = new Date().getTime();
     event.ticket = { ...ticket };
 
     const newEvent = await this.eventService.createEvent(event);
@@ -100,7 +103,10 @@ export class EventController {
       },
     };
 
-    const updatedEvent = await this.eventService.updateEvent(id, updateBody);
+    const updatedEvent = await this.eventService.updateEvent({
+      table: foundEvent.table,
+      timestamp: foundEvent.timestamp
+    }, updateBody);
 
     return {
       code: 201,
@@ -376,7 +382,10 @@ export class EventController {
     event.ticket.remain -= +body.number_ticket;
     delete event.id;
     delete event.updatedAt;
-    event = await this.eventService.updateEvent(id, event);
+    event = await this.eventService.updateEvent({
+      table: event.table,
+      timestamp: event.timestamp
+    }, event);
 
     return {
       code: 200,
