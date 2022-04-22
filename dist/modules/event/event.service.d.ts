@@ -6,8 +6,8 @@ export declare class EventService {
     private readonly userTicketModel;
     constructor(eventModel: Model<Event, EventKey>, userTicketModel: Model<UserTicket, UserTicket['id']>);
     createEvent(event: Event): Promise<import("nestjs-dynamoose").Document<Event>>;
-    getEventById(id: string): Promise<import("nestjs-dynamoose").Document<Event>>;
-    getAllEvents(limit?: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>> | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<Event>>>;
+    getEventById(id: string): Promise<any>;
+    getAllEvents(limit?: number): Promise<any[] | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<Event>>>;
     updateEvent(eventKey: EventKey, body: any): Promise<import("nestjs-dynamoose").Document<Event>>;
     createUserTicket(userTicket: UserTicket): Promise<import("nestjs-dynamoose").Document<UserTicket>>;
     getUserTicketByTime(firstTime: number, lastTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;

@@ -25,8 +25,8 @@ export declare class EventController {
         code: number;
         message: string;
         data: {
-            events: any;
-            length: any;
+            events: any[] | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<Event>>;
+            length: number;
         };
     }>;
     getEventAnalisys(request: any): Promise<{
@@ -55,10 +55,14 @@ export declare class EventController {
             };
         };
     }>;
-    getEventById(id: string, relations?: string[]): Promise<{
+    getEventById(id: string): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<Event>;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: any;
     }>;
     eventAnalysis(id: string, relations?: string[]): Promise<{
         error: number;
@@ -95,6 +99,6 @@ export declare class EventController {
     buyEventTicket(id: string, request: any, body: BuyTicketDTO): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").Document<Event>;
+        data: any;
     }>;
 }

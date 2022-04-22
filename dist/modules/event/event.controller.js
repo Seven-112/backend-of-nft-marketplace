@@ -87,7 +87,15 @@ let EventController = class EventController {
         };
     }
     async getEvents(limit) {
-        let events = await (await this.eventService.getAllEvents(limit))['populate']();
+        let events = await this.eventService.getAllEvents(limit);
+        if (!events.length) {
+            return {
+                code: 200,
+                message: '',
+                data: { events, length: events.length },
+            };
+        }
+        events = await (events)['populate']();
         const eventIds = events.map(event => event.id);
         const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
         events = events.map(event => {
@@ -99,11 +107,6 @@ let EventController = class EventController {
             });
             return event;
         });
-        return {
-            code: 200,
-            message: '',
-            data: { events, length: events.length },
-        };
     }
     async getEventAnalisys(request) {
         const currentTime = moment().valueOf();
@@ -138,9 +141,14 @@ let EventController = class EventController {
             data: responseData,
         };
     }
-    async getEventById(id, relations) {
+    async getEventById(id) {
         let event = await this.eventService.getEventById(id);
-        event = await event.populate({ properties: relations });
+        if (!event) {
+            return {
+                code: 400,
+                message: 'event_not_found'
+            };
+        }
         let userTickets = await (await this.eventService.getUserTicketByEventId(id))['populate']();
         userTickets = await userTickets['toJSON']();
         userTickets = userTickets.sort((a, b) => b.timestamp - a.timestamp).map(userTicket => userTicket.user);
@@ -281,9 +289,8 @@ __decorate([
     }),
     (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Query)('relations')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], EventController.prototype, "getEventById", null);
 __decorate([

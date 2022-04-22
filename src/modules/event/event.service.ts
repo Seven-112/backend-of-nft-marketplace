@@ -19,13 +19,18 @@ export class EventService {
 
   async getEventById(id: string) {
     const event = await this.eventModel.scan('id').eq(id).exec();
-    return event.length ? event[0] : null;
+    return event.length ? (await event['populate']())[0] : null;
   }
 
   async getAllEvents(limit?: number) {
-    if (limit) return this.eventModel.query('table').eq('support').limit(limit).sort(SortOrder.descending).exec();
+    try {
+      if (limit) return this.eventModel.query('table').eq('event').limit(limit).sort(SortOrder.descending).exec();
 
-    return this.eventModel.scan().exec();
+      return this.eventModel.query('table').eq('event').sort(SortOrder.descending).exec();
+    } catch(e) {
+      return [];
+    }
+    
   }
 
   async updateEvent(eventKey: EventKey, body: any) {

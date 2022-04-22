@@ -27,12 +27,17 @@ let EventService = class EventService {
     }
     async getEventById(id) {
         const event = await this.eventModel.scan('id').eq(id).exec();
-        return event.length ? event[0] : null;
+        return event.length ? (await event['populate']())[0] : null;
     }
     async getAllEvents(limit) {
-        if (limit)
-            return this.eventModel.query('table').eq('support').limit(limit).sort(General_1.SortOrder.descending).exec();
-        return this.eventModel.scan().exec();
+        try {
+            if (limit)
+                return this.eventModel.query('table').eq('event').limit(limit).sort(General_1.SortOrder.descending).exec();
+            return this.eventModel.query('table').eq('event').sort(General_1.SortOrder.descending).exec();
+        }
+        catch (e) {
+            return [];
+        }
     }
     async updateEvent(eventKey, body) {
         delete body.table;
