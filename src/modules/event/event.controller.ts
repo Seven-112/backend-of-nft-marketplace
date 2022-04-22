@@ -112,8 +112,19 @@ export class EventController {
   @Get('/')
   @Public()
   async getEvents(@Query('limit') limit?: number) {
-    const events = await (await this.eventService.getAllEvents(limit))['populate']();
+    let events = await (await this.eventService.getAllEvents(limit))['populate']();
+    const eventIds = events.map(event => event.id);
 
+    const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
+    events = events.map(event => {
+      event.boughtTicketUsers = [];
+      boughtTicketUsers.forEach(boughtTicketUser => {
+        if(boughtTicketUser.event.id === event.id) {
+          event.boughtTicketUsers.push(boughtTicketUser.user);
+        }
+      });
+      return event;
+    })
     return {
       code: 200,
       message: '',

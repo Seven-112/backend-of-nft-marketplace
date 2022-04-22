@@ -124,5 +124,9 @@ export class EventService {
   async getUserTicketByEventId(id: string) {
     return this.userTicketModel.scan('event').eq(id).exec();
   }
+
+  async getUserTicketByEventIds(ids: string[]) {
+    return this.userTicketModel.scan('event').in(ids).exec();
+  }
   
 }

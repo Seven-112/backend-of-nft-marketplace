@@ -106,6 +106,9 @@ let EventService = class EventService {
     async getUserTicketByEventId(id) {
         return this.userTicketModel.scan('event').eq(id).exec();
     }
+    async getUserTicketByEventIds(ids) {
+        return this.userTicketModel.scan('event').in(ids).exec();
+    }
 };
 EventService = __decorate([
     (0, common_1.Injectable)(),
