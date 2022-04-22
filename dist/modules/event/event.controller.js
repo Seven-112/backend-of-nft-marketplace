@@ -95,7 +95,7 @@ let EventController = class EventController {
                 data: { events, length: events.length },
             };
         }
-        events = await (events)['populate']();
+        events = await events['populate']();
         const eventIds = events.map(event => event.id);
         const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
         events = events.map(event => {
@@ -107,6 +107,11 @@ let EventController = class EventController {
             });
             return event;
         });
+        return {
+            code: 200,
+            message: '',
+            data: { events, length: events.length },
+        };
     }
     async getEventAnalisys(request) {
         const currentTime = moment().valueOf();

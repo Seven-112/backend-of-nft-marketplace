@@ -119,6 +119,7 @@ export class EventController {
   @Public()
   async getEvents(@Query('limit') limit?: number) {
     let events = await this.eventService.getAllEvents(limit);
+    
     if(!events.length) {
       return {
         code: 200,
@@ -126,7 +127,7 @@ export class EventController {
         data: { events, length: events.length },
       };
     }
-    events = await (events)['populate']();
+    events = await events['populate']();
     const eventIds = events.map(event => event.id);
 
     const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
@@ -139,6 +140,12 @@ export class EventController {
       });
       return event;
     })
+
+    return {
+      code: 200,
+      message: '',
+      data: { events, length: events.length },
+    };
     
   }
 
