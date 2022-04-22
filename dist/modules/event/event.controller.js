@@ -98,10 +98,11 @@ let EventController = class EventController {
         events = await events['populate']();
         const eventIds = events.map(event => event.id);
         const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
+        console.log(boughtTicketUsers);
         events = events.map(event => {
             event.boughtTicketUsers = [];
             boughtTicketUsers.forEach(boughtTicketUser => {
-                if (boughtTicketUser.event.id === event.id) {
+                if (boughtTicketUser.event === event.id) {
                     event.boughtTicketUsers.push(boughtTicketUser.user);
                 }
             });
@@ -211,6 +212,12 @@ let EventController = class EventController {
                 message: 'User not found',
                 data: null,
             };
+        if (!event) {
+            return {
+                code: 400,
+                message: 'event_not_found'
+            };
+        }
         if (!body.number_ticket) {
             return {
                 code: 400,
@@ -226,7 +233,7 @@ let EventController = class EventController {
             };
         }
         const userTicketData = new userTicket_interface_1.UserTicket();
-        userTicketData.event = event;
+        userTicketData.event = event.id;
         userTicketData.user = user;
         userTicketData.number_ticket = body.number_ticket;
         await this.eventService.createUserTicket(userTicketData);

@@ -4,7 +4,7 @@ import { Event } from './event.interface';
 
 export class UserTicket {
   id: string;
-  event: Event;
+  event: string;
   user: User;
   number_ticket: number;
 

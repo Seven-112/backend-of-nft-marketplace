@@ -131,10 +131,11 @@ export class EventController {
     const eventIds = events.map(event => event.id);
 
     const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
+    console.log(boughtTicketUsers);
     events = events.map(event => {
       event.boughtTicketUsers = [];
       boughtTicketUsers.forEach(boughtTicketUser => {
-        if(boughtTicketUser.event.id === event.id) {
+        if(boughtTicketUser.event === event.id) {
           event.boughtTicketUsers.push(boughtTicketUser.user);
         }
       });
@@ -369,6 +370,13 @@ export class EventController {
         data: null,
       };
 
+    if(!event) {
+      return {
+        code: 400,
+        message: 'event_not_found'
+      }
+    }
+
     // Check number ticket is required.
     if (!body.number_ticket) {
       return {
@@ -388,7 +396,7 @@ export class EventController {
 
     // Insert ticket into user ticket.
     const userTicketData = new UserTicket();
-    userTicketData.event = event;
+    userTicketData.event = event.id;
     userTicketData.user = user;
     userTicketData.number_ticket = body.number_ticket;
     await this.eventService.createUserTicket(userTicketData);

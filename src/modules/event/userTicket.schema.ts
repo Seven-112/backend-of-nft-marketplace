@@ -8,7 +8,7 @@ export const UserTicketSchema = new Schema({
     hashKey: true,
   },
   user: User,
-  event: Event,
+  event: String,
   number_ticket: {
     type: Number
   }

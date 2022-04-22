@@ -99,6 +99,10 @@ export declare class EventController {
     buyEventTicket(id: string, request: any, body: BuyTicketDTO): Promise<{
         code: number;
         message: string;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
         data: any;
     }>;
 }
