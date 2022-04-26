@@ -64,7 +64,7 @@ export class AuthController {
     userByEmail = userByEmail.length ? userByEmail[0] : null;
     userByWallet = userByWallet.length ? userByWallet[0] : null;
 
-    if(userByEmail.status !== UserStatus.active) {
+    if(userByEmail?.status !== UserStatus.active) {
       return {
         code: 400,
         message: 'user_not_active'
@@ -75,6 +75,13 @@ export class AuthController {
       return {
         code: 400,
         message: 'user_is_deleted'
+      }
+    }
+
+    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
+      return {
+        code: 200,
+        message: 'can_login'
       }
     }
 
@@ -122,12 +129,6 @@ export class AuthController {
       }
     }
 
-    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
-      return {
-        code: 200,
-        message: 'can_login'
-      }
-    }
   }
 
   @Post('/check-username')
