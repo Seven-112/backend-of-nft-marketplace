@@ -115,6 +115,9 @@ let UserService = class UserService {
             console.log(error, response);
         });
     }
+    async getDataByTime(startTime, endTime) {
+        return this.userModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec();
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

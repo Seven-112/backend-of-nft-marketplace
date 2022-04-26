@@ -138,4 +138,7 @@ export class EventService {
     return this.userTicketModel.scan('event').in(ids).exec();
   }
   
+  async getDataByTime(startTime: number, endTime: number) {
+    return this.eventModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec()
+  }
 }

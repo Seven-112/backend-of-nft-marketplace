@@ -71,7 +71,7 @@ exports.UserSchema = new dynamoose_1.Schema({
         type: String,
     },
     createdAt: {
-        type: String,
+        type: Number,
     },
     social: exports.SocialSchema,
     deletedAt: {

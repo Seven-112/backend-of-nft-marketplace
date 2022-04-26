@@ -27,6 +27,7 @@ const watchlist_module_1 = require("./watchlist/watchlist.module");
 const support_module_1 = require("./supports/support.module");
 const subscription_module_1 = require("./subscriptions/subscription.module");
 const channel_module_1 = require("./channels/channel.module");
+const dashboard_module_1 = require("./dashboard/dashboard.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middlewares_1.LoggerMiddleware).forRoutes('*');
@@ -60,6 +61,7 @@ AppModule = __decorate([
             support_module_1.SupportModule,
             subscription_module_1.SubscriptionModule,
             channel_module_1.ChannelModule,
+            dashboard_module_1.DashboardModule,
             ioredis_1.RedisModule.forRoot({
                 config: {
                     port: +process.env.REDIS_PORT,

@@ -22,4 +22,5 @@ export declare class UserService {
     getUserByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     disableUserCognito(email: string): Promise<void>;
     enableUserCognito(email: string): Promise<void>;
+    getDataByTime(startTime: number, endTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
 }

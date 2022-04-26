@@ -30,7 +30,7 @@ export declare class User {
     avatar: string;
     role: string;
     status: string;
-    createdAt: string;
+    createdAt: number;
     social?: Social;
     deletedAt: number;
 }

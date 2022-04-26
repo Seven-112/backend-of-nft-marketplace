@@ -154,4 +154,8 @@ export class UserService {
       console.log(error, response)
     })
   }
+
+  async getDataByTime(startTime: number, endTime: number) {
+    return this.userModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec()
+  }
 }

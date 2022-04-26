@@ -70,7 +70,7 @@ export const UserSchema = new Schema({
     type: String,
   },
   createdAt: {
-    type: String,
+    type: Number,
   },
   social: SocialSchema,
   deletedAt: {

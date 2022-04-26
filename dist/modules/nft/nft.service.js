@@ -45,6 +45,12 @@ let NftService = class NftService {
     async getBoughtNftByUser(userId, starttime) {
         return this.userNFTBoughtModel.scan('user').eq(userId).and().where('createdAt').ge(starttime).exec();
     }
+    async getDataByTime(startTime, endTime) {
+        return this.userNFTBoughtModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec();
+    }
+    async getAllUserBought() {
+        return this.userNFTBoughtModel.scan().exec();
+    }
 };
 NftService = __decorate([
     (0, common_1.Injectable)(),

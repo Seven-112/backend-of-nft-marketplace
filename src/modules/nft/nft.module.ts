@@ -23,6 +23,7 @@ import { UserNFTBoughtSchema } from './userNFTBought.schema';
     NotificationModule
   ],
   providers: [NftService],
+  exports: [NftService],
   controllers: [NFTController],
 })
 export class NFTModule {}

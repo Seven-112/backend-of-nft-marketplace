@@ -38,4 +38,5 @@ export declare class EventService {
     };
     getUserTicketByEventId(id: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
     getUserTicketByEventIds(ids: string[]): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
+    getDataByTime(startTime: number, endTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>>;
 }

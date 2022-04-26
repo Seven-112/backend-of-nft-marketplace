@@ -34,6 +34,7 @@ NFTModule = __decorate([
             notification_module_1.NotificationModule
         ],
         providers: [nft_service_1.NftService],
+        exports: [nft_service_1.NftService],
         controllers: [nft_controller_1.NFTController],
     })
 ], NFTModule);

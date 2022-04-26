@@ -118,6 +118,9 @@ let EventService = class EventService {
     async getUserTicketByEventIds(ids) {
         return this.userTicketModel.scan('event').in(ids).exec();
     }
+    async getDataByTime(startTime, endTime) {
+        return this.eventModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec();
+    }
 };
 EventService = __decorate([
     (0, common_1.Injectable)(),
