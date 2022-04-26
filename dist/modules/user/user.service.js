@@ -59,8 +59,8 @@ let UserService = class UserService {
     }
     async getAllUsers(limit) {
         if (limit)
-            return this.userModel.scan().limit(limit).exec();
-        return this.userModel.scan().exec();
+            return this.userModel.scan('deletedAt').not().exists().limit(limit).exec();
+        return this.userModel.scan('deletedAt').not().exists().exec();
     }
     async getUserFromCognito(accessToken) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();

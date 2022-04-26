@@ -62,9 +62,9 @@ export class UserService {
   }
 
   async getAllUsers(limit?: number) {
-    if (limit) return this.userModel.scan().limit(limit).exec();
+    if (limit) return this.userModel.scan('deletedAt').not().exists().limit(limit).exec();
 
-    return this.userModel.scan().exec();
+    return this.userModel.scan('deletedAt').not().exists().exec();
   }
 
   async getUserFromCognito(accessToken: string) {

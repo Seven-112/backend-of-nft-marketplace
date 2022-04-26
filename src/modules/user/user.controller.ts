@@ -37,6 +37,13 @@ export class UserController {
   async getUserProfile(@Req() request: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
+    if(user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
+    }
+
     return {
       code: 200,
       message: '',
@@ -80,6 +87,13 @@ export class UserController {
       };
     }
 
+    if(user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
+    }
+
     const isValidUsername = await this.userService.getUserByUsername(
       body.username,
     );
@@ -119,6 +133,13 @@ export class UserController {
         message: 'User not found',
         data: null,
       };
+    }
+
+    if(user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
     }
 
     Object.assign(user, body);
@@ -180,6 +201,13 @@ export class UserController {
 
     if (case1 || case2) {
       const foundUser = await this.userService.getUserById(request.user.sub);
+
+      if(foundUser.deletedAt) {
+        return {
+          code: 400,
+          message: 'user_is_deleted'
+        }
+      }
       
       const updatedBody = {
         ...body,
@@ -228,6 +256,13 @@ export class UserController {
         message: 'User not found',
         data: null,
       };
+
+    if(user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
+    }
 
     if (user.role !== UserRole.Admin)
       return {
@@ -303,6 +338,14 @@ export class UserController {
         data: null,
       };
     }
+
+    if(user[0].deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
+    }
+
     return {
       code: 200,
       data: user[0],

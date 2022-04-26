@@ -12,6 +12,10 @@ export declare class UserController {
     getUserProfile(request: any): Promise<{
         code: number;
         message: string;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
         data: {
             sub: any;
             populate(): Promise<import("nestjs-dynamoose").Document<import("./user.interface").User>>;
@@ -45,9 +49,17 @@ export declare class UserController {
     updateProfile(request: AnyDocument, body: UpdateProfileDTO): Promise<{
         code: number;
         message: string;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
     updateSocial(request: any, body: UpdateSocialDTO): Promise<{
+        code: number;
+        message: string;
+        data?: undefined;
+    } | {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
@@ -59,9 +71,17 @@ export declare class UserController {
     update(request: any, body: UpdateUserDTO): Promise<{
         code: number;
         message: string;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
     }>;
     updateUser(request: AnyDocument, body: any): Promise<{
+        code: number;
+        message: string;
+        data?: undefined;
+    } | {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
@@ -88,6 +108,10 @@ export declare class UserController {
         code: number;
         message: string;
         data: any;
+    } | {
+        code: number;
+        message: string;
+        data?: undefined;
     } | {
         code: number;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;

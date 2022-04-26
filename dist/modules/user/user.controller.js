@@ -30,6 +30,12 @@ let UserController = class UserController {
     }
     async getUserProfile(request) {
         const user = await this.userService.getUserById(request.user.sub);
+        if (user.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
+            };
+        }
         return {
             code: 200,
             message: '',
@@ -52,6 +58,12 @@ let UserController = class UserController {
                 code: 404,
                 message: 'User not found',
                 data: null,
+            };
+        }
+        if (user.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
             };
         }
         const isValidUsername = await this.userService.getUserByUsername(body.username);
@@ -78,6 +90,12 @@ let UserController = class UserController {
                 code: 404,
                 message: 'User not found',
                 data: null,
+            };
+        }
+        if (user.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
             };
         }
         Object.assign(user, body);
@@ -118,6 +136,12 @@ let UserController = class UserController {
         const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
         if (case1 || case2) {
             const foundUser = await this.userService.getUserById(request.user.sub);
+            if (foundUser.deletedAt) {
+                return {
+                    code: 400,
+                    message: 'user_is_deleted'
+                };
+            }
             const updatedBody = Object.assign(Object.assign({}, body), { email: body.email.toLowerCase(), role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
             if (updatedBody.status === user_interface_1.UserStatus.inactive) {
                 await this.userService.disableUserCognito(updatedBody.email, request.user.sub);
@@ -146,6 +170,12 @@ let UserController = class UserController {
                 message: 'User not found',
                 data: null,
             };
+        if (user.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
+            };
+        }
         if (user.role !== user_interface_1.UserRole.Admin)
             return {
                 code: 403,
@@ -189,6 +219,12 @@ let UserController = class UserController {
                 code: 404,
                 message: 'User not found',
                 data: null,
+            };
+        }
+        if (user[0].deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
             };
         }
         return {
