@@ -55,7 +55,7 @@ export class AuthController {
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
   @Public()
-  async canLogin(@Body() body: CheckCanLoginDTO, @Query() type?: string) {
+  async canLogin(@Body() body: CheckCanLoginDTO, @Query('type') type?: string) {
     let userByEmail = await this.userService.getByEmail(body.email) as any;
     let userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
@@ -84,7 +84,7 @@ export class AuthController {
         message: 'can_login'
       }
     }
-
+    
     if(type === 'emailFirst') {
       if(userByWallet.email !== body.email) {
         return {

@@ -203,7 +203,7 @@ __decorate([
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Query)()),
+    __param(1, (0, common_1.Query)('type')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [check_can_login_DTO_1.CheckCanLoginDTO, String]),
     __metadata("design:returntype", Promise)
