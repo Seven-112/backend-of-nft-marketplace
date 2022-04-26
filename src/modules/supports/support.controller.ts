@@ -325,7 +325,14 @@ export class SupportController {
           userIds.push(reply.user)
         }
       })
-      const users = await this.userService.getUsers(userIds);
+
+      let users = [];
+      try {
+        users = await this.userService.getUsers(userIds);
+      } catch(e) {
+        users = [];
+      }
+      
       support.replies = support.replies.map((reply: any) => {
         if(reply.user) {
           const user = users.find(user => user.id === reply.user);

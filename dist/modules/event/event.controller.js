@@ -130,7 +130,6 @@ let EventController = class EventController {
             this.eventService.getUserTicketByTime(firstMonthlyTime, currentTime),
             this.eventService.getUserTicketByTime(firstYearTime, currentTime)
         ]);
-        results = await Promise.all(results.map(result => result['populate']()));
         let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly] = await Promise.all(results.map(result => result['toJSON']()));
         const currentHour = moment(currentTime).format('HH');
         const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');

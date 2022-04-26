@@ -191,8 +191,6 @@ export class EventController {
       this.eventService.getUserTicketByTime(firstYearTime, currentTime)
     ]) as any;
 
-    results = await Promise.all(results.map(result => result['populate']()));
-
     let [
       userTicketDaily,
       userTicketWeekly,
