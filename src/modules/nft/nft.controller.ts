@@ -228,9 +228,9 @@ export class NFTController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async tradedVolume(@Req() request: any, @Param('id') id: string) {
-    const user = await this.userService.getUserById(id);
+    const user = await this.userService.getUserByIdOrWallet(id);
 
-    if(!user || user.deletedAt) {
+    if(!user.length || user[0].deletedAt) {
       return {
         code: 400,
         message: 'user_not_found'
@@ -238,7 +238,7 @@ export class NFTController {
     }
     let sellNfts = [];
     try {
-      sellNfts = await (await this.nftService.getNftbyUser(user.id))['toJSON']();
+      sellNfts = await (await this.nftService.getNftbyUser(user[0].id))['toJSON']();
     } catch(e) {
       sellNfts = [];
     }
@@ -256,7 +256,7 @@ export class NFTController {
     
     let boughtNfts = [];
     try {
-      boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, 0))['populate']();
+      boughtNfts = await (await this.nftService.getBoughtNftByUser(user[0].id, 0))['populate']();
       boughtNfts = await boughtNfts['toJSON']();
     } catch(e) {
       boughtNfts = [];

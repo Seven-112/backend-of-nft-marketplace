@@ -181,8 +181,8 @@ let NFTController = class NFTController {
         };
     }
     async tradedVolume(request, id) {
-        const user = await this.userService.getUserById(id);
-        if (!user || user.deletedAt) {
+        const user = await this.userService.getUserByIdOrWallet(id);
+        if (!user.length || user[0].deletedAt) {
             return {
                 code: 400,
                 message: 'user_not_found'
@@ -190,7 +190,7 @@ let NFTController = class NFTController {
         }
         let sellNfts = [];
         try {
-            sellNfts = await (await this.nftService.getNftbyUser(user.id))['toJSON']();
+            sellNfts = await (await this.nftService.getNftbyUser(user[0].id))['toJSON']();
         }
         catch (e) {
             sellNfts = [];
@@ -206,7 +206,7 @@ let NFTController = class NFTController {
             .reduce((prev, current) => prev + current, 0);
         let boughtNfts = [];
         try {
-            boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, 0))['populate']();
+            boughtNfts = await (await this.nftService.getBoughtNftByUser(user[0].id, 0))['populate']();
             boughtNfts = await boughtNfts['toJSON']();
         }
         catch (e) {
