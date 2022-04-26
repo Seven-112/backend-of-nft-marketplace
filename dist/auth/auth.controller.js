@@ -78,24 +78,30 @@ let AuthController = class AuthController {
                 };
             }
         }
-        if (userByEmail.walletAddress !== body.walletAddress) {
-            return {
-                code: 400,
-                message: 'wallet_and_user_not_mapping'
-            };
+        if (type === 'walletFirst') {
+            if (userByEmail.walletAddress !== body.walletAddress) {
+                return {
+                    code: 400,
+                    message: 'wallet_and_user_not_mapping'
+                };
+            }
+            if (userByWallet.email !== body.email && !userByEmail) {
+                return {
+                    code: 400,
+                    message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
+                };
+            }
+            if (userByWallet.email !== body.email && userByEmail) {
+                return {
+                    code: 400,
+                    message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+                };
+            }
         }
-        if (userByWallet.email !== body.email && !userByEmail) {
-            return {
-                code: 400,
-                message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
-            };
-        }
-        if (userByWallet.email !== body.email && userByEmail) {
-            return {
-                code: 400,
-                message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
-            };
-        }
+        return {
+            code: 200,
+            message: 'can_login'
+        };
     }
     async checkUsername(body) {
         const user = await this.userService.getUserByUsername(body.username);
