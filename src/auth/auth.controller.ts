@@ -78,7 +78,7 @@ export class AuthController {
       }
     }
 
-    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail && !userByWallet)) {
+    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail.walletAddress && !userByWallet)) {
       return {
         code: 200,
         message: 'can_login'
