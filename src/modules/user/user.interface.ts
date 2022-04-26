@@ -5,10 +5,11 @@ export enum UserRole {
 }
 
 export enum UserStatus {
-  active = 'active',
-  banned = 'banned',
-  freeze = 'freeze',
-  nft_owner = 'nft owner',
+  creator = "creator",
+  admin = "admin",
+  user = "user",
+  active = "active",
+  inactive = "inactive",
 }
 
 export class Social {
@@ -34,4 +35,5 @@ export class User {
   status: string;
   createdAt: string;
   social?: Social;
+  deletedAt: number;
 }

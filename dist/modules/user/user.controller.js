@@ -119,6 +119,12 @@ let UserController = class UserController {
         if (case1 || case2) {
             const foundUser = await this.userService.getUserById(request.user.sub);
             const updatedBody = Object.assign(Object.assign({}, body), { email: body.email.toLowerCase(), role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
+            if (updatedBody.status === user_interface_1.UserStatus.inactive) {
+                await this.userService.disableUserCognito(updatedBody.email, request.user.sub);
+            }
+            if (updatedBody.status === user_interface_1.UserStatus.active && foundUser.status !== user_interface_1.UserStatus.active) {
+                await this.userService.enableUserCognito(updatedBody.email, request.user.sub);
+            }
             const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
             return {
                 code: 200,
@@ -210,6 +216,24 @@ let UserController = class UserController {
         return {
             code: 200,
             message: '',
+            data: user[0],
+        };
+    }
+    async delete(id) {
+        let user = await (await this.userService.getUserByIdOrWallet(id))['toJSON']();
+        if (!user.length) {
+            return {
+                code: 404,
+                message: 'User not found',
+                data: null,
+            };
+        }
+        user = user[0];
+        user.deletedAt = new Date().getTime();
+        await this.userService.updateUser(user);
+        await this.userService.disableUserCognito(user.email, user.id);
+        return {
+            code: 200,
             data: user[0],
         };
     }
@@ -334,6 +358,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getByWalletAddress", null);
+__decorate([
+    (0, common_1.Delete)('/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "delete", null);
 UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

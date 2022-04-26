@@ -23,7 +23,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { RegisterDTO } from './DTO/register.dto';
 import { UserService } from 'src/modules/user/user.service';
-import { User } from 'src/modules/user/user.interface';
+import { User, UserStatus } from 'src/modules/user/user.interface';
 import { Public } from 'src/guard/jwt-auth.guard';
 import { LoginDTO } from './DTO/login.dto';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
@@ -63,6 +63,20 @@ export class AuthController {
 
     userByEmail = userByEmail.length ? userByEmail[0] : null;
     userByWallet = userByWallet.length ? userByWallet[0] : null;
+
+    if(userByEmail.status !== UserStatus.active) {
+      return {
+        code: 400,
+        message: 'user_not_active'
+      }
+    }
+
+    if(userByEmail.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted'
+      }
+    }
 
     if(type === 'emailFirst') {
       if(userByWallet.email !== body.email) {

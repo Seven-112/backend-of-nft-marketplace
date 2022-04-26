@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -188,6 +189,14 @@ export class UserController {
         createdAt: foundUser?.createdAt || new Date().toISOString(),
       };
 
+      if(updatedBody.status === UserStatus.inactive) {
+        await this.userService.disableUserCognito(updatedBody.email, request.user.sub)
+      }
+
+      if(updatedBody.status === UserStatus.active && foundUser.status !== UserStatus.active) {
+        await this.userService.enableUserCognito(updatedBody.email, request.user.sub)
+      }
+
       const updatedUser = await this.userService.updateWalletAddress(
         request.user.sub,
         updatedBody,
@@ -329,6 +338,29 @@ export class UserController {
     return {
       code: 200,
       message: '',
+      data: user[0],
+    };
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id') id: string) {
+    let user = await (await this.userService.getUserByIdOrWallet(id))['toJSON']();
+    if(!user.length) {
+      return {
+        code: 404,
+        message: 'User not found',
+        data: null,
+      };
+    }
+
+    user = user[0];
+    user.deletedAt = new Date().getTime();
+    await this.userService.updateUser(user);
+    await this.userService.disableUserCognito(user.email, user.id);
+    return {
+      code: 200,
       data: user[0],
     };
   }

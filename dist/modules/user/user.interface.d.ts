@@ -4,10 +4,11 @@ export declare enum UserRole {
     User = "user"
 }
 export declare enum UserStatus {
+    creator = "creator",
+    admin = "admin",
+    user = "user",
     active = "active",
-    banned = "banned",
-    freeze = "freeze",
-    nft_owner = "nft owner"
+    inactive = "inactive"
 }
 export declare class Social {
     youtube?: string;
@@ -31,4 +32,5 @@ export declare class User {
     status: string;
     createdAt: string;
     social?: Social;
+    deletedAt: number;
 }

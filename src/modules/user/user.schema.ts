@@ -73,6 +73,9 @@ export const UserSchema = new Schema({
     type: String,
   },
   social: SocialSchema,
+  deletedAt: {
+    type: Number
+  }
 });
 
 export const User = model('User', UserSchema);

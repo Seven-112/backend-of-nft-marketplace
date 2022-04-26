@@ -9,10 +9,11 @@ var UserRole;
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
 var UserStatus;
 (function (UserStatus) {
+    UserStatus["creator"] = "creator";
+    UserStatus["admin"] = "admin";
+    UserStatus["user"] = "user";
     UserStatus["active"] = "active";
-    UserStatus["banned"] = "banned";
-    UserStatus["freeze"] = "freeze";
-    UserStatus["nft_owner"] = "nft owner";
+    UserStatus["inactive"] = "inactive";
 })(UserStatus = exports.UserStatus || (exports.UserStatus = {}));
 class Social {
 }

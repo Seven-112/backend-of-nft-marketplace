@@ -34,6 +34,7 @@ export declare class UserController {
             status: string;
             createdAt: string;
             social?: Social;
+            deletedAt: number;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{
@@ -101,5 +102,14 @@ export declare class UserController {
         code: number;
         message: string;
         data: import("nestjs-dynamoose").Document<import("./user.interface").User>;
+    }>;
+    delete(id: string): Promise<{
+        code: number;
+        message: string;
+        data: any;
+    } | {
+        code: number;
+        data: any;
+        message?: undefined;
     }>;
 }

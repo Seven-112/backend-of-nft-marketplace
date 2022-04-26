@@ -97,6 +97,20 @@ let UserService = class UserService {
     async getUserByEmail(email) {
         return this.userModel.scan('email').eq(email).exec();
     }
+    async disableUserCognito(email, userId) {
+        const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
+        await cognitoIdentityServiceProvider.adminDisableUser({
+            Username: email,
+            UserPoolId: userId
+        });
+    }
+    async enableUserCognito(email, userId) {
+        const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
+        await cognitoIdentityServiceProvider.adminEnableUser({
+            Username: email,
+            UserPoolId: userId
+        });
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

@@ -74,6 +74,9 @@ exports.UserSchema = new dynamoose_1.Schema({
         type: String,
     },
     social: exports.SocialSchema,
+    deletedAt: {
+        type: Number
+    }
 });
 exports.User = (0, dynamoose_1.model)('User', exports.UserSchema);
 //# sourceMappingURL=user.schema.js.map

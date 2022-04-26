@@ -18,6 +18,7 @@ const aws_amplify_1 = require("aws-amplify");
 const auth_service_1 = require("./auth.service");
 const register_dto_1 = require("./DTO/register.dto");
 const user_service_1 = require("../modules/user/user.service");
+const user_interface_1 = require("../modules/user/user.interface");
 const jwt_auth_guard_1 = require("../guard/jwt-auth.guard");
 const login_dto_1 = require("./DTO/login.dto");
 const validation_pipe_1 = require("../pipes/validation.pipe");
@@ -39,6 +40,18 @@ let AuthController = class AuthController {
         let userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
         userByEmail = userByEmail.length ? userByEmail[0] : null;
         userByWallet = userByWallet.length ? userByWallet[0] : null;
+        if (userByEmail.status !== user_interface_1.UserStatus.active) {
+            return {
+                code: 400,
+                message: 'user_not_active'
+            };
+        }
+        if (userByEmail.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_is_deleted'
+            };
+        }
         if (type === 'emailFirst') {
             if (userByWallet.email !== body.email) {
                 return {
