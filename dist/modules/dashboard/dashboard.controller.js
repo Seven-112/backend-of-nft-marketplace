@@ -69,11 +69,11 @@ let UserController = class UserController {
         lastWeekNftBought = await lastWeekNftBought['populate']();
         currentWeekNftBought = await currentWeekNftBought['populate']();
         allBought = await allBought['populate']();
-        const lastWeekTotalPrice = lastWeekNftBought.map(nftBought => { var _a; return ((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+        const lastWeekTotalPrice = lastWeekNftBought.map(nftBought => { var _a; return +((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
             .reduce((prev, current) => prev + current, 0);
-        const currentWeekTotalPrice = currentWeekNftBought.map(nftBought => { var _a; return ((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+        const currentWeekTotalPrice = currentWeekNftBought.map(nftBought => { var _a; return +((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
             .reduce((prev, current) => prev + current, 0);
-        const totalPrice = allBought.map(nftBought => { var _a; return ((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+        const totalPrice = allBought.map(nftBought => { var _a; return +((_a = nftBought.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
             .reduce((prev, current) => prev + current, 0);
         let boughtPercent = lastWeekTotalPrice ?
             (currentWeekTotalPrice - lastWeekTotalPrice) / lastWeekTotalPrice * 100 : 100;

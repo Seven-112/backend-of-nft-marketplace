@@ -51,6 +51,12 @@ let NftService = class NftService {
     async getAllUserBought() {
         return this.userNFTBoughtModel.scan().exec();
     }
+    async getNftbyUser(id) {
+        return this.nftModel.scan('user').eq(id).exec();
+    }
+    async getNftBoughtByNfts(nftIds) {
+        return this.userNFTBoughtModel.scan('nft').in(nftIds).exec();
+    }
 };
 NftService = __decorate([
     (0, common_1.Injectable)(),

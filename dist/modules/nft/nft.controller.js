@@ -180,6 +180,49 @@ let NFTController = class NFTController {
             data: boughtNfts,
         };
     }
+    async tradedVolume(request, id) {
+        const user = await this.userService.getUserById(id);
+        if (!user || user.deletedAt) {
+            return {
+                code: 400,
+                message: 'user_not_found'
+            };
+        }
+        let sellNfts = [];
+        try {
+            sellNfts = await (await this.nftService.getNftbyUser(user.id))['toJSON']();
+        }
+        catch (e) {
+            sellNfts = [];
+        }
+        const nftIds = sellNfts.map(nft => nft.id);
+        try {
+            sellNfts = await (await this.nftService.getNftBoughtByNfts(nftIds))['populate']();
+        }
+        catch (e) {
+            sellNfts = [];
+        }
+        const totalSell = sellNfts.map(nft => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+            .reduce((prev, current) => prev + current, 0);
+        let boughtNfts = [];
+        try {
+            boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, 0))['populate']();
+            boughtNfts = await boughtNfts['toJSON']();
+        }
+        catch (e) {
+            boughtNfts = [];
+        }
+        const totalBought = boughtNfts.map(nft => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+            .reduce((prev, current) => prev + current, 0);
+        return {
+            code: 201,
+            message: 'successfull',
+            data: {
+                totalSell,
+                totalBought
+            },
+        };
+    }
 };
 __decorate([
     (0, common_1.Post)('/create'),
@@ -229,6 +272,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], NFTController.prototype, "getBoughtNfts", null);
+__decorate([
+    (0, common_1.Get)('/traded-volume/:id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], NFTController.prototype, "tradedVolume", null);
 NFTController = __decorate([
     (0, common_1.Controller)('nft'),
     __metadata("design:paramtypes", [nft_service_1.NftService,

@@ -54,4 +54,12 @@ export class NftService {
   async getAllUserBought() {
     return this.userNFTBoughtModel.scan().exec();
   }
+
+  async getNftbyUser(id: string) {
+    return this.nftModel.scan('user').eq(id).exec();
+  }
+
+  async getNftBoughtByNfts(nftIds: string[]) {
+    return this.userNFTBoughtModel.scan('nft').in(nftIds).exec();
+  }
 }

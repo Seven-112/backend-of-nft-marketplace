@@ -223,4 +223,55 @@ export class NFTController {
       data: boughtNfts,
     };
   }
+
+  @Get('/traded-volume/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async tradedVolume(@Req() request: any, @Param('id') id: string) {
+    const user = await this.userService.getUserById(id);
+
+    if(!user || user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_not_found'
+      }
+    }
+    let sellNfts = [];
+    try {
+      sellNfts = await (await this.nftService.getNftbyUser(user.id))['toJSON']();
+    } catch(e) {
+      sellNfts = [];
+    }
+    
+
+    const nftIds = sellNfts.map(nft => nft.id);
+    try {
+      sellNfts = await (await this.nftService.getNftBoughtByNfts(nftIds))['populate']();
+    } catch(e) {
+      sellNfts = []
+    }
+    
+    const totalSell = sellNfts.map(nft => +nft.nft?.price || 0)
+      .reduce((prev, current) => prev + current, 0);
+    
+    let boughtNfts = [];
+    try {
+      boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, 0))['populate']();
+      boughtNfts = await boughtNfts['toJSON']();
+    } catch(e) {
+      boughtNfts = [];
+    }
+    
+    const totalBought = boughtNfts.map(nft => +nft.nft?.price || 0)
+      .reduce((prev, current) => prev + current, 0);
+
+    return {
+      code: 201,
+      message: 'successfull',
+      data: {
+        totalSell,
+        totalBought
+      },
+    };
+  }
 }

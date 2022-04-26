@@ -41,4 +41,16 @@ export declare class NFTController {
         message: string;
         data: any;
     }>;
+    tradedVolume(request: any, id: string): Promise<{
+        code: number;
+        message: string;
+        data?: undefined;
+    } | {
+        code: number;
+        message: string;
+        data: {
+            totalSell: number;
+            totalBought: number;
+        };
+    }>;
 }
