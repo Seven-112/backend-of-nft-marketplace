@@ -97,18 +97,22 @@ let UserService = class UserService {
     async getUserByEmail(email) {
         return this.userModel.scan('email').eq(email).exec();
     }
-    async disableUserCognito(email, userId) {
+    async disableUserCognito(email) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
         await cognitoIdentityServiceProvider.adminDisableUser({
             Username: email,
-            UserPoolId: userId
+            UserPoolId: 'eu-west-2_xi1EqOokH'
+        }, (error, response) => {
+            console.log(error, response);
         });
     }
-    async enableUserCognito(email, userId) {
+    async enableUserCognito(email) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
         await cognitoIdentityServiceProvider.adminEnableUser({
             Username: email,
-            UserPoolId: userId
+            UserPoolId: 'eu-west-2_xi1EqOokH'
+        }, (error, response) => {
+            console.log(error, response);
         });
     }
 };

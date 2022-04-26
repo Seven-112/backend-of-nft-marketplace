@@ -144,10 +144,10 @@ let UserController = class UserController {
             }
             const updatedBody = Object.assign(Object.assign({}, body), { email: body.email.toLowerCase(), role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
             if (updatedBody.status === user_interface_1.UserStatus.inactive) {
-                await this.userService.disableUserCognito(updatedBody.email, request.user.sub);
+                await this.userService.disableUserCognito(updatedBody.email);
             }
             if (updatedBody.status === user_interface_1.UserStatus.active && foundUser.status !== user_interface_1.UserStatus.active) {
-                await this.userService.enableUserCognito(updatedBody.email, request.user.sub);
+                await this.userService.enableUserCognito(updatedBody.email);
             }
             const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
             return {
@@ -267,10 +267,10 @@ let UserController = class UserController {
         user = user[0];
         user.deletedAt = new Date().getTime();
         await this.userService.updateUser(user);
-        await this.userService.disableUserCognito(user.email, user.id);
+        await this.userService.disableUserCognito(user.email);
         return {
             code: 200,
-            data: user[0],
+            data: user,
         };
     }
 };

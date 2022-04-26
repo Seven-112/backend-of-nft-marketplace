@@ -218,11 +218,11 @@ export class UserController {
       };
 
       if(updatedBody.status === UserStatus.inactive) {
-        await this.userService.disableUserCognito(updatedBody.email, request.user.sub)
+        await this.userService.disableUserCognito(updatedBody.email)
       }
 
       if(updatedBody.status === UserStatus.active && foundUser.status !== UserStatus.active) {
-        await this.userService.enableUserCognito(updatedBody.email, request.user.sub)
+        await this.userService.enableUserCognito(updatedBody.email)
       }
 
       const updatedUser = await this.userService.updateWalletAddress(
@@ -401,10 +401,10 @@ export class UserController {
     user = user[0];
     user.deletedAt = new Date().getTime();
     await this.userService.updateUser(user);
-    await this.userService.disableUserCognito(user.email, user.id);
+    await this.userService.disableUserCognito(user.email);
     return {
       code: 200,
-      data: user[0],
+      data: user,
     };
   }
 }

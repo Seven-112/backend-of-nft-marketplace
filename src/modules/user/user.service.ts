@@ -131,23 +131,27 @@ export class UserService {
     return this.userModel.scan('email').eq(email).exec();
   }
 
-  async disableUserCognito(email: string, userId: string) {
+  async disableUserCognito(email: string) {
     const cognitoIdentityServiceProvider =
       new aws.CognitoIdentityServiceProvider();
     
     await cognitoIdentityServiceProvider.adminDisableUser({
       Username: email,
-      UserPoolId: userId
+      UserPoolId: 'eu-west-2_xi1EqOokH'
+    }, (error, response) => {
+      console.log(error, response)
     })
   }
 
-  async enableUserCognito(email, userId: string) {
+  async enableUserCognito(email: string) {
     const cognitoIdentityServiceProvider =
       new aws.CognitoIdentityServiceProvider();
     
     await cognitoIdentityServiceProvider.adminEnableUser({
       Username: email,
-      UserPoolId: userId
+      UserPoolId: 'eu-west-2_xi1EqOokH'
+    }, (error, response) => {
+      console.log(error, response)
     })
   }
 }

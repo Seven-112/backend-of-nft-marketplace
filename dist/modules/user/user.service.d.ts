@@ -20,6 +20,6 @@ export declare class UserService {
     changePassword(data: aws.CognitoIdentityServiceProvider.ChangePasswordRequest): Promise<unknown>;
     searchUsers(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getUserByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
-    disableUserCognito(email: string, userId: string): Promise<void>;
-    enableUserCognito(email: any, userId: string): Promise<void>;
+    disableUserCognito(email: string): Promise<void>;
+    enableUserCognito(email: string): Promise<void>;
 }
