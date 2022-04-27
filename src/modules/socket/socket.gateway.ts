@@ -65,10 +65,6 @@ export class SocketGateway
 
       if (user) {
         this.logger.log('Client connected:', client.id);
-        const sockets = await this.server.in((user as any).sub).fetchSockets();
-        sockets.forEach((socket) => {
-          socket.leave((user as any).sub);
-        });
         client.join((user as any).sub);
       } else {
         client.disconnect();

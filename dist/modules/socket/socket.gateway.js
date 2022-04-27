@@ -50,10 +50,6 @@ let SocketGateway = class SocketGateway {
             const user = await this.userService.getUserFromCognito(client.handshake.auth.token);
             if (user) {
                 this.logger.log('Client connected:', client.id);
-                const sockets = await this.server.in(user.sub).fetchSockets();
-                sockets.forEach((socket) => {
-                    socket.leave(user.sub);
-                });
                 client.join(user.sub);
             }
             else {
