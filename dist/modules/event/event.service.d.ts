@@ -1,6 +1,7 @@
 import { UserTicket } from './userTicket.interface';
 import { Model } from 'nestjs-dynamoose';
 import { Event, EventKey } from './event.interface';
+import * as moment from 'moment';
 export declare class EventService {
     private readonly eventModel;
     private readonly userTicketModel;
@@ -13,10 +14,15 @@ export declare class EventService {
     getUserTicketByTime(firstTime: number, lastTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
     getUserTicketByTimeAndEvent(firstTime: number, lastTime: number, id: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
     getEventAvailable(currentTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>>;
-    formatEventData(initData: any[], currentTime: number, subtractType: any, formatType: string, formatCompare: string): any[];
+    formatEventData(initData: any[], currentTime: number, subtractType: any, formatType: string, formatCompare: string, tempDate?: moment.Moment): any[];
     formatDataAnalysisResponse(dailyData: any, weeklyData: any, monthlyData: any, allTimeData: any, totalAvailableTickets: number): {
         daily: {
-            data: any;
+            data: {
+                min: number;
+                max: number;
+                total: number;
+                time: string;
+            }[];
             availableTickets: number;
             soldTickets: any;
         };

@@ -98,7 +98,6 @@ let EventController = class EventController {
         events = await events['populate']();
         const eventIds = events.map(event => event.id);
         const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
-        console.log(boughtTicketUsers);
         events = events.map(event => {
             event.boughtTicketUsers = [];
             boughtTicketUsers.forEach(boughtTicketUser => {
@@ -121,9 +120,9 @@ let EventController = class EventController {
             .map((evt) => evt.ticket.remain)
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
         const firstDailyTime = moment(moment().format('YYYY-MM-DD 00:00')).valueOf();
-        const firstWeeklyTime = moment().startOf('isoWeek').valueOf();
-        const firstMonthlyTime = moment(moment().format('YYYY-MM-01 00:00:00')).valueOf();
-        const firstYearTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        const firstWeeklyTime = moment().startOf('week').valueOf();
+        const firstMonthlyTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        const firstYearTime = moment(moment().format('1970-01-01 00:00:00')).valueOf();
         let results = await Promise.all([
             this.eventService.getUserTicketByTime(firstDailyTime, currentTime),
             this.eventService.getUserTicketByTime(firstWeeklyTime, currentTime),
@@ -133,12 +132,23 @@ let EventController = class EventController {
         let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly] = await Promise.all(results.map(result => result['toJSON']()));
         const currentHour = moment(currentTime).format('HH');
         const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
-        const currentDate = moment(currentTime).isoWeekday();
-        const weeklyData = this.eventService.formatEventData(userTicketWeekly, currentDate, 'days', 'YYYY-MM-DD', 'DD');
-        let duration = +moment(currentTime).format('DD');
-        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'days', 'YYYY-MM-DD', 'DD');
-        duration = +moment(currentTime).format('MM');
-        const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM');
+        const endOfWeek = moment().endOf('week').weekday();
+        let currentDate = moment().endOf('week');
+        const weeklyData = this.eventService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
+        let duration = 11;
+        currentDate = moment().endOf('year');
+        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'YYYY-MM', 'MM', currentDate);
+        const currentYear = moment(currentTime);
+        const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
+            .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
+        if (!firstItem) {
+            duration = 1;
+        }
+        else {
+            const firstYear = firstItem.createdAt;
+            duration = moment.duration(currentYear.diff(firstYear)).asYears();
+        }
+        const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY');
         const responseData = this.eventService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets);
         return {
             code: 200,
@@ -176,29 +186,39 @@ let EventController = class EventController {
         const currentTime = moment().valueOf();
         let totalAvailableTickets = ((_a = event.ticket) === null || _a === void 0 ? void 0 : _a.remain) || 0;
         const firstDailyTime = moment(moment().format('YYYY-MM-DD 00:00')).valueOf();
-        const firstWeeklyTime = moment().startOf('isoWeek').valueOf();
-        const firstMonthlyTime = moment(moment().format('YYYY-MM-01 00:00:00')).valueOf();
-        const firstYearTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        const firstWeeklyTime = moment().startOf('week').valueOf();
+        const firstMonthlyTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        const firstYearTime = moment(moment().format('1970-01-01 00:00:00')).valueOf();
         let results = await Promise.all([
             this.eventService.getUserTicketByTimeAndEvent(firstDailyTime, currentTime, id),
             this.eventService.getUserTicketByTimeAndEvent(firstWeeklyTime, currentTime, id),
             this.eventService.getUserTicketByTimeAndEvent(firstMonthlyTime, currentTime, id),
             this.eventService.getUserTicketByTimeAndEvent(firstYearTime, currentTime, id)
         ]);
-        results = await Promise.all(results.map(result => result['populate']()));
         let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly] = await Promise.all(results.map(result => result['toJSON']()));
         const currentHour = moment(currentTime).format('HH');
         const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
-        const currentDate = moment(currentTime).isoWeekday();
-        const weeklyData = this.eventService.formatEventData(userTicketWeekly, currentDate, 'days', 'YYYY-MM-DD', 'DD');
-        let duration = +moment(currentTime).format('DD');
-        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'days', 'YYYY-MM-DD', 'DD');
-        duration = +moment(currentTime).format('MM');
-        const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'months', 'YYYY-MM', 'MM');
+        const endOfWeek = moment().endOf('week').weekday();
+        let currentDate = moment().endOf('week');
+        const weeklyData = this.eventService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
+        let duration = 11;
+        currentDate = moment().endOf('year');
+        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'YYYY-MM', 'MM', currentDate);
+        const currentYear = moment(currentTime);
+        const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
+            .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
+        if (!firstItem) {
+            duration = 1;
+        }
+        else {
+            const firstYear = firstItem.createdAt;
+            duration = moment.duration(currentYear.diff(firstYear)).asYears();
+        }
+        const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY');
         const responseData = this.eventService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets);
         return {
             code: 200,
-            message: 'successful',
+            message: '',
             data: responseData,
         };
     }

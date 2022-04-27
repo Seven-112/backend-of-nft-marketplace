@@ -34,7 +34,12 @@ export declare class EventController {
         message: string;
         data: {
             daily: {
-                data: any;
+                data: {
+                    min: number;
+                    max: number;
+                    total: number;
+                    time: string;
+                }[];
                 availableTickets: number;
                 soldTickets: any;
             };
@@ -74,7 +79,12 @@ export declare class EventController {
         message: string;
         data: {
             daily: {
-                data: any;
+                data: {
+                    min: number;
+                    max: number;
+                    total: number;
+                    time: string;
+                }[];
                 availableTickets: number;
                 soldTickets: any;
             };

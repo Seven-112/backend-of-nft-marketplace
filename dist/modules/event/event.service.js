@@ -61,16 +61,20 @@ let EventService = class EventService {
     async getEventAvailable(currentTime) {
         return this.eventModel.scan('ticket.saleEnd').ge(currentTime).exec();
     }
-    formatEventData(initData, currentTime, subtractType, formatType, formatCompare) {
+    formatEventData(initData, currentTime, subtractType, formatType, formatCompare, tempDate) {
         const formattedData = [];
-        for (let i = subtractType === 'hours' ? 0 : 1; i <= (subtractType === 'hours' ? 23 : currentTime); i++) {
+        for (let i = 0; i <= (subtractType === 'hours' ? 23 : currentTime); i++) {
             const data = {
-                time: moment()
+                time: tempDate ? moment(tempDate)
+                    .subtract(currentTime - i, subtractType)
+                    .format(formatType) : moment()
                     .subtract(currentTime - i, subtractType)
                     .format(formatType),
                 total: initData
                     .filter((userTicket) => +moment(userTicket.createdAt)
-                    .format(formatCompare) === +(subtractType === 'hours' ? i : moment()
+                    .format(formatCompare) === +(subtractType === 'hours' ? i : tempDate ? moment(tempDate)
+                    .subtract(currentTime - i, subtractType)
+                    .format(formatCompare) : moment()
                     .subtract(currentTime - i, subtractType)
                     .format(formatCompare)))
                     .map((userTicket) => userTicket.number_ticket)
@@ -81,9 +85,66 @@ let EventService = class EventService {
         return formattedData;
     }
     formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets) {
+        let dailyRange = [
+            {
+                min: 0,
+                max: 4,
+                total: 0,
+                time: '00:00AM'
+            },
+            {
+                min: 4,
+                max: 8,
+                total: 0,
+                time: '04:00AM'
+            },
+            {
+                min: 8,
+                max: 12,
+                total: 0,
+                time: '08:00AM'
+            },
+            {
+                min: 12,
+                max: 16,
+                total: 0,
+                time: '12:00PM'
+            },
+            {
+                min: 16,
+                max: 20,
+                total: 0,
+                time: '04:00PM'
+            },
+            {
+                min: 20,
+                max: 24,
+                total: 0,
+                time: '08:00PM'
+            },
+            {
+                min: 24,
+                max: 28,
+                total: 0,
+                time: '12:00AM'
+            }
+        ];
+        dailyData.forEach(data => {
+            dailyRange = dailyRange.map(item => {
+                if (+data.time.substr(0, 2) >= item.min && +data.time.substr(0, 2) < item.max) {
+                    item.total += data.total;
+                }
+                return item;
+            });
+        });
+        dailyRange = dailyRange.map(item => {
+            delete item.min;
+            delete item.max;
+            return item;
+        });
         return {
             daily: {
-                data: dailyData,
+                data: dailyRange,
                 availableTickets: totalAvailableTickets,
                 soldTickets: dailyData
                     .map((dt) => dt.total)
