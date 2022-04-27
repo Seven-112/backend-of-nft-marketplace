@@ -39,25 +39,30 @@ let StakingController = class StakingController {
         const currentTime = moment().valueOf();
         const firstDailyTime = moment(moment().format('YYYY-MM-DD 00:00')).valueOf();
         const firstWeeklyTime = moment().startOf('week').valueOf();
-        const firstMonthlyTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
-        const firstYearTime = moment(moment().format('1970-01-01 00:00:00')).valueOf();
+        const firstMonthlyTime = moment().startOf('month').valueOf();
+        const firstYearlyTime = moment(moment().format('YYYY-01-01 00:00:00')).valueOf();
+        const firstAllTime = moment(moment().format('1970-01-01 00:00:00')).valueOf();
         let results = await Promise.all([
             this.stakingService.getDataByTime(firstDailyTime, currentTime),
             this.stakingService.getDataByTime(firstWeeklyTime, currentTime),
             this.stakingService.getDataByTime(firstMonthlyTime, currentTime),
-            this.stakingService.getDataByTime(firstYearTime, currentTime)
+            this.stakingService.getDataByTime(firstYearlyTime, currentTime),
+            this.stakingService.getDataByTime(firstAllTime, currentTime)
         ]);
-        let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly] = await Promise.all(results.map(result => result['toJSON']()));
+        let [userTicketDaily, userTicketWeekly, userTicketMonthly, userTicketYearly, userTicketAlltime,] = await Promise.all(results.map(result => result['toJSON']()));
         const currentHour = moment(currentTime).format('HH');
         const dailyData = this.stakingService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
         const endOfWeek = moment().endOf('week').weekday();
         let currentDate = moment().endOf('week');
         const weeklyData = this.stakingService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
+        const endOfMonth = +moment().endOf('month').format('DD') - 1;
+        currentDate = moment().endOf('month');
+        const monthlyData = this.stakingService.formatEventData(userTicketMonthly, endOfMonth, 'days', 'YYYY-MM-DD', 'DD', currentDate);
         let duration = 11;
         currentDate = moment().endOf('year');
-        const monthlyData = this.stakingService.formatEventData(userTicketMonthly, duration, 'months', 'MMM', 'MM', currentDate);
+        const yearlyData = this.stakingService.formatEventData(userTicketYearly, duration, 'months', 'MMM', 'MM', currentDate);
         const currentYear = moment(currentTime);
-        const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
+        const firstItem = userTicketAlltime.sort((a, b) => a.timestamp - b.timestamp)
             .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
         if (!firstItem) {
             duration = 1;
@@ -66,8 +71,8 @@ let StakingController = class StakingController {
             const firstYear = firstItem.createdAt;
             duration = moment.duration(currentYear.diff(firstYear)).asYears();
         }
-        const allTimeData = this.stakingService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY');
-        const responseData = this.stakingService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, 0);
+        const allTimeData = this.stakingService.formatEventData(userTicketAlltime, duration, 'years', 'YYYY', 'YYYYY');
+        const responseData = this.stakingService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, yearlyData, allTimeData, 0);
         return {
             code: 200,
             message: '',

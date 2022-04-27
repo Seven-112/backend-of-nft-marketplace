@@ -50,7 +50,7 @@ let StakingService = class StakingService {
         }
         return formattedData;
     }
-    formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets) {
+    formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, yearlyData, allTimeData, totalAvailableTickets) {
         let dailyRange = [
             {
                 min: 0,
@@ -127,6 +127,13 @@ let StakingService = class StakingService {
                 data: monthlyData,
                 availableTickets: totalAvailableTickets,
                 soldTickets: monthlyData
+                    .map((dt) => dt.total)
+                    .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+            },
+            yearly: {
+                data: yearlyData,
+                availableTickets: totalAvailableTickets,
+                soldTickets: yearlyData
                     .map((dt) => dt.total)
                     .reduce((previousValue, currentValue) => previousValue + currentValue, 0),
             },

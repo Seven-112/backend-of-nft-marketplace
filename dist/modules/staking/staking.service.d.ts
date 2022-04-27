@@ -6,7 +6,7 @@ export declare class StakingService {
     constructor(stakingModel: Model<Staking, Staking['id']>);
     create(staking: Staking): Promise<import("nestjs-dynamoose").Document<Staking>>;
     formatEventData(initData: any[], currentTime: number, subtractType: any, formatType: string, formatCompare: string, tempDate?: moment.Moment): any[];
-    formatDataAnalysisResponse(dailyData: any, weeklyData: any, monthlyData: any, allTimeData: any, totalAvailableTickets: number): {
+    formatDataAnalysisResponse(dailyData: any, weeklyData: any, monthlyData: any, yearlyData: any, allTimeData: any, totalAvailableTickets: number): {
         daily: {
             data: {
                 min: number;
@@ -23,6 +23,11 @@ export declare class StakingService {
             soldTickets: any;
         };
         monthly: {
+            data: any;
+            availableTickets: number;
+            soldTickets: any;
+        };
+        yearly: {
             data: any;
             availableTickets: number;
             soldTickets: any;

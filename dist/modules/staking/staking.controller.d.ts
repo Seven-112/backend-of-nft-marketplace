@@ -33,6 +33,11 @@ export declare class StakingController {
                 availableTickets: number;
                 soldTickets: any;
             };
+            yearly: {
+                data: any;
+                availableTickets: number;
+                soldTickets: any;
+            };
             allTime: {
                 data: any;
                 availableTickets: number;
