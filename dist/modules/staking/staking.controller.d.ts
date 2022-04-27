@@ -17,8 +17,8 @@ export declare class StakingController {
                 data: {
                     min: number;
                     max: number;
-                    total: number;
-                    time: string;
+                    pv: number;
+                    name: string;
                 }[];
                 availableTickets: number;
                 soldTickets: any;

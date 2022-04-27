@@ -28,12 +28,12 @@ let StakingService = class StakingService {
         const formattedData = [];
         for (let i = 0; i <= (subtractType === 'hours' ? 23 : currentTime); i++) {
             const data = {
-                time: tempDate ? moment(tempDate)
+                name: tempDate ? moment(tempDate)
                     .subtract(currentTime - i, subtractType)
                     .format(formatType) : moment()
                     .subtract(currentTime - i, subtractType)
                     .format(formatType),
-                total: initData
+                pv: initData
                     .filter((data) => +moment(data.stakedTime)
                     .format(formatCompare) === +(subtractType === 'hours' ? i : tempDate ? moment(tempDate)
                     .subtract(currentTime - i, subtractType)
@@ -55,50 +55,50 @@ let StakingService = class StakingService {
             {
                 min: 0,
                 max: 4,
-                total: 0,
-                time: '00:00AM'
+                pv: 0,
+                name: '00:00AM'
             },
             {
                 min: 4,
                 max: 8,
-                total: 0,
-                time: '04:00AM'
+                pv: 0,
+                name: '04:00AM'
             },
             {
                 min: 8,
                 max: 12,
-                total: 0,
-                time: '08:00AM'
+                pv: 0,
+                name: '08:00AM'
             },
             {
                 min: 12,
                 max: 16,
-                total: 0,
-                time: '12:00PM'
+                pv: 0,
+                name: '12:00PM'
             },
             {
                 min: 16,
                 max: 20,
-                total: 0,
-                time: '04:00PM'
+                pv: 0,
+                name: '04:00PM'
             },
             {
                 min: 20,
                 max: 24,
-                total: 0,
-                time: '08:00PM'
+                pv: 0,
+                name: '08:00PM'
             },
             {
                 min: 24,
                 max: 28,
-                total: 0,
-                time: '12:00AM'
+                pv: 0,
+                name: '12:00AM'
             }
         ];
         dailyData.forEach(data => {
             dailyRange = dailyRange.map(item => {
-                if (+data.time.substr(0, 2) >= item.min && +data.time.substr(0, 2) < item.max) {
-                    item.total += data.total;
+                if (+data.name.substr(0, 2) >= item.min && +data.name.substr(0, 2) < item.max) {
+                    item.pv += data.pv;
                 }
                 return item;
             });

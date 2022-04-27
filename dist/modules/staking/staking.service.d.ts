@@ -11,8 +11,8 @@ export declare class StakingService {
             data: {
                 min: number;
                 max: number;
-                total: number;
-                time: string;
+                pv: number;
+                name: string;
             }[];
             availableTickets: number;
             soldTickets: any;
