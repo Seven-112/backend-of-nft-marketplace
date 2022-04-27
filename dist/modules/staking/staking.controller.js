@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StakingController = void 0;
 const common_1 = require("@nestjs/common");
-const swagger_1 = require("@nestjs/swagger");
 const jwt_auth_guard_1 = require("../../guard/jwt-auth.guard");
 const validation_pipe_1 = require("../../pipes/validation.pipe");
 const create_staking_dto_1 = require("./DTO/create-staking.dto");
@@ -78,8 +77,7 @@ let StakingController = class StakingController {
 };
 __decorate([
     (0, common_1.Post)('/'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, jwt_auth_guard_1.Public)(),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
@@ -89,8 +87,6 @@ __decorate([
 ], StakingController.prototype, "createEvent", null);
 __decorate([
     (0, common_1.Get)('/analysis'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, jwt_auth_guard_1.Public)(),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),

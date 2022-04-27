@@ -26,8 +26,7 @@ export class StakingController {
   ) {}
 
   @Post('/')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @Public()
   @UsePipes(new ValidationPipe())
   async createEvent(@Req() request: any, @Body() body: CreateStakingDTO) {
     let staking = new Staking();
@@ -43,8 +42,6 @@ export class StakingController {
   }
 
   @Get('/analysis')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Public()
   async getEventAnalisys(@Req() request: any) {
     const currentTime = moment().valueOf();
