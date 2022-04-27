@@ -137,7 +137,7 @@ let EventController = class EventController {
         const weeklyData = this.eventService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
         let duration = 11;
         currentDate = moment().endOf('year');
-        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'MMM', 'MM', currentDate);
+        const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'YYYY-MM', 'MM', currentDate);
         const currentYear = moment(currentTime);
         const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
             .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
