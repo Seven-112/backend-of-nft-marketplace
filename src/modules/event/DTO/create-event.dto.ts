@@ -21,7 +21,7 @@ export class TicketDTO {
 
   @IsNumber()
   @ApiProperty()
-  @Min(1)
+  @Min(0)
   price: number;
 
   @IsNumber()

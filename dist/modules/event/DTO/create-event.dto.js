@@ -29,7 +29,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
 ], TicketDTO.prototype, "price", void 0);
 __decorate([
