@@ -142,7 +142,7 @@ let EventController = class EventController {
         const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
             .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
         if (!firstItem) {
-            duration = 1;
+            duration = 0;
         }
         else {
             const firstYear = firstItem.createdAt;
@@ -208,12 +208,13 @@ let EventController = class EventController {
         const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
             .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
         if (!firstItem) {
-            duration = 1;
+            duration = 0;
         }
         else {
             const firstYear = firstItem.createdAt;
             duration = moment.duration(currentYear.diff(firstYear)).asYears();
         }
+        console.log(duration);
         const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY');
         const responseData = this.eventService.formatDataAnalysisResponse(dailyData, weeklyData, monthlyData, allTimeData, totalAvailableTickets);
         return {
