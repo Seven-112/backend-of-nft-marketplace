@@ -336,7 +336,7 @@ export class EventController {
     // // Get data monthly.
     let duration = 11;
     currentDate = moment().endOf('year');
-    const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'YYYY-MM', 'MM', currentDate)
+    const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'MMM', 'MM', currentDate)
 
     // // Get data yearly.
     const currentYear = moment(currentTime);
