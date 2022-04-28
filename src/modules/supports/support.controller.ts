@@ -63,7 +63,7 @@ export class SupportController {
       Support team
     `
 
-    const subject = `[Support submitted] ${support.subject}`
+    const subject = `[Support submitted] ${support.ticket_uuid} - ${support.subject}`
 
     this.mailService.sendEmail(support.email, subject, content);
     return {
@@ -147,7 +147,7 @@ export class SupportController {
     support.replies = replies;
     
     await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
-    const subject = `[Reply] ${support.subject}`
+    const subject = `[Reply] ${support.ticket_uuid} - ${support.subject}`
     const content = `
       Dear sir,<br>
       Your support request information as bellow: <br>
@@ -208,7 +208,7 @@ export class SupportController {
     }
     
     await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
-    const subject = `[Closed] ${support.subject}`
+    const subject = `[Closed] ${support.ticket_uuid} - ${support.subject}`
     const content = `
       Dear sir,<br>
       <h2>Your support request is completed.</h2> <br>
