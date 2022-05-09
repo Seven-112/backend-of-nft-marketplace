@@ -11,6 +11,7 @@ export declare class UserService {
     createUser(data: User): Promise<import("nestjs-dynamoose").Document<User>>;
     getUserByUsername(username: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     getByWalletAddress(address: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
+    getUserByWalletAddressOrId(key: string): Promise<import("nestjs-dynamoose").Document<User>>;
     getByEmail(email: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<User>>>;
     updateUser(user: User): Promise<import("nestjs-dynamoose").Document<User>>;
     updateWalletAddress(id: string, body: any): Promise<import("nestjs-dynamoose").Document<User>>;

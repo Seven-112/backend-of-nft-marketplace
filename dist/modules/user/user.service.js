@@ -33,7 +33,13 @@ let UserService = class UserService {
         return this.userModel.get(id);
     }
     async getUserByIdOrWallet(id) {
-        return this.userModel.scan('id').eq(id).or().where('walletAddress').eq(id).exec();
+        return this.userModel
+            .scan('id')
+            .eq(id)
+            .or()
+            .where('walletAddress')
+            .eq(id)
+            .exec();
     }
     async createUser(data) {
         return this.userModel.create(data);
@@ -43,6 +49,13 @@ let UserService = class UserService {
     }
     async getByWalletAddress(address) {
         return this.userModel.scan('walletAddress').eq(address).exec();
+    }
+    async getUserByWalletAddressOrId(key) {
+        const userByWallet = await this.userModel.get(key);
+        if (userByWallet)
+            return userByWallet;
+        const users = await this.userModel.scan('walletAddress').eq(key).exec();
+        return users[0] || null;
     }
     async getByEmail(email) {
         return this.userModel.scan('email').eq(email).exec();
@@ -55,11 +68,22 @@ let UserService = class UserService {
         return this.userModel.update(body);
     }
     async getUsers(ids) {
-        return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
+        return this.userModel
+            .scan('id')
+            .in(ids)
+            .or()
+            .where('walletAddress')
+            .in(ids)
+            .exec();
     }
     async getAllUsers(limit) {
         if (limit)
-            return this.userModel.scan('deletedAt').not().exists().limit(limit).exec();
+            return this.userModel
+                .scan('deletedAt')
+                .not()
+                .exists()
+                .limit(limit)
+                .exec();
         return this.userModel.scan('deletedAt').not().exists().exec();
     }
     async getUserFromCognito(accessToken) {
@@ -87,11 +111,15 @@ let UserService = class UserService {
         });
     }
     async searchUsers(address) {
-        return this.userModel.scan('walletAddress').contains(address)
+        return this.userModel
+            .scan('walletAddress')
+            .contains(address)
             .or()
-            .where('username').contains(address)
+            .where('username')
+            .contains(address)
             .or()
-            .where('email').contains(address)
+            .where('email')
+            .contains(address)
             .exec();
     }
     async getUserByEmail(email) {
@@ -101,7 +129,7 @@ let UserService = class UserService {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
         await cognitoIdentityServiceProvider.adminDisableUser({
             Username: email,
-            UserPoolId: 'eu-west-2_xi1EqOokH'
+            UserPoolId: 'eu-west-2_xi1EqOokH',
         }, (error, response) => {
             console.log(error, response);
         });
@@ -110,13 +138,19 @@ let UserService = class UserService {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
         await cognitoIdentityServiceProvider.adminEnableUser({
             Username: email,
-            UserPoolId: 'eu-west-2_xi1EqOokH'
+            UserPoolId: 'eu-west-2_xi1EqOokH',
         }, (error, response) => {
             console.log(error, response);
         });
     }
     async getDataByTime(startTime, endTime) {
-        return this.userModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec();
+        return this.userModel
+            .scan('createdAt')
+            .ge(startTime)
+            .and()
+            .where('createdAt')
+            .le(endTime)
+            .exec();
     }
 };
 UserService = __decorate([

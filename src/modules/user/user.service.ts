@@ -29,7 +29,13 @@ export class UserService {
   }
 
   async getUserByIdOrWallet(id: string) {
-    return this.userModel.scan('id').eq(id).or().where('walletAddress').eq(id).exec();
+    return this.userModel
+      .scan('id')
+      .eq(id)
+      .or()
+      .where('walletAddress')
+      .eq(id)
+      .exec();
   }
 
   async createUser(data: User) {
@@ -42,6 +48,16 @@ export class UserService {
 
   async getByWalletAddress(address: string) {
     return this.userModel.scan('walletAddress').eq(address).exec();
+  }
+
+  async getUserByWalletAddressOrId(key: string) {
+    const userByWallet = await this.userModel.get(key);
+
+    if (userByWallet) return userByWallet;
+
+    const users = await this.userModel.scan('walletAddress').eq(key).exec();
+
+    return users[0] || null;
   }
 
   async getByEmail(email: string) {
@@ -58,11 +74,23 @@ export class UserService {
   }
 
   async getUsers(ids: string[]) {
-    return this.userModel.scan('id').in(ids).or().where('walletAddress').in(ids).exec();
+    return this.userModel
+      .scan('id')
+      .in(ids)
+      .or()
+      .where('walletAddress')
+      .in(ids)
+      .exec();
   }
 
   async getAllUsers(limit?: number) {
-    if (limit) return this.userModel.scan('deletedAt').not().exists().limit(limit).exec();
+    if (limit)
+      return this.userModel
+        .scan('deletedAt')
+        .not()
+        .exists()
+        .limit(limit)
+        .exec();
 
     return this.userModel.scan('deletedAt').not().exists().exec();
   }
@@ -119,12 +147,16 @@ export class UserService {
   }
 
   async searchUsers(address: string) {
-    return this.userModel.scan('walletAddress').contains(address)
+    return this.userModel
+      .scan('walletAddress')
+      .contains(address)
       .or()
-      .where('username').contains(address)
+      .where('username')
+      .contains(address)
       .or()
-      .where('email').contains(address)
-      .exec()
+      .where('email')
+      .contains(address)
+      .exec();
   }
 
   async getUserByEmail(email: string) {
@@ -134,28 +166,40 @@ export class UserService {
   async disableUserCognito(email: string) {
     const cognitoIdentityServiceProvider =
       new aws.CognitoIdentityServiceProvider();
-    
-    await cognitoIdentityServiceProvider.adminDisableUser({
-      Username: email,
-      UserPoolId: 'eu-west-2_xi1EqOokH'
-    }, (error, response) => {
-      console.log(error, response)
-    })
+
+    await cognitoIdentityServiceProvider.adminDisableUser(
+      {
+        Username: email,
+        UserPoolId: 'eu-west-2_xi1EqOokH',
+      },
+      (error, response) => {
+        console.log(error, response);
+      },
+    );
   }
 
   async enableUserCognito(email: string) {
     const cognitoIdentityServiceProvider =
       new aws.CognitoIdentityServiceProvider();
-    
-    await cognitoIdentityServiceProvider.adminEnableUser({
-      Username: email,
-      UserPoolId: 'eu-west-2_xi1EqOokH'
-    }, (error, response) => {
-      console.log(error, response)
-    })
+
+    await cognitoIdentityServiceProvider.adminEnableUser(
+      {
+        Username: email,
+        UserPoolId: 'eu-west-2_xi1EqOokH',
+      },
+      (error, response) => {
+        console.log(error, response);
+      },
+    );
   }
 
   async getDataByTime(startTime: number, endTime: number) {
-    return this.userModel.scan('createdAt').ge(startTime).and().where('createdAt').le(endTime).exec()
+    return this.userModel
+      .scan('createdAt')
+      .ge(startTime)
+      .and()
+      .where('createdAt')
+      .le(endTime)
+      .exec();
   }
 }

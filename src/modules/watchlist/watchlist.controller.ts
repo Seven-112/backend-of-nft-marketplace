@@ -108,10 +108,10 @@ export class WatchlistController {
     if (relations?.includes('users')) {
       const promises =
         watchlist?.list.map((item) =>
-          this.userService.getByWalletAddress(item),
+          this.userService.getUserByWalletAddressOrId(item),
         ) || [];
 
-      watchlist.users = (await Promise.all(promises)).map((item) => item[0]);
+      watchlist.users = await Promise.all(promises);
     }
 
     watchlist.list = Array.from(watchlist.list);

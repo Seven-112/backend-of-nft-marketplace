@@ -69,8 +69,8 @@ let WatchlistController = class WatchlistController {
             users: [],
         };
         if (relations === null || relations === void 0 ? void 0 : relations.includes('users')) {
-            const promises = (watchlist === null || watchlist === void 0 ? void 0 : watchlist.list.map((item) => this.userService.getByWalletAddress(item))) || [];
-            watchlist.users = (await Promise.all(promises)).map((item) => item[0]);
+            const promises = (watchlist === null || watchlist === void 0 ? void 0 : watchlist.list.map((item) => this.userService.getUserByWalletAddressOrId(item))) || [];
+            watchlist.users = await Promise.all(promises);
         }
         watchlist.list = Array.from(watchlist.list);
         return {
