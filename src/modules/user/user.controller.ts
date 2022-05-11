@@ -37,11 +37,17 @@ export class UserController {
   async getUserProfile(@Req() request: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(user.deletedAt) {
+    if (!user)
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_not_found',
+      };
+
+    if (user.deletedAt) {
+      return {
+        code: 400,
+        message: 'user_is_deleted',
+      };
     }
 
     return {
@@ -87,11 +93,11 @@ export class UserController {
       };
     }
 
-    if(user.deletedAt) {
+    if (user.deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
 
     const isValidUsername = await this.userService.getUserByUsername(
@@ -135,11 +141,11 @@ export class UserController {
       };
     }
 
-    if(user.deletedAt) {
+    if (user.deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
 
     Object.assign(user, body);
@@ -188,7 +194,9 @@ export class UserController {
   @ApiBearerAuth()
   @UsePipes(new ValidationPipe())
   async update(@Req() request: any, @Body() body: UpdateUserDTO) {
-    const userByEmail = await this.userService.getByEmail(body.email.toLowerCase());
+    const userByEmail = await this.userService.getByEmail(
+      body.email.toLowerCase(),
+    );
     const userByWallet = await this.userService.getByWalletAddress(
       body.walletAddress,
     );
@@ -202,13 +210,13 @@ export class UserController {
     if (case1 || case2) {
       const foundUser = await this.userService.getUserById(request.user.sub);
 
-      if(foundUser.deletedAt) {
+      if (foundUser.deletedAt) {
         return {
           code: 400,
-          message: 'user_is_deleted'
-        }
+          message: 'user_is_deleted',
+        };
       }
-      
+
       const updatedBody = {
         ...body,
         email: body.email.toLowerCase(),
@@ -217,19 +225,22 @@ export class UserController {
         createdAt: foundUser?.createdAt || new Date().toISOString(),
       };
 
-      if(updatedBody.status === UserStatus.inactive) {
-        await this.userService.disableUserCognito(updatedBody.email)
+      if (updatedBody.status === UserStatus.inactive) {
+        await this.userService.disableUserCognito(updatedBody.email);
       }
 
-      if(updatedBody.status === UserStatus.active && foundUser.status !== UserStatus.active) {
-        await this.userService.enableUserCognito(updatedBody.email)
+      if (
+        updatedBody.status === UserStatus.active &&
+        foundUser.status !== UserStatus.active
+      ) {
+        await this.userService.enableUserCognito(updatedBody.email);
       }
 
       const updatedUser = await this.userService.updateWalletAddress(
         request.user.sub,
         updatedBody,
       );
-      
+
       return {
         code: 200,
         message: '',
@@ -257,11 +268,11 @@ export class UserController {
         data: null,
       };
 
-    if(user.deletedAt) {
+    if (user.deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
 
     if (user.role !== UserRole.Admin)
@@ -331,7 +342,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getUserById(@Param('id') id: string) {
     const user = await this.userService.getUserByIdOrWallet(id);
-    if(!user.length) {
+    if (!user.length) {
       return {
         code: 404,
         message: 'User not found',
@@ -339,11 +350,11 @@ export class UserController {
       };
     }
 
-    if(user[0].deletedAt) {
+    if (user[0].deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
 
     return {
@@ -389,8 +400,10 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: string) {
-    let user = await (await this.userService.getUserByIdOrWallet(id))['toJSON']();
-    if(!user.length) {
+    let user = await (
+      await this.userService.getUserByIdOrWallet(id)
+    )['toJSON']();
+    if (!user.length) {
       return {
         code: 404,
         message: 'User not found',

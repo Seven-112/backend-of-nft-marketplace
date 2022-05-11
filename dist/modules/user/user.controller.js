@@ -30,10 +30,15 @@ let UserController = class UserController {
     }
     async getUserProfile(request) {
         const user = await this.userService.getUserById(request.user.sub);
+        if (!user)
+            return {
+                code: 400,
+                message: 'user_not_found',
+            };
         if (user.deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
         return {
@@ -63,7 +68,7 @@ let UserController = class UserController {
         if (user.deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
         const isValidUsername = await this.userService.getUserByUsername(body.username);
@@ -95,7 +100,7 @@ let UserController = class UserController {
         if (user.deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
         Object.assign(user, body);
@@ -139,14 +144,15 @@ let UserController = class UserController {
             if (foundUser.deletedAt) {
                 return {
                     code: 400,
-                    message: 'user_is_deleted'
+                    message: 'user_is_deleted',
                 };
             }
             const updatedBody = Object.assign(Object.assign({}, body), { email: body.email.toLowerCase(), role: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.role) || user_interface_1.UserRole.User, status: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.status) || user_interface_1.UserStatus.active, createdAt: (foundUser === null || foundUser === void 0 ? void 0 : foundUser.createdAt) || new Date().toISOString() });
             if (updatedBody.status === user_interface_1.UserStatus.inactive) {
                 await this.userService.disableUserCognito(updatedBody.email);
             }
-            if (updatedBody.status === user_interface_1.UserStatus.active && foundUser.status !== user_interface_1.UserStatus.active) {
+            if (updatedBody.status === user_interface_1.UserStatus.active &&
+                foundUser.status !== user_interface_1.UserStatus.active) {
                 await this.userService.enableUserCognito(updatedBody.email);
             }
             const updatedUser = await this.userService.updateWalletAddress(request.user.sub, updatedBody);
@@ -173,7 +179,7 @@ let UserController = class UserController {
         if (user.deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
         if (user.role !== user_interface_1.UserRole.Admin)
@@ -224,7 +230,7 @@ let UserController = class UserController {
         if (user[0].deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
         return {

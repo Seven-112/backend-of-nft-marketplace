@@ -71,14 +71,14 @@ export class AuthController {
       }
     }
 
-    if(userByEmail.deletedAt) {
+    if(userByEmail?.deletedAt) {
       return {
         code: 400,
         message: 'user_is_deleted'
       }
     }
-    console.log(userByEmail);
-    if((userByEmail.walletAddress === body.walletAddress && userByWallet.email === body.email) || (!userByEmail.walletAddress && !userByWallet)) {
+
+    if((userByEmail?.walletAddress === body?.walletAddress && userByWallet?.email === body?.email) || (!userByEmail?.walletAddress && !userByWallet)) {
       return {
         code: 200,
         message: 'can_login'
@@ -87,7 +87,7 @@ export class AuthController {
 
     if(type === 'emailFirst') {
 
-      if(userByEmail.walletAddress !== body.walletAddress && !userByWallet) {
+      if(userByEmail?.walletAddress !== body?.walletAddress && !userByWallet) {
         return {
           code: 400,
           message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
@@ -111,21 +111,21 @@ export class AuthController {
     
     if(type === 'walletFirst') {
       
-      if(userByWallet.email !== body.email && !userByEmail) {
+      if(userByWallet?.email !== body.email && !userByEmail) {
         return {
           code: 400,
           message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
         }
       }
 
-      if(userByEmail.walletAddress !== body.walletAddress) {
+      if(userByEmail?.walletAddress !== body.walletAddress) {
         return {
           code: 400,
           message: 'wallet_and_user_not_mapping'
         }
       }
   
-      if(userByWallet.email !== body.email && userByEmail) {
+      if(userByWallet?.email !== body.email && userByEmail) {
         return {
           code: 400,
           message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
