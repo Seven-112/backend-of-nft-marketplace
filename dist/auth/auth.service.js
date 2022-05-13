@@ -40,12 +40,14 @@ let AuthService = class AuthService {
                 Password: password,
                 Permanent: true,
                 Username: email,
-                UserPoolId: process.env.AWS_USER_POOL
+                UserPoolId: process.env.AWS_USER_POOL,
             }, (data, error) => {
-                if (error) {
+                if (error !== null && !!Object.keys(error).length) {
                     rej(error);
                 }
-                ;
+                if (error === null) {
+                    rej(error);
+                }
                 res(data);
             });
         });

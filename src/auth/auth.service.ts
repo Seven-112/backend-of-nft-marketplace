@@ -14,8 +14,7 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) 
-  {
+  ) {
     this.oAuthClient = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -54,21 +53,28 @@ export class AuthService {
 
   async updatePassword(email: string, password: string) {
     const cognitoIdentityServiceProvider =
-    new aws.CognitoIdentityServiceProvider();
+      new aws.CognitoIdentityServiceProvider();
 
     return await new Promise((res, rej) => {
-      cognitoIdentityServiceProvider.adminSetUserPassword({
-        Password: password,
-        Permanent: true,
-        Username: email,
-        UserPoolId: process.env.AWS_USER_POOL
-      }, (data, error) => {
-        if (error) {
-          rej(error)
-        };
+      cognitoIdentityServiceProvider.adminSetUserPassword(
+        {
+          Password: password,
+          Permanent: true,
+          Username: email,
+          UserPoolId: process.env.AWS_USER_POOL,
+        },
+        (data, error) => {
+          if (error !== null && !!Object.keys(error).length) {
+            rej(error);
+          }
 
-        res(data);
-      })
-    })
+          if (error === null) {
+            rej(error);
+          }
+
+          res(data);
+        },
+      );
+    });
   }
 }
