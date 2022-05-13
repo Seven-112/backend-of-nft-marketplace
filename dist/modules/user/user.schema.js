@@ -75,8 +75,12 @@ exports.UserSchema = new dynamoose_1.Schema({
     },
     social: exports.SocialSchema,
     deletedAt: {
-        type: Number
-    }
+        type: Number,
+    },
+    isGoogle: {
+        type: Boolean,
+        default: true,
+    },
 });
 exports.User = (0, dynamoose_1.model)('User', exports.UserSchema);
 //# sourceMappingURL=user.schema.js.map

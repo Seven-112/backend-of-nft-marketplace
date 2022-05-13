@@ -74,8 +74,12 @@ export const UserSchema = new Schema({
   },
   social: SocialSchema,
   deletedAt: {
-    type: Number
-  }
+    type: Number,
+  },
+  isGoogle: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 export const User = model('User', UserSchema);
