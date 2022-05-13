@@ -42,10 +42,8 @@ let AuthService = class AuthService {
                 Username: email,
                 UserPoolId: process.env.AWS_USER_POOL,
             }, (data, error) => {
+                console.log(error);
                 if (error !== null && !!Object.keys(error).length) {
-                    rej(error);
-                }
-                if (error === null) {
                     rej(error);
                 }
                 res(data);
