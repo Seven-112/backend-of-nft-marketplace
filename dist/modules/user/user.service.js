@@ -104,8 +104,9 @@ let UserService = class UserService {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
         return new Promise((resolve, reject) => {
             cognitoIdentityServiceProvider.changePassword(data, function (err, response) {
-                if (err)
+                if (err) {
                     reject(err);
+                }
                 resolve(response);
             });
         });

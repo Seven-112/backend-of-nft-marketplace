@@ -138,7 +138,9 @@ export class UserService {
       cognitoIdentityServiceProvider.changePassword(
         data,
         function (err, response) {
-          if (err) reject(err);
+          if (err) {
+            reject(err);
+          }
 
           resolve(response);
         },
