@@ -26,7 +26,7 @@ AuthModule = __decorate([
             passport_1.PassportModule,
             mail_module_1.MailModule,
             redis_module_1.RedisModule,
-            jwt_1.JwtModule.register({ secret: process.env.JWT_SECRET }),
+            jwt_1.JwtModule.register({ secret: process.env.JWT_SECRET || 'secret' }),
         ],
         providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy],
         exports: [auth_service_1.AuthService],

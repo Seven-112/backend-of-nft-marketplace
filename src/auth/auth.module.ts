@@ -18,7 +18,7 @@ import { TwitterOauthStrategy } from './twitter.strategy';
     PassportModule,
     MailModule,
     RedisModule,
-    JwtModule.register({ secret: process.env.JWT_SECRET }),
+    JwtModule.register({ secret: process.env.JWT_SECRET || 'secret' }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
