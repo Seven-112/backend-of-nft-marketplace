@@ -68,10 +68,6 @@ export class AuthService {
             rej(error);
           }
 
-          if (error === null) {
-            rej(error);
-          }
-
           res(data);
         },
       );
