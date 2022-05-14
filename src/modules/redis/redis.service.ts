@@ -28,7 +28,17 @@ export class RedisService {
   }
 
   delWithPrefix(...prefix: string[]) {
-    return prefix.map((pre) => this.redis.del(`${pre}:*`));
+    return prefix.map((pre) => {
+      this.redis.scan('0', 'MATCH', pre + ':' + '*', (err, reply) => {
+        if (err) {
+          throw err;
+        }
+
+        const keys = reply[1];
+
+        return keys.map((key) => this.redis.del(key));
+      });
+    });
   }
 
   async hmset(payload: any, target: EListType) {

@@ -140,12 +140,12 @@ let UserService = class UserService {
         return user;
     }
     async updateUser(user) {
-        Promise.all(this.redisService.delWithPrefix(caching_1.Caching.ALL_USER, caching_1.Caching.SEARCH_USER, caching_1.Caching.USER_BY_EMAIL, caching_1.Caching.USER_BY_ID, caching_1.Caching.USER_BY_IDS, caching_1.Caching.USER_BY_USERNAME, caching_1.Caching.USER_BY_WALLET_ADDRESS, caching_1.Caching.USER_BY_TIME));
+        this.clear();
         return this.userModel.update(user);
     }
     async updateWalletAddress(id, body) {
         body.id = id;
-        Promise.all(this.redisService.delWithPrefix(caching_1.Caching.ALL_USER, caching_1.Caching.SEARCH_USER, caching_1.Caching.USER_BY_EMAIL, caching_1.Caching.USER_BY_ID, caching_1.Caching.USER_BY_IDS, caching_1.Caching.USER_BY_USERNAME, caching_1.Caching.USER_BY_WALLET_ADDRESS, caching_1.Caching.USER_BY_TIME));
+        this.clear();
         return this.userModel.update(body);
     }
     async getUsers(ids) {

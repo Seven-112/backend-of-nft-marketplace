@@ -9,7 +9,7 @@ export declare class RedisService {
     set(key: string, value: string): Promise<"OK">;
     getWithPrefix(prefix: string, key: string): Promise<string>;
     setWithPrefix(prefix: string, key: string, value: string): Promise<"OK">;
-    delWithPrefix(...prefix: string[]): Promise<number>[];
+    delWithPrefix(...prefix: string[]): void[];
     hmset(payload: any, target: EListType): Promise<any>;
     getAll(target: EListType): Promise<[Error, any]>;
     setOtpForgotPassword(otp: any, email: string): Promise<"OK">;

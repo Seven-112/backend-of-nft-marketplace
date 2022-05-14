@@ -284,7 +284,6 @@ let UserController = class UserController {
     }
 };
 __decorate([
-    (0, swagger_1.ApiExcludeEndpoint)(true),
     (0, common_1.Get)('/clear'),
     (0, jwt_auth_guard_1.Public)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),

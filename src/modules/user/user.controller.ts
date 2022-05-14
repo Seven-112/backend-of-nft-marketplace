@@ -32,7 +32,7 @@ import { ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @ApiExcludeEndpoint(true)
+  // @ApiExcludeEndpoint(true)
   @Get('/clear')
   @Public()
   @HttpCode(HttpStatus.NO_CONTENT)

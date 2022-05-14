@@ -36,7 +36,15 @@ let RedisService = class RedisService {
         return this.redis.set(prefix + ':' + key, value);
     }
     delWithPrefix(...prefix) {
-        return prefix.map((pre) => this.redis.del(`${pre}:*`));
+        return prefix.map((pre) => {
+            this.redis.scan('0', 'MATCH', pre + ':' + '*', (err, reply) => {
+                if (err) {
+                    throw err;
+                }
+                const keys = reply[1];
+                return keys.map((key) => this.redis.del(key));
+            });
+        });
     }
     async hmset(payload, target) {
         const id = (0, nanoid_1.nanoid)();

@@ -246,37 +246,13 @@ export class UserService {
   }
 
   async updateUser(user: User) {
-    Promise.all(
-      this.redisService.delWithPrefix(
-        Caching.ALL_USER,
-        Caching.SEARCH_USER,
-        Caching.USER_BY_EMAIL,
-        Caching.USER_BY_ID,
-        Caching.USER_BY_IDS,
-        Caching.USER_BY_USERNAME,
-        Caching.USER_BY_WALLET_ADDRESS,
-        Caching.USER_BY_TIME,
-      ),
-    );
-
+    this.clear();
     return this.userModel.update(user);
   }
 
   async updateWalletAddress(id: string, body: any) {
     body.id = id;
-
-    Promise.all(
-      this.redisService.delWithPrefix(
-        Caching.ALL_USER,
-        Caching.SEARCH_USER,
-        Caching.USER_BY_EMAIL,
-        Caching.USER_BY_ID,
-        Caching.USER_BY_IDS,
-        Caching.USER_BY_USERNAME,
-        Caching.USER_BY_WALLET_ADDRESS,
-        Caching.USER_BY_TIME,
-      ),
-    );
+    this.clear();
     return this.userModel.update(body);
   }
 
