@@ -9,12 +9,17 @@ import { RedisService } from 'src/modules/redis/redis.service';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 import { CheckUsernameDTO } from './DTO/check-username.DTO';
 import { CheckEmailDTO } from './DTO/check-email.DTO';
+import { CheckCanAuthDto } from './DTO/check-can-auth.DTO';
 export declare class AuthController {
     private readonly authService;
     private readonly userService;
     private readonly mailService;
     private readonly redisService;
     constructor(authService: AuthService, userService: UserService, mailService: MailService, redisService: RedisService);
+    checkCanAuth(dto: CheckCanAuthDto): Promise<{
+        code: number;
+        message: string;
+    }>;
     canLogin(body: CheckCanLoginDTO, type?: string): Promise<{
         code: number;
         message: string;

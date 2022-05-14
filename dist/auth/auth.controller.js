@@ -28,6 +28,7 @@ const redis_service_1 = require("../modules/redis/redis.service");
 const check_can_login_DTO_1 = require("./DTO/check-can-login.DTO");
 const check_username_DTO_1 = require("./DTO/check-username.DTO");
 const check_email_DTO_1 = require("./DTO/check-email.DTO");
+const check_can_auth_DTO_1 = require("./DTO/check-can-auth.DTO");
 let AuthController = class AuthController {
     constructor(authService, userService, mailService, redisService) {
         this.authService = authService;
@@ -35,46 +36,67 @@ let AuthController = class AuthController {
         this.mailService = mailService;
         this.redisService = redisService;
     }
+    async checkCanAuth(dto) {
+        const user = await this.userService.getUserByEmail(dto.email);
+        if (!user.count) {
+            return {
+                code: 400,
+                message: 'user_not_found',
+            };
+        }
+        if (dto.isGoogle === user[0].isGoogle || user[0].isGoogle === undefined) {
+            return {
+                code: 200,
+                message: 'can_auth',
+            };
+        }
+        return {
+            code: 400,
+            message: 'user_is_registered_by_another_provider',
+        };
+    }
     async canLogin(body, type) {
-        let userByEmail = await this.userService.getByEmail(body.email);
-        let userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
+        let userByEmail = (await this.userService.getByEmail(body.email));
+        let userByWallet = (await this.userService.getByWalletAddress(body.walletAddress));
         userByEmail = userByEmail.length ? userByEmail[0] : null;
         userByWallet = userByWallet.length ? userByWallet[0] : null;
         if ((userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.status) !== user_interface_1.UserStatus.active) {
             return {
                 code: 400,
-                message: 'user_not_active'
+                message: 'user_not_active',
             };
         }
         if (userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.deletedAt) {
             return {
                 code: 400,
-                message: 'user_is_deleted'
+                message: 'user_is_deleted',
             };
         }
-        if (((userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) === (body === null || body === void 0 ? void 0 : body.walletAddress) && (userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet.email) === (body === null || body === void 0 ? void 0 : body.email)) || (!(userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) && !userByWallet)) {
+        if (((userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) === (body === null || body === void 0 ? void 0 : body.walletAddress) &&
+            (userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet.email) === (body === null || body === void 0 ? void 0 : body.email)) ||
+            (!(userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) && !userByWallet)) {
             return {
                 code: 200,
-                message: 'can_login'
+                message: 'can_login',
             };
         }
         if (type === 'emailFirst') {
             if ((userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) !== (body === null || body === void 0 ? void 0 : body.walletAddress) && !userByWallet) {
                 return {
                     code: 400,
-                    message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
+                    message: 'user_and_wallet_not_mapping_and_wallet_not_connected',
                 };
             }
             if ((userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet.email) !== body.email) {
                 return {
                     code: 400,
-                    message: 'email_and_wallet_not_mapping'
+                    message: 'email_and_wallet_not_mapping',
                 };
             }
             if (userByEmail.walletAddress !== body.walletAddress && userByWallet) {
                 return {
                     code: 400,
-                    message: 'user_and_wallet_not_mapping_and_wallet_connected'
+                    message: 'user_and_wallet_not_mapping_and_wallet_connected',
                 };
             }
         }
@@ -82,25 +104,25 @@ let AuthController = class AuthController {
             if ((userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet.email) !== body.email && !userByEmail) {
                 return {
                     code: 400,
-                    message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
+                    message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet',
                 };
             }
             if ((userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail.walletAddress) !== body.walletAddress) {
                 return {
                     code: 400,
-                    message: 'wallet_and_user_not_mapping'
+                    message: 'wallet_and_user_not_mapping',
                 };
             }
             if ((userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet.email) !== body.email && userByEmail) {
                 return {
                     code: 400,
-                    message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
+                    message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet',
                 };
             }
         }
         return {
             code: 200,
-            message: 'can_login'
+            message: 'can_login',
         };
     }
     async checkUsername(body) {
@@ -108,12 +130,12 @@ let AuthController = class AuthController {
         if (user.length) {
             return {
                 code: 400,
-                message: 'username_is_existed'
+                message: 'username_is_existed',
             };
         }
         return {
             code: 200,
-            message: 'successful'
+            message: 'successful',
         };
     }
     async checkEmail(body) {
@@ -121,12 +143,12 @@ let AuthController = class AuthController {
         if (user.length) {
             return {
                 code: 400,
-                message: 'username_is_existed'
+                message: 'username_is_existed',
             };
         }
         return {
             code: 200,
-            message: 'successful'
+            message: 'successful',
         };
     }
     async register(body) {
@@ -198,6 +220,16 @@ let AuthController = class AuthController {
         }
     }
 };
+__decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('/check-can-auth'),
+    (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),
+    (0, jwt_auth_guard_1.Public)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [check_can_auth_DTO_1.CheckCanAuthDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "checkCanAuth", null);
 __decorate([
     (0, common_1.Post)('/canLogin'),
     (0, common_1.UsePipes)(new validation_pipe_1.ValidationPipe()),

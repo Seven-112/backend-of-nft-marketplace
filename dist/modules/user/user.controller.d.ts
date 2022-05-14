@@ -39,6 +39,7 @@ export declare class UserController {
             createdAt: number;
             social?: Social;
             deletedAt: number;
+            isGoogle: boolean;
         };
     }>;
     getUserProfileFromCognito(request: Request): Promise<{

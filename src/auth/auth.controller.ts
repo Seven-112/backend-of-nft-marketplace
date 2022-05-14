@@ -42,6 +42,7 @@ import { TwitterGuard } from './twitter.guard';
 import { CheckCanLoginDTO } from './DTO/check-can-login.DTO';
 import { CheckUsernameDTO } from './DTO/check-username.DTO';
 import { CheckEmailDTO } from './DTO/check-email.DTO';
+import { CheckCanAuthDto } from './DTO/check-can-auth.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -52,129 +53,160 @@ export class AuthController {
     private readonly redisService: RedisService,
   ) {}
 
+  @HttpCode(HttpStatus.OK)
+  @Post('/check-can-auth')
+  @UsePipes(new ValidationPipe())
+  @Public()
+  async checkCanAuth(@Body() dto: CheckCanAuthDto) {
+    const user = await this.userService.getUserByEmail(dto.email);
+
+    if (!user.count) {
+      return {
+        code: 400,
+        message: 'user_not_found',
+      };
+    }
+
+    if (dto.isGoogle === user[0].isGoogle || user[0].isGoogle === undefined) {
+      return {
+        code: 200,
+        message: 'can_auth',
+      };
+    }
+
+    return {
+      code: 400,
+      message: 'user_is_registered_by_another_provider',
+    };
+  }
+
   @Post('/canLogin')
   @UsePipes(new ValidationPipe())
   @Public()
   async canLogin(@Body() body: CheckCanLoginDTO, @Query('type') type?: string) {
-    let userByEmail = await this.userService.getByEmail(body.email) as any;
-    let userByWallet = await this.userService.getByWalletAddress(
+    let userByEmail = (await this.userService.getByEmail(body.email)) as any;
+    let userByWallet = (await this.userService.getByWalletAddress(
       body.walletAddress,
-    ) as any;
+    )) as any;
 
     userByEmail = userByEmail.length ? userByEmail[0] : null;
     userByWallet = userByWallet.length ? userByWallet[0] : null;
 
-    if(userByEmail?.status !== UserStatus.active) {
+    if (userByEmail?.status !== UserStatus.active) {
       return {
         code: 400,
-        message: 'user_not_active'
-      }
+        message: 'user_not_active',
+      };
     }
 
-    if(userByEmail?.deletedAt) {
+    if (userByEmail?.deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
 
-    if((userByEmail?.walletAddress === body?.walletAddress && userByWallet?.email === body?.email) || (!userByEmail?.walletAddress && !userByWallet)) {
+    if (
+      (userByEmail?.walletAddress === body?.walletAddress &&
+        userByWallet?.email === body?.email) ||
+      (!userByEmail?.walletAddress && !userByWallet)
+    ) {
       return {
         code: 200,
-        message: 'can_login'
+        message: 'can_login',
+      };
+    }
+
+    if (type === 'emailFirst') {
+      if (userByEmail?.walletAddress !== body?.walletAddress && !userByWallet) {
+        return {
+          code: 400,
+          message: 'user_and_wallet_not_mapping_and_wallet_not_connected',
+        };
+      }
+
+      if (userByWallet?.email !== body.email) {
+        return {
+          code: 400,
+          message: 'email_and_wallet_not_mapping',
+        };
+      }
+
+      if (userByEmail.walletAddress !== body.walletAddress && userByWallet) {
+        return {
+          code: 400,
+          message: 'user_and_wallet_not_mapping_and_wallet_connected',
+        };
       }
     }
 
-    if(type === 'emailFirst') {
-
-      if(userByEmail?.walletAddress !== body?.walletAddress && !userByWallet) {
+    if (type === 'walletFirst') {
+      if (userByWallet?.email !== body.email && !userByEmail) {
         return {
           code: 400,
-          message: 'user_and_wallet_not_mapping_and_wallet_not_connected'
-        }
+          message:
+            'user_and_wallet_not_mapping_and_email_not_connected_with_wallet',
+        };
       }
 
-      if(userByWallet?.email !== body.email) {
+      if (userByEmail?.walletAddress !== body.walletAddress) {
         return {
           code: 400,
-          message: 'email_and_wallet_not_mapping'
-        }
-      }
-  
-      if(userByEmail.walletAddress !== body.walletAddress && userByWallet) {
-        return {
-          code: 400,
-          message: 'user_and_wallet_not_mapping_and_wallet_connected'
-        }
-      }
-    }
-    
-    if(type === 'walletFirst') {
-      
-      if(userByWallet?.email !== body.email && !userByEmail) {
-        return {
-          code: 400,
-          message: 'user_and_wallet_not_mapping_and_email_not_connected_with_wallet'
-        }
+          message: 'wallet_and_user_not_mapping',
+        };
       }
 
-      if(userByEmail?.walletAddress !== body.walletAddress) {
+      if (userByWallet?.email !== body.email && userByEmail) {
         return {
           code: 400,
-          message: 'wallet_and_user_not_mapping'
-        }
-      }
-  
-      if(userByWallet?.email !== body.email && userByEmail) {
-        return {
-          code: 400,
-          message: 'user_and_wallet_not_mapping_and_email_connected_with_wallet'
-        }
+          message:
+            'user_and_wallet_not_mapping_and_email_connected_with_wallet',
+        };
       }
     }
 
     return {
       code: 200,
-      message: 'can_login'
-    }
+      message: 'can_login',
+    };
   }
 
   @Post('/check-username')
   @UsePipes(new ValidationPipe())
   @Public()
   async checkUsername(@Body() body: CheckUsernameDTO) {
-    const user = await this.userService.getUserByUsername(body.username)
+    const user = await this.userService.getUserByUsername(body.username);
 
-    if(user.length) {
+    if (user.length) {
       return {
         code: 400,
-        message: 'username_is_existed'
-      }
+        message: 'username_is_existed',
+      };
     }
 
     return {
       code: 200,
-      message: 'successful'
-    }
+      message: 'successful',
+    };
   }
 
   @Post('/check-email')
   @UsePipes(new ValidationPipe())
   @Public()
   async checkEmail(@Body() body: CheckEmailDTO) {
-    const user = await this.userService.getUserByEmail(body.email)
+    const user = await this.userService.getUserByEmail(body.email);
 
-    if(user.length) {
+    if (user.length) {
       return {
         code: 400,
-        message: 'username_is_existed'
-      }
+        message: 'username_is_existed',
+      };
     }
 
     return {
       code: 200,
-      message: 'successful'
-    }
+      message: 'successful',
+    };
   }
 
   @Post('/register')
@@ -294,8 +326,6 @@ export class AuthController {
       throw error;
     }
   }
-
-  
 
   // @Post('/reset-password')
   // @HttpCode(HttpStatus.OK)

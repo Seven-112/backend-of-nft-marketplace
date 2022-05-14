@@ -5,11 +5,11 @@ export enum UserRole {
 }
 
 export enum UserStatus {
-  creator = "creator",
-  admin = "admin",
-  user = "user",
-  active = "active",
-  inactive = "inactive",
+  creator = 'creator',
+  admin = 'admin',
+  user = 'user',
+  active = 'active',
+  inactive = 'inactive',
 }
 
 export class Social {
@@ -36,4 +36,5 @@ export class User {
   createdAt: number;
   social?: Social;
   deletedAt: number;
+  isGoogle: boolean;
 }

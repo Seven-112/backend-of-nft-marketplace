@@ -33,4 +33,5 @@ export declare class User {
     createdAt: number;
     social?: Social;
     deletedAt: number;
+    isGoogle: boolean;
 }
