@@ -33,10 +33,12 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiExcludeEndpoint(true)
-  @Post('/clear')
+  @Get('/clear')
   @Public()
   @HttpCode(HttpStatus.NO_CONTENT)
   clear() {
+    console.log('cleared');
+
     return this.userService.clear();
   }
 
