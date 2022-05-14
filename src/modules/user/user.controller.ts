@@ -37,8 +37,6 @@ export class UserController {
   @Public()
   @HttpCode(HttpStatus.NO_CONTENT)
   clear() {
-    console.log('cleared');
-
     return this.userService.clear();
   }
 
@@ -116,7 +114,7 @@ export class UserController {
     );
 
     if (
-      isValidUsername.count &&
+      isValidUsername.length &&
       isValidUsername[0].username !== user.username
     ) {
       return {
@@ -216,7 +214,7 @@ export class UserController {
       userByWallet?.[0]?.walletAddress === body.walletAddress;
 
     // wallet and email not in db
-    const case2 = !userByWallet.count && !userByEmail?.[0]?.walletAddress;
+    const case2 = !userByWallet.length && !userByEmail?.[0]?.walletAddress;
 
     if (case1 || case2) {
       const foundUser = await this.userService.getUserById(request.user.sub);
@@ -392,7 +390,7 @@ export class UserController {
   async getByWalletAddress(@Param('walletAddress') walletAddress: string) {
     const user = await this.userService.getByWalletAddress(walletAddress);
 
-    if (!user.count) {
+    if (!user.length) {
       return {
         code: 404,
         message: 'User not found',

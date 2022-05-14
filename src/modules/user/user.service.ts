@@ -45,15 +45,15 @@ export class UserService {
 
     const user = await this.userModel.scan('walletAddress').eq(address).exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_WALLET_ADDRESS,
         address,
-        JSON.stringify(user[0]),
+        JSON.stringify(user),
       );
     }
 
-    return !user.count;
+    return !user.length;
   }
 
   async isUserAvailable(id: string) {
@@ -84,7 +84,6 @@ export class UserService {
       Caching.USER_BY_ID,
       id,
     );
-
     if (cached) {
       return JSON.parse(cached);
     }
@@ -122,17 +121,17 @@ export class UserService {
       .eq(id)
       .exec();
 
-    if (user.count) {
+    if (user.length) {
       Promise.all([
         this.redisService.setWithPrefix(
           Caching.USER_BY_ID,
           id,
-          JSON.stringify(user[0]),
+          JSON.stringify(user),
         ),
         this.redisService.setWithPrefix(
           Caching.USER_BY_WALLET_ADDRESS,
           id,
-          JSON.stringify(user[0]),
+          JSON.stringify(user),
         ),
       ]);
     }
@@ -152,11 +151,11 @@ export class UserService {
 
     const user = await this.userModel.scan('username').eq(username).exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_USERNAME,
         username,
-        JSON.stringify(user[0]),
+        JSON.stringify(user),
       );
     }
 
@@ -175,7 +174,7 @@ export class UserService {
 
     const user = await this.userModel.scan('walletAddress').eq(address).exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_WALLET_ADDRESS,
         address,
@@ -212,7 +211,7 @@ export class UserService {
 
     const users = await this.userModel.scan('walletAddress').eq(key).exec();
 
-    if (users.count) {
+    if (users.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_WALLET_ADDRESS,
         key,
@@ -235,11 +234,11 @@ export class UserService {
 
     const user = await this.userModel.scan('email').eq(email).exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_EMAIL,
         email,
-        JSON.stringify(user[0]),
+        JSON.stringify(user),
       );
     }
 
@@ -299,7 +298,7 @@ export class UserService {
       .in(ids)
       .exec();
 
-    if (users.count) {
+    if (users.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_IDS,
         ids.join(','),
@@ -328,7 +327,7 @@ export class UserService {
         .limit(limit)
         .exec();
 
-      if (user.count) {
+      if (user.length) {
         this.redisService.setWithPrefix(
           Caching.ALL_USER,
           '' + limit,
@@ -347,7 +346,7 @@ export class UserService {
 
     const user = await this.userModel.scan('deletedAt').not().exists().exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.ALL_USER,
         '',
@@ -423,7 +422,7 @@ export class UserService {
       .contains(address)
       .exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.SEARCH_USER,
         address,
@@ -446,11 +445,11 @@ export class UserService {
 
     const user = await this.userModel.scan('email').eq(email).exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_EMAIL,
         email,
-        JSON.stringify(user[0]),
+        JSON.stringify(user),
       );
     }
 
@@ -505,7 +504,7 @@ export class UserService {
       .le(endTime)
       .exec();
 
-    if (user.count) {
+    if (user.length) {
       this.redisService.setWithPrefix(
         Caching.USER_BY_TIME,
         startTime.toString() + ',' + endTime.toString(),

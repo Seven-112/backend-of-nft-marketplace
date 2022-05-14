@@ -38,7 +38,7 @@ let AuthController = class AuthController {
     }
     async checkCanAuth(dto) {
         const user = await this.userService.getUserByEmail(dto.email);
-        if (!user.count) {
+        if (!user.length) {
             return {
                 code: 400,
                 message: 'user_not_found',

@@ -29,7 +29,6 @@ let UserController = class UserController {
         this.userService = userService;
     }
     clear() {
-        console.log('cleared');
         return this.userService.clear();
     }
     async getUserProfile(request) {
@@ -76,7 +75,7 @@ let UserController = class UserController {
             };
         }
         const isValidUsername = await this.userService.getUserByUsername(body.username);
-        if (isValidUsername.count &&
+        if (isValidUsername.length &&
             isValidUsername[0].username !== user.username) {
             return {
                 code: 409,
@@ -142,7 +141,7 @@ let UserController = class UserController {
         const userByWallet = await this.userService.getByWalletAddress(body.walletAddress);
         const case1 = ((_a = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _a === void 0 ? void 0 : _a.email) === body.email &&
             ((_b = userByWallet === null || userByWallet === void 0 ? void 0 : userByWallet[0]) === null || _b === void 0 ? void 0 : _b.walletAddress) === body.walletAddress;
-        const case2 = !userByWallet.count && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
+        const case2 = !userByWallet.length && !((_c = userByEmail === null || userByEmail === void 0 ? void 0 : userByEmail[0]) === null || _c === void 0 ? void 0 : _c.walletAddress);
         if (case1 || case2) {
             const foundUser = await this.userService.getUserById(request.user.sub);
             if (foundUser.deletedAt) {
@@ -252,7 +251,7 @@ let UserController = class UserController {
     }
     async getByWalletAddress(walletAddress) {
         const user = await this.userService.getByWalletAddress(walletAddress);
-        if (!user.count) {
+        if (!user.length) {
             return {
                 code: 404,
                 message: 'User not found',
