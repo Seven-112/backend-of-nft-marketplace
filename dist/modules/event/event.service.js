@@ -58,7 +58,7 @@ let EventService = class EventService {
                     .sort(General_1.SortOrder.descending)
                     .exec();
                 if (populate) {
-                    events = events['populate']();
+                    events = await events['populate']();
                 }
                 if (events.length) {
                     this.redisService.setWithPrefix(caching_1.Caching.ALL_EVENT, '' + limit, JSON.stringify(events));
@@ -71,7 +71,7 @@ let EventService = class EventService {
                 .sort(General_1.SortOrder.descending)
                 .exec();
             if (populate) {
-                events = events['populate']();
+                events = await events['populate']();
             }
             if (events.length) {
                 this.redisService.setWithPrefix(caching_1.Caching.ALL_EVENT, '' + limit, JSON.stringify(events));
@@ -257,7 +257,7 @@ let EventService = class EventService {
         }
         const tickets = await this.userTicketModel.scan('event').in(ids).exec();
         const populated = await tickets['populate']();
-        if (tickets.length) {
+        if (tickets.count) {
             this.redisService.setWithPrefix(caching_1.Caching.EVENT_TICKET_BY_IDS, ids.join(','), JSON.stringify(populated));
         }
         return populated || [];

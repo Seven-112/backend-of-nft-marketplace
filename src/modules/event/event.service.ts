@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { SortOrder } from 'dynamoose/dist/General';
 import { RedisService } from '../redis/redis.service';
 import { Caching } from 'src/utils/caching';
+
 @Injectable()
 export class EventService {
   constructor(
@@ -75,7 +76,7 @@ export class EventService {
           .exec();
 
         if (populate) {
-          events = events['populate']();
+          events = await events['populate']();
         }
 
         if (events.length) {
@@ -96,7 +97,7 @@ export class EventService {
         .exec();
 
       if (populate) {
-        events = events['populate']();
+        events = await events['populate']();
       }
 
       if (events.length) {
@@ -356,7 +357,7 @@ export class EventService {
 
     const populated = await tickets['populate']();
 
-    if (tickets.length) {
+    if (tickets.count) {
       this.redisService.setWithPrefix(
         Caching.EVENT_TICKET_BY_IDS,
         ids.join(','),
