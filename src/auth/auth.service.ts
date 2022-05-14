@@ -61,7 +61,7 @@ export class AuthService {
           Password: password,
           Permanent: true,
           Username: email,
-          UserPoolId: process.env.AWS_USER_POOL,
+          UserPoolId: 'eu-west-2_xi1EqOokH',
         },
         (error, data) => {
           if (error) {
