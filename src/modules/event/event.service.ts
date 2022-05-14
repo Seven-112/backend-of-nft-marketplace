@@ -26,6 +26,7 @@ export class EventService {
   }
 
   async createEvent(event: Event) {
+    this.clear();
     return this.eventModel.create(event);
   }
 

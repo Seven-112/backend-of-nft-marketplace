@@ -29,6 +29,7 @@ let EventService = class EventService {
         this.redisService.delWithPrefix(caching_1.Caching.EVENT_BY_IDS, caching_1.Caching.EVENT_BY_ID, caching_1.Caching.EVENT_TICKET_BY_ID, caching_1.Caching.EVENT_TICKET_BY_IDS);
     }
     async createEvent(event) {
+        this.clear();
         return this.eventModel.create(event);
     }
     async getEventById(id) {
