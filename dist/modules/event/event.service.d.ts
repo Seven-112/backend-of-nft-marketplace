@@ -2,13 +2,16 @@ import { UserTicket } from './userTicket.interface';
 import { Model } from 'nestjs-dynamoose';
 import { Event, EventKey } from './event.interface';
 import * as moment from 'moment';
+import { RedisService } from '../redis/redis.service';
 export declare class EventService {
     private readonly eventModel;
     private readonly userTicketModel;
-    constructor(eventModel: Model<Event, EventKey>, userTicketModel: Model<UserTicket, UserTicket['id']>);
+    private readonly redisService;
+    constructor(eventModel: Model<Event, EventKey>, userTicketModel: Model<UserTicket, UserTicket['id']>, redisService: RedisService);
+    clear(): void;
     createEvent(event: Event): Promise<import("nestjs-dynamoose").Document<Event>>;
     getEventById(id: string): Promise<any>;
-    getAllEvents(limit?: number): Promise<any[] | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<Event>>>;
+    getAllEvents(limit?: number, populate?: boolean): Promise<any>;
     updateEvent(eventKey: EventKey, body: any): Promise<import("nestjs-dynamoose").Document<Event>>;
     createUserTicket(userTicket: UserTicket): Promise<import("nestjs-dynamoose").Document<UserTicket>>;
     getUserTicketByTime(firstTime: number, lastTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
@@ -42,7 +45,7 @@ export declare class EventService {
             soldTickets: any;
         };
     };
-    getUserTicketByEventId(id: string): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
-    getUserTicketByEventIds(ids: string[]): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<UserTicket>>>;
+    getUserTicketByEventId(id: string): Promise<any>;
+    getUserTicketByEventIds(ids: string[]): Promise<any>;
     getDataByTime(startTime: number, endTime: number): Promise<import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Event>>>;
 }

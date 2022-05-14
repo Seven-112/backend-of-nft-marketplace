@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { RedisModule } from '../redis/redis.module';
 import { UserModule } from '../user/user.module';
 import { EventController } from './event.controller';
 
@@ -20,6 +21,7 @@ import { UserTicketSchema } from './userTicket.schema';
       },
     ]),
     UserModule,
+    RedisModule,
   ],
   providers: [EventService],
   exports: [EventService],

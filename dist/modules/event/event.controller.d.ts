@@ -25,8 +25,8 @@ export declare class EventController {
         code: number;
         message: string;
         data: {
-            events: any[] | import("nestjs-dynamoose").QueryResponse<import("nestjs-dynamoose").Document<Event>>;
-            length: number;
+            events: any;
+            length: any;
         };
     }>;
     getEventAnalisys(request: any): Promise<{

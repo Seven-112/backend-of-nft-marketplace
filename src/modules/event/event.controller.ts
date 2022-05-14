@@ -103,10 +103,13 @@ export class EventController {
       },
     };
 
-    const updatedEvent = await this.eventService.updateEvent({
-      table: foundEvent.table,
-      timestamp: foundEvent.timestamp
-    }, updateBody);
+    const updatedEvent = await this.eventService.updateEvent(
+      {
+        table: foundEvent.table,
+        timestamp: foundEvent.timestamp,
+      },
+      updateBody,
+    );
 
     return {
       code: 201,
@@ -118,35 +121,37 @@ export class EventController {
   @Get('/')
   @Public()
   async getEvents(@Query('limit') limit?: number) {
-    let events = await this.eventService.getAllEvents(limit);
-    
-    if(!events.length) {
+    let events = await this.eventService.getAllEvents(limit, true);
+
+    if (!events.length) {
       return {
         code: 200,
         message: '',
         data: { events, length: events.length },
       };
     }
-    events = await events['populate']();
-    const eventIds = events.map(event => event.id);
 
-    const boughtTicketUsers = await (await this.eventService.getUserTicketByEventIds(eventIds))['populate']();
-    events = events.map(event => {
+    const eventIds = events.map((event) => event.id);
+
+    const boughtTicketUsers = await this.eventService.getUserTicketByEventIds(
+      eventIds,
+    );
+
+    events = events.map((event) => {
       event.boughtTicketUsers = [];
-      boughtTicketUsers.forEach(boughtTicketUser => {
-        if(boughtTicketUser.event === event.id) {
+      boughtTicketUsers.forEach((boughtTicketUser) => {
+        if (boughtTicketUser.event === event.id) {
           event.boughtTicketUsers.push(boughtTicketUser.user);
         }
       });
       return event;
-    })
+    });
 
     return {
       code: 200,
       message: '',
       data: { events, length: events.length },
     };
-    
   }
 
   @Get('/analysis')
@@ -183,54 +188,83 @@ export class EventController {
       moment().format('1970-01-01 00:00:00'),
     ).valueOf();
 
-    let results = await Promise.all([
+    let results = (await Promise.all([
       this.eventService.getUserTicketByTime(firstDailyTime, currentTime),
       this.eventService.getUserTicketByTime(firstWeeklyTime, currentTime),
       this.eventService.getUserTicketByTime(firstMonthlyTime, currentTime),
-      this.eventService.getUserTicketByTime(firstYearTime, currentTime)
-    ]) as any;
+      this.eventService.getUserTicketByTime(firstYearTime, currentTime),
+    ])) as any;
 
     let [
       userTicketDaily,
       userTicketWeekly,
       userTicketMonthly,
-      userTicketYearly
-    ] = await Promise.all(results.map(result => result['toJSON']()));
+      userTicketYearly,
+    ] = await Promise.all(results.map((result) => result['toJSON']()));
 
     // Get data daily.
     const currentHour = moment(currentTime).format('HH');
-    const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
-
+    const dailyData = this.eventService.formatEventData(
+      userTicketDaily,
+      +currentHour,
+      'hours',
+      'HH:00',
+      'HH',
+    );
 
     // Get data weekly.
     const endOfWeek = moment().endOf('week').weekday();
     let currentDate = moment().endOf('week');
-    const weeklyData = this.eventService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
+    const weeklyData = this.eventService.formatEventData(
+      userTicketWeekly,
+      endOfWeek,
+      'days',
+      'YYYY-MM-DD',
+      'DD',
+      currentDate,
+    );
 
     // // Get data monthly.
     let duration = 11;
     currentDate = moment().endOf('year');
-    const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'MMM', 'MM', currentDate)
+    const monthlyData = this.eventService.formatEventData(
+      userTicketMonthly,
+      duration,
+      'months',
+      'MMM',
+      'MM',
+      currentDate,
+    );
 
     // // Get data yearly.
     const currentYear = moment(currentTime);
-    const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
-      .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
-    if(!firstItem) {
+    const firstItem = userTicketYearly
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .find(
+        (item) =>
+          +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'),
+      );
+    if (!firstItem) {
       duration = 0;
     } else {
       const firstYear = firstItem.createdAt;
       duration = moment.duration(currentYear.diff(firstYear)).asYears();
     }
-    const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY')
+    const allTimeData = this.eventService.formatEventData(
+      userTicketYearly,
+      duration,
+      'years',
+      'YYYY',
+      'YYYYY',
+    );
 
     // format data response.
     const responseData = this.eventService.formatDataAnalysisResponse(
       dailyData,
-      weeklyData, 
-      monthlyData, 
-      allTimeData, 
-      totalAvailableTickets
+      weeklyData,
+      monthlyData,
+      allTimeData,
+      totalAvailableTickets,
     );
 
     // response.
@@ -250,19 +284,21 @@ export class EventController {
     isArray: true,
   })
   @Public()
-  async getEventById(
-    @Param('id') id: string
-  ) {
+  async getEventById(@Param('id') id: string) {
     let event = await this.eventService.getEventById(id);
-    if(!event) {
+
+    if (!event) {
       return {
         code: 400,
-        message: 'event_not_found'
-      }
+        message: 'event_not_found',
+      };
     }
-    let userTickets = await (await this.eventService.getUserTicketByEventId(id))['populate']();
-    userTickets = await userTickets['toJSON']();
-    userTickets = userTickets.sort((a, b) => b.timestamp - a.timestamp).map(userTicket => userTicket.user);
+    let userTickets = await this.eventService.getUserTicketByEventId(id);
+
+    userTickets = userTickets
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map((userTicket) => userTicket.user);
+
     event.boughtTicketUsers = userTickets;
 
     return {
@@ -286,11 +322,11 @@ export class EventController {
     @Query('relations') relations?: string[],
   ) {
     let event = await this.eventService.getEventById(id);
-    if(!event) {
+    if (!event) {
       return {
         error: 400,
-        message: 'event_not_existed'
-      }
+        message: 'event_not_existed',
+      };
     }
 
     const currentTime = moment().valueOf();
@@ -309,55 +345,100 @@ export class EventController {
       moment().format('1970-01-01 00:00:00'),
     ).valueOf();
 
-    let results = await Promise.all([
-      this.eventService.getUserTicketByTimeAndEvent(firstDailyTime, currentTime, id),
-      this.eventService.getUserTicketByTimeAndEvent(firstWeeklyTime, currentTime, id),
-      this.eventService.getUserTicketByTimeAndEvent(firstMonthlyTime, currentTime, id),
-      this.eventService.getUserTicketByTimeAndEvent(firstYearTime, currentTime, id)
-    ]) as any;
+    let results = (await Promise.all([
+      this.eventService.getUserTicketByTimeAndEvent(
+        firstDailyTime,
+        currentTime,
+        id,
+      ),
+      this.eventService.getUserTicketByTimeAndEvent(
+        firstWeeklyTime,
+        currentTime,
+        id,
+      ),
+      this.eventService.getUserTicketByTimeAndEvent(
+        firstMonthlyTime,
+        currentTime,
+        id,
+      ),
+      this.eventService.getUserTicketByTimeAndEvent(
+        firstYearTime,
+        currentTime,
+        id,
+      ),
+    ])) as any;
 
     let [
       userTicketDaily,
       userTicketWeekly,
       userTicketMonthly,
-      userTicketYearly
-    ] = await Promise.all(results.map(result => result['toJSON']()));
+      userTicketYearly,
+    ] = await Promise.all(results.map((result) => result['toJSON']()));
 
     // Get data daily.
     const currentHour = moment(currentTime).format('HH');
-    const dailyData = this.eventService.formatEventData(userTicketDaily, +currentHour, 'hours', 'HH:00', 'HH');
-
+    const dailyData = this.eventService.formatEventData(
+      userTicketDaily,
+      +currentHour,
+      'hours',
+      'HH:00',
+      'HH',
+    );
 
     // Get data weekly.
     const endOfWeek = moment().endOf('week').weekday();
     let currentDate = moment().endOf('week');
-    const weeklyData = this.eventService.formatEventData(userTicketWeekly, endOfWeek, 'days', 'YYYY-MM-DD', 'DD', currentDate);
+    const weeklyData = this.eventService.formatEventData(
+      userTicketWeekly,
+      endOfWeek,
+      'days',
+      'YYYY-MM-DD',
+      'DD',
+      currentDate,
+    );
 
     // // Get data monthly.
     let duration = 11;
     currentDate = moment().endOf('year');
-    const monthlyData = this.eventService.formatEventData(userTicketMonthly, duration, 'months', 'MMM', 'MM', currentDate)
+    const monthlyData = this.eventService.formatEventData(
+      userTicketMonthly,
+      duration,
+      'months',
+      'MMM',
+      'MM',
+      currentDate,
+    );
 
     // // Get data yearly.
     const currentYear = moment(currentTime);
-    const firstItem = userTicketYearly.sort((a, b) => a.timestamp - b.timestamp)
-      .find(item => +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'));
-    if(!firstItem) {
+    const firstItem = userTicketYearly
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .find(
+        (item) =>
+          +moment(item.createdAt).format('YYYY') <= +currentYear.format('YYYY'),
+      );
+    if (!firstItem) {
       duration = 0;
     } else {
       const firstYear = firstItem.createdAt;
       duration = moment.duration(currentYear.diff(firstYear)).asYears();
     }
     console.log(duration);
-    const allTimeData = this.eventService.formatEventData(userTicketYearly, duration, 'years', 'YYYY', 'YYYYY')
+    const allTimeData = this.eventService.formatEventData(
+      userTicketYearly,
+      duration,
+      'years',
+      'YYYY',
+      'YYYYY',
+    );
 
     // format data response.
     const responseData = this.eventService.formatDataAnalysisResponse(
       dailyData,
-      weeklyData, 
-      monthlyData, 
-      allTimeData, 
-      totalAvailableTickets
+      weeklyData,
+      monthlyData,
+      allTimeData,
+      totalAvailableTickets,
     );
 
     // response.
@@ -387,11 +468,11 @@ export class EventController {
         data: null,
       };
 
-    if(!event) {
+    if (!event) {
       return {
         code: 400,
-        message: 'event_not_found'
-      }
+        message: 'event_not_found',
+      };
     }
 
     // Check number ticket is required.
@@ -422,10 +503,13 @@ export class EventController {
     event.ticket.remain -= +body.number_ticket;
     delete event.id;
     delete event.updatedAt;
-    event = await this.eventService.updateEvent({
-      table: event.table,
-      timestamp: event.timestamp
-    }, event);
+    event = await this.eventService.updateEvent(
+      {
+        table: event.table,
+        timestamp: event.timestamp,
+      },
+      event,
+    );
 
     return {
       code: 200,

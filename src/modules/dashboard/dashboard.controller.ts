@@ -1,30 +1,18 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-  UsePipes,
-} from '@nestjs/common';
-import * as moment from 'moment';
-import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { UserRole } from '../user/user.interface';
-import { UserService } from '../user/user.service';
+import * as moment from 'moment';
+import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import { EventService } from '../event/event.service';
 import { NftService } from '../nft/nft.service';
+import { UserRole } from '../user/user.interface';
+import { UserService } from '../user/user.service';
 
 @Controller('dashboards')
 export class UserController {
   constructor(
     private userService: UserService,
     private eventService: EventService,
-    private nftService: NftService
+    private nftService: NftService,
   ) {}
 
   @Get('/')
@@ -33,21 +21,27 @@ export class UserController {
   async dashboard(@Req() request: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(user.deletedAt) {
+    if (user.deletedAt) {
       return {
         code: 400,
-        message: 'user_is_deleted'
-      }
+        message: 'user_is_deleted',
+      };
     }
-    if(user.role !== UserRole.Admin) {
+    if (user.role !== UserRole.Admin) {
       return {
         code: 400,
-        message: 'user_not_permission'
-      }
+        message: 'user_not_permission',
+      };
     }
 
-    const lastWeekStartDate = moment().subtract(1, 'weeks').startOf('isoWeek').valueOf();
-    const lastWeekEndDate = moment().subtract(1, 'weeks').endOf('isoWeek').valueOf();
+    const lastWeekStartDate = moment()
+      .subtract(1, 'weeks')
+      .startOf('isoWeek')
+      .valueOf();
+    const lastWeekEndDate = moment()
+      .subtract(1, 'weeks')
+      .endOf('isoWeek')
+      .valueOf();
     const currentWeekStartDate = moment().startOf('isoWeek').valueOf();
     const currentWeekEndDate = moment().valueOf();
 
@@ -70,37 +64,48 @@ export class UserController {
       this.nftService.getAllUserBought(),
       this.eventService.getDataByTime(lastWeekStartDate, lastWeekEndDate),
       this.eventService.getDataByTime(currentWeekStartDate, lastWeekEndDate),
-      this.eventService.getAllEvents()
+      this.eventService.getAllEvents(),
     ]);
-    let userPercent = lastWeekUsers.length ?
-      (currentWeekUsers.length - lastWeekUsers.length) / lastWeekUsers.length * 100 : 100;
-    
-    if(!currentWeekUsers.length && !lastWeekUsers.length) {
-      userPercent = 0
+    let userPercent = lastWeekUsers.length
+      ? ((currentWeekUsers.length - lastWeekUsers.length) /
+          lastWeekUsers.length) *
+        100
+      : 100;
+
+    if (!currentWeekUsers.length && !lastWeekUsers.length) {
+      userPercent = 0;
     }
 
-    let eventPercent = lastWeekEvents.length ?
-      (currentWeekEvents.length - lastWeekEvents.length) / lastWeekEvents.length * 100 : 100;
-    
-    if(!currentWeekEvents.length && !lastWeekEvents.length) {
-      eventPercent = 0
+    let eventPercent = lastWeekEvents.length
+      ? ((currentWeekEvents.length - lastWeekEvents.length) /
+          lastWeekEvents.length) *
+        100
+      : 100;
+
+    if (!currentWeekEvents.length && !lastWeekEvents.length) {
+      eventPercent = 0;
     }
 
     lastWeekNftBought = await lastWeekNftBought['populate']();
     currentWeekNftBought = await currentWeekNftBought['populate']();
     allBought = await allBought['populate']();
-    const lastWeekTotalPrice = lastWeekNftBought.map(nftBought => +nftBought.nft?.price || 0)
+    const lastWeekTotalPrice = lastWeekNftBought
+      .map((nftBought) => +nftBought.nft?.price || 0)
       .reduce((prev, current) => prev + current, 0);
-    const currentWeekTotalPrice = currentWeekNftBought.map(nftBought => +nftBought.nft?.price || 0)
+    const currentWeekTotalPrice = currentWeekNftBought
+      .map((nftBought) => +nftBought.nft?.price || 0)
       .reduce((prev, current) => prev + current, 0);
-    const totalPrice = allBought.map(nftBought => +nftBought.nft?.price || 0)
+    const totalPrice = allBought
+      .map((nftBought) => +nftBought.nft?.price || 0)
       .reduce((prev, current) => prev + current, 0);
 
-    let boughtPercent = lastWeekTotalPrice ?
-      (currentWeekTotalPrice - lastWeekTotalPrice) / lastWeekTotalPrice * 100 : 100;
-    
-    if(!currentWeekTotalPrice && !lastWeekTotalPrice) {
-      boughtPercent = 0
+    let boughtPercent = lastWeekTotalPrice
+      ? ((currentWeekTotalPrice - lastWeekTotalPrice) / lastWeekTotalPrice) *
+        100
+      : 100;
+
+    if (!currentWeekTotalPrice && !lastWeekTotalPrice) {
+      boughtPercent = 0;
     }
 
     const responseData = {
@@ -110,13 +115,13 @@ export class UserController {
       },
       event: {
         percent: eventPercent.toFixed(2),
-        total: allEvents.length
+        total: allEvents.length,
       },
       nftBought: {
         percent: boughtPercent.toFixed(2),
-        total: totalPrice
-      }
-    }
+        total: totalPrice,
+      },
+    };
 
     return {
       code: 200,

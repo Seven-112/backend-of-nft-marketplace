@@ -1,6 +1,6 @@
-import { UserService } from '../user/user.service';
 import { EventService } from '../event/event.service';
 import { NftService } from '../nft/nft.service';
+import { UserService } from '../user/user.service';
 export declare class UserController {
     private userService;
     private eventService;
@@ -20,7 +20,7 @@ export declare class UserController {
             };
             event: {
                 percent: string;
-                total: number;
+                total: any;
             };
             nftBought: {
                 percent: string;
