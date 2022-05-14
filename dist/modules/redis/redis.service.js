@@ -20,6 +20,24 @@ let RedisService = class RedisService {
     constructor(redis) {
         this.redis = redis;
     }
+    getRedis() {
+        return this.redis;
+    }
+    get(key) {
+        return this.redis.get(key);
+    }
+    set(key, value) {
+        return this.redis.set(key, value);
+    }
+    getWithPrefix(prefix, key) {
+        return this.redis.get(prefix + ':' + key);
+    }
+    setWithPrefix(prefix, key, value) {
+        return this.redis.set(prefix + ':' + key, value);
+    }
+    delWithPrefix(...prefix) {
+        return prefix.map((pre) => this.redis.del(`${pre}:*`));
+    }
     async hmset(payload, target) {
         const id = (0, nanoid_1.nanoid)();
         const data = Object.assign(Object.assign({}, payload), { isSync: false });

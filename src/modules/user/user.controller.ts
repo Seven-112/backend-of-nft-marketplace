@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -23,13 +25,20 @@ import {
 } from './DTO/update-profile';
 import { UpdateUserDTO } from './DTO/update-user.dto';
 import { UserService } from './user.service';
-import { Social, UserRole, UserStatus } from './user.interface';
+import { UserRole, UserStatus } from './user.interface';
 import { Request } from 'express';
-import { ApiBearerAuth } from '@nestjs/swagger';
-
+import { ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @ApiExcludeEndpoint(true)
+  @Post('/clear')
+  @Public()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  clear() {
+    return this.userService.clear();
+  }
 
   @Get('/profile')
   @UseGuards(JwtAuthGuard)

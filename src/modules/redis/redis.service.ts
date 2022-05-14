@@ -7,6 +7,30 @@ import { EListType } from './redis.interface';
 export class RedisService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
+  getRedis() {
+    return this.redis;
+  }
+
+  get(key: string) {
+    return this.redis.get(key);
+  }
+
+  set(key: string, value: string) {
+    return this.redis.set(key, value);
+  }
+
+  getWithPrefix(prefix: string, key: string) {
+    return this.redis.get(prefix + ':' + key);
+  }
+
+  setWithPrefix(prefix: string, key: string, value: string) {
+    return this.redis.set(prefix + ':' + key, value);
+  }
+
+  delWithPrefix(...prefix: string[]) {
+    return prefix.map((pre) => this.redis.del(`${pre}:*`));
+  }
+
   async hmset(payload: any, target: EListType) {
     const id = nanoid();
     const data = { ...payload, isSync: false };

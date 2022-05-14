@@ -16,7 +16,7 @@ export declare class UserController {
         data: {
             user: {
                 percent: string;
-                total: number;
+                total: any;
             };
             event: {
                 percent: string;

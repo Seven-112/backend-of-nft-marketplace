@@ -17,74 +17,180 @@ const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const aws = require("aws-sdk");
 const transformCognitoUser_1 = require("../../utils/transformCognitoUser");
+const redis_service_1 = require("../redis/redis.service");
+const caching_1 = require("../../utils/caching");
+const getFirstTruthy_1 = require("../../utils/getFirstTruthy");
 let UserService = class UserService {
-    constructor(userModel) {
+    constructor(userModel, redisService) {
         this.userModel = userModel;
+        this.redisService = redisService;
+    }
+    async clear() {
+        Promise.all(this.redisService.delWithPrefix(caching_1.Caching.ALL_USER, caching_1.Caching.SEARCH_USER, caching_1.Caching.USER_BY_EMAIL, caching_1.Caching.USER_BY_ID, caching_1.Caching.USER_BY_IDS, caching_1.Caching.USER_BY_USERNAME, caching_1.Caching.USER_BY_WALLET_ADDRESS, caching_1.Caching.USER_BY_TIME));
+        return;
     }
     async isWalletAvailable(address) {
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, address);
+        if (cached) {
+            return false;
+        }
         const user = await this.userModel.scan('walletAddress').eq(address).exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, address, JSON.stringify(user[0]));
+        }
         return !user.count;
     }
     async isUserAvailable(id) {
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_ID, id);
+        if (cached) {
+            return false;
+        }
         const user = await this.userModel.get(id);
+        if (user) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_ID, id, JSON.stringify(user));
+        }
         return !user;
     }
     async getUserById(id) {
-        return this.userModel.get(id);
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_ID, id);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.get(id);
+        if (user) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_ID, id, JSON.stringify(user));
+        }
+        return user;
     }
     async getUserByIdOrWallet(id) {
-        return this.userModel
+        const cached = await Promise.all([
+            this.redisService.getWithPrefix(caching_1.Caching.USER_BY_ID, id),
+            this.redisService.getWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, id),
+        ]);
+        const value = (0, getFirstTruthy_1.default)(cached);
+        if (value) {
+            return JSON.parse(value);
+        }
+        const user = await this.userModel
             .scan('id')
             .eq(id)
             .or()
             .where('walletAddress')
             .eq(id)
             .exec();
-    }
-    async createUser(data) {
-        return this.userModel.create(data);
+        if (user.count) {
+            Promise.all([
+                this.redisService.setWithPrefix(caching_1.Caching.USER_BY_ID, id, JSON.stringify(user[0])),
+                this.redisService.setWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, id, JSON.stringify(user[0])),
+            ]);
+        }
+        return user;
     }
     async getUserByUsername(username) {
-        return this.userModel.scan('username').eq(username).exec();
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_USERNAME, username);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.scan('username').eq(username).exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_USERNAME, username, JSON.stringify(user[0]));
+        }
+        return user;
     }
     async getByWalletAddress(address) {
-        return this.userModel.scan('walletAddress').eq(address).exec();
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, address);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.scan('walletAddress').eq(address).exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, address, JSON.stringify(user));
+        }
+        return user;
     }
     async getUserByWalletAddressOrId(key) {
-        const userByWallet = await this.userModel.get(key);
-        if (userByWallet)
-            return userByWallet;
+        const cached = await Promise.all([
+            this.redisService.getWithPrefix(caching_1.Caching.USER_BY_ID, key),
+            this.redisService.getWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, key),
+        ]);
+        const value = (0, getFirstTruthy_1.default)(cached);
+        if (value) {
+            return JSON.parse(value);
+        }
+        const userById = await this.userModel.get(key);
+        if (userById) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_ID, key, JSON.stringify(userById));
+            return userById;
+        }
         const users = await this.userModel.scan('walletAddress').eq(key).exec();
+        if (users.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_WALLET_ADDRESS, key, JSON.stringify(users[0]));
+        }
         return users[0] || null;
     }
     async getByEmail(email) {
-        return this.userModel.scan('email').eq(email).exec();
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_EMAIL, email);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.scan('email').eq(email).exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_EMAIL, email, JSON.stringify(user[0]));
+        }
+        return user;
     }
     async updateUser(user) {
+        Promise.all(this.redisService.delWithPrefix(caching_1.Caching.ALL_USER, caching_1.Caching.SEARCH_USER, caching_1.Caching.USER_BY_EMAIL, caching_1.Caching.USER_BY_ID, caching_1.Caching.USER_BY_IDS, caching_1.Caching.USER_BY_USERNAME, caching_1.Caching.USER_BY_WALLET_ADDRESS, caching_1.Caching.USER_BY_TIME));
         return this.userModel.update(user);
     }
     async updateWalletAddress(id, body) {
         body.id = id;
+        Promise.all(this.redisService.delWithPrefix(caching_1.Caching.ALL_USER, caching_1.Caching.SEARCH_USER, caching_1.Caching.USER_BY_EMAIL, caching_1.Caching.USER_BY_ID, caching_1.Caching.USER_BY_IDS, caching_1.Caching.USER_BY_USERNAME, caching_1.Caching.USER_BY_WALLET_ADDRESS, caching_1.Caching.USER_BY_TIME));
         return this.userModel.update(body);
     }
     async getUsers(ids) {
-        return this.userModel
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_IDS, ids.join(','));
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const users = await this.userModel
             .scan('id')
             .in(ids)
             .or()
             .where('walletAddress')
             .in(ids)
             .exec();
+        if (users.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_IDS, ids.join(','), JSON.stringify(users));
+        }
+        return users;
     }
     async getAllUsers(limit) {
-        if (limit)
-            return this.userModel
+        if (limit) {
+            const cached = await this.redisService.getWithPrefix(caching_1.Caching.ALL_USER, '' + limit);
+            if (cached) {
+                return JSON.parse(cached);
+            }
+            const user = await this.userModel
                 .scan('deletedAt')
                 .not()
                 .exists()
                 .limit(limit)
                 .exec();
-        return this.userModel.scan('deletedAt').not().exists().exec();
+            if (user.count) {
+                this.redisService.setWithPrefix(caching_1.Caching.ALL_USER, '' + limit, JSON.stringify(user));
+            }
+            return user;
+        }
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.ALL_USER, '');
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.scan('deletedAt').not().exists().exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.ALL_USER, '', JSON.stringify(user));
+        }
+        return user;
     }
     async getUserFromCognito(accessToken) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
@@ -112,7 +218,11 @@ let UserService = class UserService {
         });
     }
     async searchUsers(address) {
-        return this.userModel
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.SEARCH_USER, address);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel
             .scan('walletAddress')
             .contains(address)
             .or()
@@ -122,9 +232,21 @@ let UserService = class UserService {
             .where('email')
             .contains(address)
             .exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.SEARCH_USER, address, JSON.stringify(user));
+        }
+        return user;
     }
     async getUserByEmail(email) {
-        return this.userModel.scan('email').eq(email).exec();
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_EMAIL, email);
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel.scan('email').eq(email).exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_EMAIL, email, JSON.stringify(user[0]));
+        }
+        return user;
     }
     async disableUserCognito(email) {
         const cognitoIdentityServiceProvider = new aws.CognitoIdentityServiceProvider();
@@ -145,19 +267,27 @@ let UserService = class UserService {
         });
     }
     async getDataByTime(startTime, endTime) {
-        return this.userModel
+        const cached = await this.redisService.getWithPrefix(caching_1.Caching.USER_BY_TIME, startTime.toString() + ',' + endTime.toString());
+        if (cached) {
+            return JSON.parse(cached);
+        }
+        const user = await this.userModel
             .scan('createdAt')
             .ge(startTime)
             .and()
             .where('createdAt')
             .le(endTime)
             .exec();
+        if (user.count) {
+            this.redisService.setWithPrefix(caching_1.Caching.USER_BY_TIME, startTime.toString() + ',' + endTime.toString(), JSON.stringify(user));
+        }
+        return user;
     }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, nestjs_dynamoose_1.InjectModel)('User')),
-    __metadata("design:paramtypes", [Object])
+    __metadata("design:paramtypes", [Object, redis_service_1.RedisService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DynamooseModule } from 'nestjs-dynamoose';
+import { RedisModule } from '../redis/redis.module';
 import { UserController } from './user.controller';
 import { UserSchema } from './user.schema';
 import { UserService } from './user.service';
@@ -12,6 +13,7 @@ import { UserService } from './user.service';
         schema: UserSchema,
       },
     ]),
+    RedisModule,
   ],
   providers: [UserService],
   exports: [UserService],

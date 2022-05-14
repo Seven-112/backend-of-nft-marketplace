@@ -28,6 +28,9 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
+    clear() {
+        return this.userService.clear();
+    }
     async getUserProfile(request) {
         const user = await this.userService.getUserById(request.user.sub);
         if (!user)
@@ -280,6 +283,15 @@ let UserController = class UserController {
         };
     }
 };
+__decorate([
+    (0, swagger_1.ApiExcludeEndpoint)(true),
+    (0, common_1.Post)('/clear'),
+    (0, jwt_auth_guard_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "clear", null);
 __decorate([
     (0, common_1.Get)('/profile'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
