@@ -24,7 +24,7 @@ export class RedisService {
   }
 
   setWithPrefix(prefix: string, key: string, value: string) {
-    return this.redis.set(prefix + ':' + key, value);
+    return this.redis.set(prefix + ':' + key, value, 'EX', 5 * 60);
   }
 
   delWithPrefix(...prefix: string[]) {

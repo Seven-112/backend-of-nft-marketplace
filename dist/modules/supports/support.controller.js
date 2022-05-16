@@ -82,7 +82,7 @@ let SupportController = class SupportController {
             if (support.replies) {
                 support.replies = support.replies.map((reply) => {
                     if (reply.user) {
-                        const user = users.find(user => user.id === reply.user);
+                        const user = users.find((user) => user.id === reply.user);
                         reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
                         reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.eamil;
                         reply.avatar = (user === null || user === void 0 ? void 0 : user.avatar) || '';
@@ -104,7 +104,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'user_not_permission',
-                data: null
+                data: null,
             };
         }
         const support = await this.supportService.getSupportByTicket(ticket);
@@ -112,7 +112,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
-                data: null
+                data: null,
             };
         }
         const replies = support.replies || [];
@@ -161,7 +161,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'user_not_permission',
-                data: null
+                data: null,
             };
         }
         const support = await this.supportService.getSupportByTicket(ticket);
@@ -169,11 +169,11 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
-                data: null
+                data: null,
             };
         }
         const dataUpdate = {
-            status: support_interface_1.Status.done
+            status: support_interface_1.Status.done,
         };
         await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
         const subject = `[Closed] ${support.ticket_uuid} - ${support.subject}`;
@@ -207,7 +207,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'user_not_permission',
-                data: null
+                data: null,
             };
         }
         const support = await this.supportService.getSupportByTicket(ticket);
@@ -215,11 +215,11 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
-                data: null
+                data: null,
             };
         }
         const dataUpdate = {
-            isRead: true
+            isRead: true,
         };
         await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
         return {
@@ -234,7 +234,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
-                data: null
+                data: null,
             };
         }
         const replies = support.replies || [];
@@ -259,7 +259,7 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'support_request_not_exited',
-                data: null
+                data: null,
             };
         }
         if (support.replies) {
@@ -277,7 +277,7 @@ let SupportController = class SupportController {
             }
             support.replies = support.replies.map((reply) => {
                 if (reply.user) {
-                    const user = users.find(user => user.id === reply.user);
+                    const user = users.find((user) => user.id === reply.user);
                     reply.username = (user === null || user === void 0 ? void 0 : user.username) || reply.username;
                     reply.email = (user === null || user === void 0 ? void 0 : user.email) || reply.email;
                     reply.avatar = (user === null || user === void 0 ? void 0 : user.avatar) || '';

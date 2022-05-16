@@ -1,4 +1,3 @@
-import { APP_URI } from './../../utils/constants';
 import {
   Body,
   Controller,
@@ -12,7 +11,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard, Public } from 'src/guard/jwt-auth.guard';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { CreateSupportDTO } from './DTO/createSupport.dto';
@@ -22,7 +21,6 @@ import { MailService } from '../mail/mail.service';
 import { ReplySupportDTO } from './DTO/replySupport.dto';
 import { UserService } from '../user/user.service';
 import { UserRole } from '../user/user.interface';
-import { Length } from 'class-validator';
 
 @Controller('supports')
 export class SupportController {
@@ -44,7 +42,7 @@ export class SupportController {
     support.createdAt = new Date().getTime();
     support.updatedAt = new Date().getTime();
     support = await this.supportService.create(support);
-    
+
     const content = `
       Dear sir,<br>
       Thank for your support ticket request. <br><br>
@@ -61,9 +59,9 @@ export class SupportController {
       <br><br>
       Best regards,<br>
       Support team
-    `
+    `;
 
-    const subject = `[Support submitted] ${support.ticket_uuid} - ${support.subject}`
+    const subject = `[Support submitted] ${support.ticket_uuid} - ${support.subject}`;
 
     this.mailService.sendEmail(support.email, subject, content);
     return {
@@ -76,35 +74,45 @@ export class SupportController {
   @Get('/')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getSupports(@Req() request: any, @Query('limit') limit?: number, @Query('lastItem') lastItem?: string, @Query('status') status?: string) {
-
-    let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null, status))['toJSON']();
+  async getSupports(
+    @Req() request: any,
+    @Query('limit') limit?: number,
+    @Query('lastItem') lastItem?: string,
+    @Query('status') status?: string,
+  ) {
+    let supports = await (
+      await this.supportService.get(
+        limit,
+        lastItem ? { id: lastItem } : null,
+        status,
+      )
+    )['toJSON']();
     const userIds = [];
     supports.forEach((support: any) => {
-      if(support.replies) {
+      if (support.replies) {
         support.replies.forEach((reply: any) => {
-          if(reply.user) {
-            userIds.push(reply.user)
+          if (reply.user) {
+            userIds.push(reply.user);
           }
-        })
+        });
       }
-    })
+    });
 
     const users = await this.userService.getUsers(userIds);
     supports = supports.map((support: any) => {
-      if(support.replies) {
+      if (support.replies) {
         support.replies = support.replies.map((reply: any) => {
-          if(reply.user) {
-            const user = users.find(user => user.id === reply.user);
+          if (reply.user) {
+            const user = users.find((user) => user.id === reply.user);
             reply.username = user?.username || reply.username;
             reply.email = user?.email || reply.eamil;
             reply.avatar = user?.avatar || '';
           }
           return reply;
-        })
+        });
       }
       return support;
-    })
+    });
 
     return {
       code: 200,
@@ -116,25 +124,29 @@ export class SupportController {
   @Post('/:ticket/admin/reply')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async adminReply(@Req() request: any, @Param('ticket') ticket: string, @Body() body: ReplySupportDTO) {
+  async adminReply(
+    @Req() request: any,
+    @Param('ticket') ticket: string,
+    @Body() body: ReplySupportDTO,
+  ) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(!user || user.role !== UserRole.Admin) {
+    if (!user || user.role !== UserRole.Admin) {
       return {
         code: 400,
         message: 'user_not_permission',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const support = await this.supportService.getSupportByTicket(ticket);
 
-    if(!support) {
+    if (!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const replies = support.replies || [];
@@ -145,9 +157,12 @@ export class SupportController {
     reply = JSON.parse(JSON.stringify(reply));
     replies.push(reply);
     support.replies = replies;
-    
-    await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
-    const subject = `[Reply] ${support.ticket_uuid} - ${support.subject}`
+
+    await this.supportService.updateSupport(
+      { table: support.table, timestamp: support.timestamp },
+      support,
+    );
+    const subject = `[Reply] ${support.ticket_uuid} - ${support.subject}`;
     const content = `
       Dear sir,<br>
       Your support request information as bellow: <br>
@@ -169,8 +184,8 @@ export class SupportController {
       Best regards,<br>
       Support team<br>
       ${user.username}
-    `
-    console.log(support.email, subject)
+    `;
+    console.log(support.email, subject);
     await this.mailService.sendEmail(support.email, subject, content);
     return {
       code: 200,
@@ -185,30 +200,33 @@ export class SupportController {
   async resolveSupport(@Req() request: any, @Param('ticket') ticket: string) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(!user || user.role !== UserRole.Admin) {
+    if (!user || user.role !== UserRole.Admin) {
       return {
         code: 400,
         message: 'user_not_permission',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const support = await this.supportService.getSupportByTicket(ticket);
 
-    if(!support) {
+    if (!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const dataUpdate = {
-      status: Status.done
-    }
-    
-    await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
-    const subject = `[Closed] ${support.ticket_uuid} - ${support.subject}`
+      status: Status.done,
+    };
+
+    await this.supportService.updateNotDelete(
+      { table: support.table, timestamp: support.timestamp },
+      dataUpdate,
+    );
+    const subject = `[Closed] ${support.ticket_uuid} - ${support.subject}`;
     const content = `
       Dear sir,<br>
       <h2>Your support request is completed.</h2> <br>
@@ -225,7 +243,7 @@ export class SupportController {
       Best regards,<br>
       Support team<br>
       ${user.username}
-    `
+    `;
 
     await this.mailService.sendEmail(support.email, subject, content);
     return {
@@ -241,29 +259,32 @@ export class SupportController {
   async readSupport(@Req() request: any, @Param('ticket') ticket: string) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(!user || user.role !== UserRole.Admin) {
+    if (!user || user.role !== UserRole.Admin) {
       return {
         code: 400,
         message: 'user_not_permission',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const support = await this.supportService.getSupportByTicket(ticket);
 
-    if(!support) {
+    if (!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const dataUpdate = {
-      isRead: true
-    }
-    
-    await this.supportService.updateNotDelete({ table: support.table, timestamp: support.timestamp }, dataUpdate);
+      isRead: true,
+    };
+
+    await this.supportService.updateNotDelete(
+      { table: support.table, timestamp: support.timestamp },
+      dataUpdate,
+    );
 
     return {
       code: 200,
@@ -271,19 +292,22 @@ export class SupportController {
       data: null,
     };
   }
-  
+
   @Post('/:ticket/user/reply')
   @Public()
-  async userReply(@Req() request: any, @Param('ticket') ticket: string, @Body() body: ReplySupportDTO) {
-
+  async userReply(
+    @Req() request: any,
+    @Param('ticket') ticket: string,
+    @Body() body: ReplySupportDTO,
+  ) {
     const support = await this.supportService.getSupportByTicket(ticket);
 
-    if(!support) {
+    if (!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
-        data: null
-      }
+        data: null,
+      };
     }
 
     const replies = support.replies || [];
@@ -294,8 +318,11 @@ export class SupportController {
     reply = JSON.parse(JSON.stringify(reply));
     replies.push(reply);
     support.replies = replies;
-    
-    await this.supportService.updateSupport({ table: support.table, timestamp: support.timestamp }, support);
+
+    await this.supportService.updateSupport(
+      { table: support.table, timestamp: support.timestamp },
+      support,
+    );
 
     return {
       code: 200,
@@ -303,47 +330,44 @@ export class SupportController {
       data: null,
     };
   }
-  
 
   @Get('/:ticket')
   @Public()
   async getSupportRequestByTicket(@Param('ticket') ticket: string) {
-
     let support = await this.supportService.getSupportByTicket(ticket);
     const userIds = [];
-    if(!support) {
+    if (!support) {
       return {
         code: 400,
         message: 'support_request_not_exited',
-        data: null
-      }
+        data: null,
+      };
     }
 
-    if(support.replies) {
+    if (support.replies) {
       support.replies.forEach((reply: any) => {
-        if(reply.user) {
-          userIds.push(reply.user)
+        if (reply.user) {
+          userIds.push(reply.user);
         }
-      })
+      });
 
       let users = [];
       try {
         users = await this.userService.getUsers(userIds);
-      } catch(e) {
+      } catch (e) {
         users = [];
       }
-      
+
       support.replies = support.replies.map((reply: any) => {
-        if(reply.user) {
-          const user = users.find(user => user.id === reply.user);
+        if (reply.user) {
+          const user = users.find((user) => user.id === reply.user);
           reply.username = user?.username || reply.username;
           reply.email = user?.email || reply.email;
           reply.avatar = user?.avatar || '';
         } else {
-          
         }
         return reply;
-      })
+      });
     }
 
     return {

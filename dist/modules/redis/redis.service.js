@@ -33,7 +33,7 @@ let RedisService = class RedisService {
         return this.redis.get(prefix + ':' + key);
     }
     setWithPrefix(prefix, key, value) {
-        return this.redis.set(prefix + ':' + key, value);
+        return this.redis.set(prefix + ':' + key, value, 'EX', 5 * 60);
     }
     delWithPrefix(...prefix) {
         return prefix.map((pre) => {
