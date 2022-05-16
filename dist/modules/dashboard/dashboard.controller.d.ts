@@ -24,7 +24,7 @@ export declare class UserController {
             };
             nftBought: {
                 percent: string;
-                total: number;
+                total: any;
             };
         };
     }>;

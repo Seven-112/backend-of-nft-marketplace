@@ -10,6 +10,7 @@ exports.NFTModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const notification_module_1 = require("../notification/notification.module");
+const redis_module_1 = require("../redis/redis.module");
 const user_module_1 = require("../user/user.module");
 const nft_controller_1 = require("./nft.controller");
 const nft_schema_1 = require("./nft.schema");
@@ -31,7 +32,8 @@ NFTModule = __decorate([
                 },
             ]),
             user_module_1.UserModule,
-            notification_module_1.NotificationModule
+            notification_module_1.NotificationModule,
+            redis_module_1.RedisModule,
         ],
         providers: [nft_service_1.NftService],
         exports: [nft_service_1.NftService],

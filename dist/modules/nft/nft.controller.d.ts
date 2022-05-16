@@ -16,7 +16,7 @@ export declare class NFTController {
     getNfts(limit?: number): Promise<{
         code: number;
         message: string;
-        data: import("nestjs-dynamoose").ScanResponse<import("nestjs-dynamoose").Document<Nft>>;
+        data: any;
     }>;
     updateNft(body: UpdateNftDTO): Promise<{
         code: number;

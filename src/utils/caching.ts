@@ -1,7 +1,9 @@
 export enum Caching {
   ALL_USER = 'all_user',
-  SEARCH_USER = 'search_user',
   ALL_EVENT = 'all_event',
+  ALL_NFT = 'all_nft',
+  ALL_NFT_BOUGHT = 'all_nft_bought',
+  SEARCH_USER = 'search_user',
   USER_BY_ID = 'user_by_id',
   USER_BY_USERNAME = 'user_by_username',
   USER_BY_IDS = 'user_by_ids',
@@ -12,6 +14,9 @@ export enum Caching {
   EVENT_BY_IDS = 'event_by_ids',
   EVENT_TICKET_BY_ID = 'event_ticket_by_id',
   EVENT_TICKET_BY_IDS = 'event_ticket_by_ids',
+  NFT_BY_ID = 'nft_by_id',
+  NFT_BOUGHT_BY_USER_ID = 'nft_bought_by_user_id',
+  NFT_BOUGHT_BY_NFT_IDS = 'nft_bought_by_nft_ids',
 }
 
 /**Cache user

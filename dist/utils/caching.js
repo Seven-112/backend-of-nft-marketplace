@@ -4,8 +4,10 @@ exports.Caching = void 0;
 var Caching;
 (function (Caching) {
     Caching["ALL_USER"] = "all_user";
-    Caching["SEARCH_USER"] = "search_user";
     Caching["ALL_EVENT"] = "all_event";
+    Caching["ALL_NFT"] = "all_nft";
+    Caching["ALL_NFT_BOUGHT"] = "all_nft_bought";
+    Caching["SEARCH_USER"] = "search_user";
     Caching["USER_BY_ID"] = "user_by_id";
     Caching["USER_BY_USERNAME"] = "user_by_username";
     Caching["USER_BY_IDS"] = "user_by_ids";
@@ -16,5 +18,8 @@ var Caching;
     Caching["EVENT_BY_IDS"] = "event_by_ids";
     Caching["EVENT_TICKET_BY_ID"] = "event_ticket_by_id";
     Caching["EVENT_TICKET_BY_IDS"] = "event_ticket_by_ids";
+    Caching["NFT_BY_ID"] = "nft_by_id";
+    Caching["NFT_BOUGHT_BY_USER_ID"] = "nft_bought_by_user_id";
+    Caching["NFT_BOUGHT_BY_NFT_IDS"] = "nft_bought_by_nft_ids";
 })(Caching = exports.Caching || (exports.Caching = {}));
 //# sourceMappingURL=caching.js.map
