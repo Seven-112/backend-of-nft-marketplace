@@ -13,7 +13,7 @@ export declare class NftService {
     updateNft(updatedNft: Nft): Promise<Document<Nft>>;
     findNft(id: string): Promise<any>;
     createUserNftBought(data: UserNFTBought): Promise<Document<UserNFTBought>>;
-    getUserNftBoughtByUserAndNft(nftId: string, userId: string): Promise<import("nestjs-dynamoose").ScanResponse<Document<UserNFTBought>>>;
+    getUserNftBoughtByUserAndNft(nftId: string, userId: string): Promise<any>;
     getBoughtNftByUser(userId: string, starttime: number): Promise<import("nestjs-dynamoose").ScanResponse<Document<UserNFTBought>>>;
     getDataByTime(startTime: number, endTime: number): Promise<import("nestjs-dynamoose").ScanResponse<Document<UserNFTBought>>>;
     getAllUserBought(): Promise<any>;

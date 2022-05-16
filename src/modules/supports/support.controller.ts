@@ -75,18 +75,16 @@ export class SupportController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getSupports(
-    @Req() request: any,
     @Query('limit') limit?: number,
     @Query('lastItem') lastItem?: string,
     @Query('status') status?: string,
   ) {
-    let supports = await (
-      await this.supportService.get(
-        limit,
-        lastItem ? { id: lastItem } : null,
-        status,
-      )
-    )['toJSON']();
+    let supports = await this.supportService.get(
+      limit,
+      lastItem ? { id: lastItem } : null,
+      status,
+    );
+
     const userIds = [];
     supports.forEach((support: any) => {
       if (support.replies) {
@@ -185,7 +183,7 @@ export class SupportController {
       Support team<br>
       ${user.username}
     `;
-    console.log(support.email, subject);
+
     await this.mailService.sendEmail(support.email, subject, content);
     return {
       code: 200,

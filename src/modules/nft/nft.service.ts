@@ -102,17 +102,39 @@ export class NftService {
   }
 
   async createUserNftBought(data: UserNFTBought) {
+    this.clear();
     return this.userNFTBoughtModel.create(data);
   }
 
   async getUserNftBoughtByUserAndNft(nftId: string, userId: string) {
-    return this.userNFTBoughtModel
+    const cached = await this.redisService.getWithPrefix(
+      Caching.NFT_BOUGHT_BY_USER_AND_NFT,
+      nftId + ',' + userId,
+    );
+
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
+    const nftBoughts = await this.userNFTBoughtModel
       .scan('nft')
       .eq(nftId)
       .and()
       .where('user')
       .eq(userId)
       .exec();
+
+    const jsoned = await nftBoughts['toJSON']();
+
+    if (nftBoughts.length) {
+      this.redisService.setWithPrefix(
+        Caching.NFT_BOUGHT_BY_USER_AND_NFT,
+        nftId + ',' + userId,
+        JSON.stringify(jsoned),
+      );
+    }
+
+    return jsoned;
   }
 
   async getBoughtNftByUser(userId: string, starttime: number) {

@@ -7,6 +7,8 @@ var Caching;
     Caching["ALL_EVENT"] = "all_event";
     Caching["ALL_NFT"] = "all_nft";
     Caching["ALL_NFT_BOUGHT"] = "all_nft_bought";
+    Caching["ALL_SUPPORT"] = "all_support";
+    Caching["SUPPORT_BY_TICKET"] = "support_by_ticket";
     Caching["SEARCH_USER"] = "search_user";
     Caching["USER_BY_ID"] = "user_by_id";
     Caching["USER_BY_USERNAME"] = "user_by_username";
@@ -21,5 +23,6 @@ var Caching;
     Caching["NFT_BY_ID"] = "nft_by_id";
     Caching["NFT_BOUGHT_BY_USER_ID"] = "nft_bought_by_user_id";
     Caching["NFT_BOUGHT_BY_NFT_IDS"] = "nft_bought_by_nft_ids";
+    Caching["NFT_BOUGHT_BY_USER_AND_NFT"] = "nft_bought_by_user_and_nft";
 })(Caching = exports.Caching || (exports.Caching = {}));
 //# sourceMappingURL=caching.js.map

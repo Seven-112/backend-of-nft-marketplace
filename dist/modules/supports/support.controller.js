@@ -65,8 +65,8 @@ let SupportController = class SupportController {
             data: support,
         };
     }
-    async getSupports(request, limit, lastItem, status) {
-        let supports = await (await this.supportService.get(limit, lastItem ? { id: lastItem } : null, status))['toJSON']();
+    async getSupports(limit, lastItem, status) {
+        let supports = await this.supportService.get(limit, lastItem ? { id: lastItem } : null, status);
         const userIds = [];
         supports.forEach((support) => {
             if (support.replies) {
@@ -147,7 +147,6 @@ let SupportController = class SupportController {
       Support team<br>
       ${user.username}
     `;
-        console.log(support.email, subject);
         await this.mailService.sendEmail(support.email, subject, content);
         return {
             code: 200,
@@ -308,12 +307,11 @@ __decorate([
     (0, common_1.Get)('/'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Query)('limit')),
-    __param(2, (0, common_1.Query)('lastItem')),
-    __param(3, (0, common_1.Query)('status')),
+    __param(0, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Query)('lastItem')),
+    __param(2, (0, common_1.Query)('status')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, String, String]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], SupportController.prototype, "getSupports", null);
 __decorate([

@@ -14,7 +14,7 @@ export declare class SupportController {
         message: string;
         data: Support;
     }>;
-    getSupports(request: any, limit?: number, lastItem?: string, status?: string): Promise<{
+    getSupports(limit?: number, lastItem?: string, status?: string): Promise<{
         code: number;
         message: string;
         data: any;

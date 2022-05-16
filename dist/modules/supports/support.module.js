@@ -10,6 +10,7 @@ exports.SupportModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
 const mail_module_1 = require("../mail/mail.module");
+const redis_module_1 = require("../redis/redis.module");
 const user_module_1 = require("../user/user.module");
 const support_controller_1 = require("./support.controller");
 const support_schema_1 = require("./support.schema");
@@ -26,7 +27,8 @@ SupportModule = __decorate([
                 },
             ]),
             mail_module_1.MailModule,
-            user_module_1.UserModule
+            user_module_1.UserModule,
+            redis_module_1.RedisModule,
         ],
         providers: [support_service_1.SupportService],
         exports: [support_service_1.SupportService],

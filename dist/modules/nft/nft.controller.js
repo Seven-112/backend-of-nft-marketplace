@@ -87,20 +87,20 @@ let NFTController = class NFTController {
         if (!user) {
             return {
                 code: 400,
-                message: 'user_not_found'
+                message: 'user_not_found',
             };
         }
         if (nft.user === user.id) {
             return {
                 code: 400,
-                message: 'cant_buy_your_self'
+                message: 'cant_buy_your_self',
             };
         }
-        const checkUserBoughtNft = await (await this.nftService.getUserNftBoughtByUserAndNft(id, user.id))['toJSON']();
+        const checkUserBoughtNft = await this.nftService.getUserNftBoughtByUserAndNft(id, user.id);
         if (checkUserBoughtNft.length) {
             return {
                 code: 400,
-                message: 'already_bought_nft'
+                message: 'already_bought_nft',
             };
         }
         userNftBought.nft = nft;
@@ -110,13 +110,13 @@ let NFTController = class NFTController {
             userId: [nft.user],
             type: 'buy',
             msg: `${nft.title} has been sold`,
-            sender: user.id
+            sender: user.id,
         };
         const notificationForBuyer = {
             userId: [user.id],
             type: 'buy',
             msg: `${nft.title} has been purchased`,
-            sender: user.id
+            sender: user.id,
         };
         await Promise.all([
             this.notificationService.snsClient.send(new client_sns_1.PublishCommand({
@@ -170,7 +170,7 @@ let NFTController = class NFTController {
         if (!user) {
             return {
                 code: 400,
-                message: 'user_not_found'
+                message: 'user_not_found',
             };
         }
         const boughtNfts = await (await this.nftService.getBoughtNftByUser(user.id, startTime))['populate']();
@@ -185,7 +185,7 @@ let NFTController = class NFTController {
         if (!user.length || user[0].deletedAt) {
             return {
                 code: 400,
-                message: 'user_not_found'
+                message: 'user_not_found',
             };
         }
         let sellNfts = [];
@@ -195,14 +195,15 @@ let NFTController = class NFTController {
         catch (e) {
             sellNfts = [];
         }
-        const nftIds = sellNfts.map(nft => nft.id);
+        const nftIds = sellNfts.map((nft) => nft.id);
         try {
             sellNfts = await (await this.nftService.getNftBoughtByNfts(nftIds))['populate']();
         }
         catch (e) {
             sellNfts = [];
         }
-        const totalSell = sellNfts.map(nft => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+        const totalSell = sellNfts
+            .map((nft) => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
             .reduce((prev, current) => prev + current, 0);
         let boughtNfts = [];
         try {
@@ -212,14 +213,15 @@ let NFTController = class NFTController {
         catch (e) {
             boughtNfts = [];
         }
-        const totalBought = boughtNfts.map(nft => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
+        const totalBought = boughtNfts
+            .map((nft) => { var _a; return +((_a = nft.nft) === null || _a === void 0 ? void 0 : _a.price) || 0; })
             .reduce((prev, current) => prev + current, 0);
         return {
             code: 201,
             message: 'successfull',
             data: {
                 totalSell,
-                totalBought
+                totalBought,
             },
         };
     }
