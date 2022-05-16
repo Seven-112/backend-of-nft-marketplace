@@ -33,20 +33,16 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'user_not_existed',
-                data: null
+                data: null,
             };
         }
-        const names = [
-            `${from}+${to}`,
-            `${to}+${from}`,
-            body.name
-        ];
-        let channel = await (await this.channelService.getChannelByName(names))['toJSON']();
+        const names = [`${from}+${to}`, `${to}+${from}`, body.name];
+        let channel = await this.channelService.getChannelByName(names);
         if (channel.length) {
             return {
                 code: 200,
                 message: 'success',
-                data: channel[0]
+                data: channel[0],
             };
         }
         const dataChannel = new channel_interface_1.Channel();
@@ -67,11 +63,12 @@ let SupportController = class SupportController {
             return {
                 code: 400,
                 message: 'user_not_found',
-                data: null
+                data: null,
             };
         }
-        let channels = await (await this.channelService.get(user.id))['populate']();
-        channels = channels.map(channel => {
+        let channels = await this.channelService.get(user.id);
+        channels = channels
+            .map((channel) => {
             var _a, _b, _c, _d, _e, _f, _g, _h;
             if (((_a = channel.from) === null || _a === void 0 ? void 0 : _a.id) !== user.id) {
                 channel.channelName = ((_b = channel.from) === null || _b === void 0 ? void 0 : _b.username) || ((_c = channel.from) === null || _c === void 0 ? void 0 : _c.email);
@@ -84,7 +81,8 @@ let SupportController = class SupportController {
             delete channel.from;
             delete channel.to;
             return channel;
-        }).sort((a, b) => {
+        })
+            .sort((a, b) => {
             return b.timestamp - a.timestamp;
         });
         return {

@@ -24,5 +24,7 @@ var Caching;
     Caching["NFT_BOUGHT_BY_USER_ID"] = "nft_bought_by_user_id";
     Caching["NFT_BOUGHT_BY_NFT_IDS"] = "nft_bought_by_nft_ids";
     Caching["NFT_BOUGHT_BY_USER_AND_NFT"] = "nft_bought_by_user_and_nft";
+    Caching["CHANNELS_BY_USER"] = "channels_by_user";
+    Caching["CHANNEL_BY_NAMES"] = "channel_by_names";
 })(Caching = exports.Caching || (exports.Caching = {}));
 //# sourceMappingURL=caching.js.map

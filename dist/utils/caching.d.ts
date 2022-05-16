@@ -19,5 +19,7 @@ export declare enum Caching {
     NFT_BY_ID = "nft_by_id",
     NFT_BOUGHT_BY_USER_ID = "nft_bought_by_user_id",
     NFT_BOUGHT_BY_NFT_IDS = "nft_bought_by_nft_ids",
-    NFT_BOUGHT_BY_USER_AND_NFT = "nft_bought_by_user_and_nft"
+    NFT_BOUGHT_BY_USER_AND_NFT = "nft_bought_by_user_and_nft",
+    CHANNELS_BY_USER = "channels_by_user",
+    CHANNEL_BY_NAMES = "channel_by_names"
 }

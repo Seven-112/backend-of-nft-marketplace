@@ -27,29 +27,26 @@ export class SupportController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async createEvent(@Req() request: any, @Body() body: CreateChannelDTO) {
-    const to = await this.userService.getUserById(body.to)
+    const to = await this.userService.getUserById(body.to);
     const from = await this.userService.getUserById(request.user.sub);
 
-    if(!from || !to) {
+    if (!from || !to) {
       return {
-        code: 400, 
+        code: 400,
         message: 'user_not_existed',
-        data: null
-      }
+        data: null,
+      };
     }
 
-    const names = [
-      `${from}+${to}`,
-      `${to}+${from}`,
-      body.name
-    ];
-    let channel = await (await this.channelService.getChannelByName(names))['toJSON']();
-    if(channel.length) {
+    const names = [`${from}+${to}`, `${to}+${from}`, body.name];
+    let channel = await this.channelService.getChannelByName(names);
+
+    if (channel.length) {
       return {
-        code: 200, 
+        code: 200,
         message: 'success',
-        data: channel[0]
-      }
+        data: channel[0],
+      };
     }
 
     const dataChannel = new Channel();
@@ -71,30 +68,32 @@ export class SupportController {
   async getSupports(@Req() request: any) {
     const user = await this.userService.getUserById(request.user.sub);
 
-    if(!user) {
+    if (!user) {
       return {
         code: 400,
         message: 'user_not_found',
-        data: null
-      }
+        data: null,
+      };
     }
-    let channels = await (await this.channelService.get(user.id))['populate']();
-    channels = channels.map(channel => {
-      if(channel.from?.id !== user.id) {
-        channel.channelName = channel.from?.username || channel.from?.email;
-        channel.avatar = channel.from?.avatar || null;
-      }
+    let channels = await this.channelService.get(user.id);
+    channels = channels
+      .map((channel) => {
+        if (channel.from?.id !== user.id) {
+          channel.channelName = channel.from?.username || channel.from?.email;
+          channel.avatar = channel.from?.avatar || null;
+        }
 
-      if(channel.to?.id !== user.id) {
-        channel.channelName = channel.to?.username || channel.to?.email;
-        channel.avatar = channel.to?.avatar || null;
-      }
-      delete channel.from;
-      delete channel.to;
-      return channel;
-    }).sort((a, b) => {
-      return b.timestamp - a.timestamp;
-    });
+        if (channel.to?.id !== user.id) {
+          channel.channelName = channel.to?.username || channel.to?.email;
+          channel.avatar = channel.to?.avatar || null;
+        }
+        delete channel.from;
+        delete channel.to;
+        return channel;
+      })
+      .sort((a, b) => {
+        return b.timestamp - a.timestamp;
+      });
 
     return {
       code: 200,

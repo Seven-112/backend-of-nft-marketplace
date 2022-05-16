@@ -20,27 +20,6 @@ export enum Caching {
   NFT_BOUGHT_BY_USER_ID = 'nft_bought_by_user_id',
   NFT_BOUGHT_BY_NFT_IDS = 'nft_bought_by_nft_ids',
   NFT_BOUGHT_BY_USER_AND_NFT = 'nft_bought_by_user_and_nft',
+  CHANNELS_BY_USER = 'channels_by_user',
+  CHANNEL_BY_NAMES = 'channel_by_names',
 }
-
-/**Cache user
- * Get all user
- * Get user by wallet
- * Get user by id
- * Get user by ids
- * Search user
- * Get user by username
- */
-
-/**Cache event
- * Get all event
- * Get event by id
- * Get event by ids
- * Get event ticket by id
- * Get event ticket by ids
- */
-
-/**Delete cache
- * Update profile: USER_BY_ID, USER_BY_IDS, USER_BY_WALLET_ADDRESS, SEARCH_USER, ALL_USER, USER_BY_USERNAME, USER_BY_EMAIL, USER_BY_TIME
- * Update socials: USER_BY_ID, USER_BY_IDS, USER_BY_WALLET_ADDRESS, SEARCH_USER, ALL_USER, USER_BY_USERNAME, USER_BY_EMAIL, USER_BY_TIME
- * Update wallet address: USER_BY_ID, USER_BY_IDS, USER_BY_WALLET_ADDRESS, SEARCH_USER, ALL_USER, USER_BY_USERNAME, USER_BY_EMAIL, USER_BY_TIME
- */

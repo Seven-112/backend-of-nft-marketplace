@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelModule = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_dynamoose_1 = require("nestjs-dynamoose");
+const redis_module_1 = require("../redis/redis.module");
 const user_module_1 = require("../user/user.module");
 const channel_controller_1 = require("./channel.controller");
 const channel_schema_1 = require("./channel.schema");
@@ -24,7 +25,8 @@ ChannelModule = __decorate([
                     schema: channel_schema_1.ChannelSchema,
                 },
             ]),
-            user_module_1.UserModule
+            user_module_1.UserModule,
+            redis_module_1.RedisModule,
         ],
         providers: [channel_service_1.ChannelService],
         exports: [channel_service_1.ChannelService],

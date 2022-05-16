@@ -28,6 +28,7 @@ export class NftService {
       Caching.NFT_BOUGHT_BY_NFT_IDS,
       Caching.NFT_BOUGHT_BY_USER_ID,
       Caching.NFT_BY_ID,
+      Caching.NFT_BOUGHT_BY_USER_AND_NFT,
     );
   }
 

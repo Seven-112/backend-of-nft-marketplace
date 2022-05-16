@@ -27,7 +27,7 @@ let NftService = class NftService {
         return this.nftModel.create(data);
     }
     clear() {
-        return this.redisService.delWithPrefix(caching_1.Caching.ALL_NFT, caching_1.Caching.ALL_NFT_BOUGHT, caching_1.Caching.NFT_BOUGHT_BY_NFT_IDS, caching_1.Caching.NFT_BOUGHT_BY_USER_ID, caching_1.Caching.NFT_BY_ID);
+        return this.redisService.delWithPrefix(caching_1.Caching.ALL_NFT, caching_1.Caching.ALL_NFT_BOUGHT, caching_1.Caching.NFT_BOUGHT_BY_NFT_IDS, caching_1.Caching.NFT_BOUGHT_BY_USER_ID, caching_1.Caching.NFT_BY_ID, caching_1.Caching.NFT_BOUGHT_BY_USER_AND_NFT);
     }
     async getAllNfts(limit) {
         if (limit) {
