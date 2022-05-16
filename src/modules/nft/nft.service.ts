@@ -170,15 +170,17 @@ export class NftService {
 
     const nftBoughts = await this.userNFTBoughtModel.scan().exec();
 
+    const populated = await nftBoughts['populate']();
+
     if (nftBoughts.length) {
       this.redisService.setWithPrefix(
         Caching.ALL_NFT_BOUGHT,
         '',
-        JSON.stringify(nftBoughts),
+        JSON.stringify(populated),
       );
     }
 
-    return nftBoughts;
+    return populated;
   }
 
   async getNftbyUser(id: string) {

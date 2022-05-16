@@ -114,10 +114,11 @@ let NftService = class NftService {
             return JSON.parse(cached);
         }
         const nftBoughts = await this.userNFTBoughtModel.scan().exec();
+        const populated = await nftBoughts['populate']();
         if (nftBoughts.length) {
-            this.redisService.setWithPrefix(caching_1.Caching.ALL_NFT_BOUGHT, '', JSON.stringify(nftBoughts));
+            this.redisService.setWithPrefix(caching_1.Caching.ALL_NFT_BOUGHT, '', JSON.stringify(populated));
         }
-        return nftBoughts;
+        return populated;
     }
     async getNftbyUser(id) {
         const cached = await this.redisService.getWithPrefix(caching_1.Caching.NFT_BOUGHT_BY_USER_ID, id);
