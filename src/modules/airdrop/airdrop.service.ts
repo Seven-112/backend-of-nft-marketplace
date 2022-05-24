@@ -12,7 +12,13 @@ export class AirdropService {
     private readonly redisService: RedisService,
   ) {}
   public async mintNFT(nftId: number, user: User, userId: number, userNftNumber: number) {
-    const res = await uploadToArweave(nftId);
+    console.log("mintNFT");
+    //const res = await uploadToArweave(nftId);
+    const res = {
+      name: "Metaversus SpaceShip #0",
+      symbol: "Metaversus NFT",
+      metadataUrl: "https://arweave.net/a2XrWSHrbgF5uJlb7deQcP17BSjBYEEChc-g6UzDw9E"
+    };
     if (res) {
       await mintNewNFT(
         res.name,

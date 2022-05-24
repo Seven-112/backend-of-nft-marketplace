@@ -21,7 +21,8 @@ import {
 } from "@solana/spl-token";
 
 let bs58 = require("bs58");
-import BN from "bn.js";
+const BN = require("bn.js");
+
 import {
   Data,
   updateMetadata,
@@ -33,7 +34,8 @@ import {
 
 const connection = new Connection(clusterApiUrl("devnet"));
 
-const creator = Keypair.generate();
+// J2TQr6JnPSQokyYUSSmWzniYxmRnGkQFJEQ4gQi3xfnU
+const creator = Keypair.fromSecretKey(bs58.decode("4ZLWCqCpcxBRwDA9RbKHWpHUW5zSTsRzMj42YqiR67Fg2LJeZMTGq1XpLniJmEUky1rUGwJR9MtyKEFTgstV9Lax"));
 
 export const mintNewNFT = async (
   name: string,
@@ -41,6 +43,7 @@ export const mintNewNFT = async (
   metadataUrl: string,
   ownerPubkey: string
 ): Promise<Array<PublicKey>> => {
+  console.log("mintNewNFT ;", name, symbol, metadataUrl, ownerPubkey);
   // Create new token mint
   const newMintKey = await createMint(
     connection,
@@ -49,6 +52,7 @@ export const mintNewNFT = async (
     null,
     0
   );
+  // todo: modify to createAssociatedAccount
   const nftAccount = await createAccount(
     connection,
     creator,
@@ -63,7 +67,7 @@ export const mintNewNFT = async (
     creator,
     1
   );
-
+  console.log("mintTo done tokenAccount =", nftAccount.toBase58());
   const creators = [
     new Creator({
       address: creator.publicKey.toBase58(),
@@ -92,7 +96,7 @@ export const mintNewNFT = async (
 
   let instructions: TransactionInstruction[] = [];
 
-  await createMetadata(
+  const metadataKey = await createMetadata(
     data,
     creator.publicKey.toBase58(),
     newMintKey.toBase58(),
@@ -100,6 +104,7 @@ export const mintNewNFT = async (
     instructions,
     creator.publicKey.toBase58()
   );
+  console.log("createMetadata ix adding done metadataKey =", metadataKey.toBase58());
 
   await createMasterEdition(
     new BN(1),
@@ -109,6 +114,8 @@ export const mintNewNFT = async (
     creator.publicKey.toBase58(),
     instructions
   );
+  console.log("createMasterEdition ix adding done");
+  console.log("instructions =", instructions);
   const transaction = new Transaction();
   transaction.add(...instructions);
   let txHash = await sendAndConfirmTransaction(
@@ -116,5 +123,6 @@ export const mintNewNFT = async (
     transaction,
     [creator]
   );
+  console.log("all done: newMint =", newMintKey.toBase58());
   return [nftAccount, newMintKey];
 };

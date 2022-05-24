@@ -30,6 +30,7 @@ export class NFTController {
     private readonly notificationService: NotificationService,
   ) {}
 
+  @Public()
   @Post('/create')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
