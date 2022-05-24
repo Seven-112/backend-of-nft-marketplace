@@ -1,1 +1,0 @@
-{"version":3,"file":"staking.interface.js","sourceRoot":"","sources":["../../../src/modules/staking/staking.interface.ts"],"names":[],"mappings":";;;AAAA,mCAAgC;AAEhC,IAAY,YAGX;AAHD,WAAY,YAAY;IACtB,mCAAmB,CAAA;IACnB,uCAAuB,CAAA;AACzB,CAAC,EAHW,YAAY,GAAZ,oBAAY,KAAZ,oBAAY,QAGvB;AAED,MAAa,OAAO;IAOlB;QACE,IAAI,CAAC,EAAE,GAAG,IAAA,eAAM,EAAC,EAAE,CAAC,CAAC;IACvB,CAAC;CACF;AAVD,0BAUC"}
