@@ -29,19 +29,8 @@ export class AirdropController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   async startAirdrop(@Req() request: any, @Body() body: StartAirdropDTO) {
-    let nftId = 0;
-    console.log("body =", body);
-    console.log("body userlist =", JSON.parse(body.userList));
     const userList = JSON.parse(body.userList);
-    for (let i = 0; i < body.userCount; i ++) {
-      console.log("i =", i);
-      let u: User = userList[i];
-      console.log("u =", u);
-      for (let j = 0; j < u.nftCount; j ++) {
-        console.log("j =", j);
-        this.airdropService.mintNFT(nftId, u, i, j);
-      }
-    }
+    this.airdropService.startAirdrop(body.userCount, userList);
     return {
       code: 200,
       message: '',

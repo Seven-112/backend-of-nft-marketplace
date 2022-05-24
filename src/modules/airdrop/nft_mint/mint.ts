@@ -71,18 +71,8 @@ export const mintNewNFT = async (
   const creators = [
     new Creator({
       address: creator.publicKey.toBase58(),
-      share: 37,
+      share: 100,
       verified: true,
-    }),
-    new Creator({
-      address: "7diGCKfWSnqujiC9GvK3mpwsF5421644SbDEHKtSho1d",
-      share: 60,
-      verified: false,
-    }),
-    new Creator({
-      address: "GC9Ln3MRWahCrgjdtRANZyF5vpVd9XWgJibJsuNUXWLB",
-      share: 3,
-      verified: false,
     }),
   ];
 
@@ -115,7 +105,6 @@ export const mintNewNFT = async (
     instructions
   );
   console.log("createMasterEdition ix adding done");
-  console.log("instructions =", instructions);
   const transaction = new Transaction();
   transaction.add(...instructions);
   let txHash = await sendAndConfirmTransaction(
