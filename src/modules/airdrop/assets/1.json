@@ -1,0 +1,21 @@
+{
+  "name": "Metaversus SpaceShip #0",
+  "props": [
+    {
+      "trait_type": "size",
+      "value": "big"
+    },
+    {
+      "trait_type": "attack",
+      "value": "weak"
+    },
+    {
+      "trait_type": "defense",
+      "value": "strong"
+    },
+    {
+      "trait_type": "health",
+      "value": "long"
+    }
+  ]
+}

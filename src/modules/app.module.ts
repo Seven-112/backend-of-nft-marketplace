@@ -28,6 +28,7 @@ import { SubscriptionModule } from './subscriptions/subscription.module';
 import { ChannelModule } from './channels/channel.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { StakingModule } from './staking/staking.module';
+import { AirdropModule } from './airdrop/airdrop.module';
 @Module({
   imports: [
     //dynamoose will get aws key from .env file
@@ -56,6 +57,7 @@ import { StakingModule } from './staking/staking.module';
     ChannelModule,
     DashboardModule,
     StakingModule,
+    AirdropModule,
     RedisModule.forRoot({
       config: {
         port: +process.env.REDIS_PORT,
