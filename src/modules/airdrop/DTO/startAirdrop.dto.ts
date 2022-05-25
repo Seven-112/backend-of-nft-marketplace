@@ -13,11 +13,10 @@ import {
 import { User } from '../airdrop.interface';
 
 export class StartAirdropDTO {
-  @IsArray()
-  @ApiProperty()
-  userList: User[];
+  userList: string;
 
   @IsNumber()
   @ApiProperty()
+  @Type(() => Number)
   userCount: number;
 }

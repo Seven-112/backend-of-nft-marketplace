@@ -1,9 +1,9 @@
-import fs from "fs";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
-import Arweave from "arweave";
 
-const ASSETS_DIR = "../assets/";
+//import Arweave from "arweave";
+const fs = require('fs');
+const Arweave = require('arweave');
+
+const ASSETS_DIR = "./assets/";
 const results = [];
 
 const initOptions = {
@@ -16,7 +16,7 @@ const initOptions = {
 
 const getMetadata = (name, imageUrl, attributes) => ({
   name,
-  symbol: "Metaversus NFT",
+  symbol: "MTVS",
   description:"Metaversus NFT is a NFT which can be used in metaverse",
   seller_fee_basis_points: 500,
   external_url: "https://www.metaversus.com/",
@@ -56,8 +56,7 @@ const initOptionsLocal = {
 
 
 const runUpload = async (arweave: any, data: any, contentType: string[], isUploadByChunk = false) => {
-  
-  let key = await arweave.wallets.generate();
+  let key = JSON.parse((fs.readFileSync('./arweaveKey.json')).toString());
   const tx = await arweave.createTransaction({ data: data }, key);
 
   tx.addTag(contentType[0], contentType[1]);
@@ -83,9 +82,6 @@ const runUpload = async (arweave: any, data: any, contentType: string[], isUploa
   return tx;
 };
 
-const folder = "./public/images/";
-let metadataCollection = {};
-
 const getAttributes = (props) => {
   // map attributes to the proper key/value objects
   const attrs = Object.keys(props).map((key) => {
@@ -99,12 +95,13 @@ const getAttributes = (props) => {
 };
 
 export const uploadToArweave = async (id: number) => {
-  
   const arweave = Arweave.init(initOptions);
   try {
       const traitData = JSON.parse((fs.readFileSync(ASSETS_DIR + id + '.json')).toString());
       // get separately name and props
-      const { Name: name, ...props } = traitData;
+      console.log("traitData =", traitData);
+
+      const { name: name, ...props } = traitData;
       
       console.log("name", name);
 
@@ -136,7 +133,7 @@ export const uploadToArweave = async (id: number) => {
           : undefined;
         
         console.log("metadataUrl", metadataUrl);
-        return { metadataUrl, name, symbol: "Metaversus NFT" };
+        return { metadataUrl, name, symbol: "MTVS" };
 
       } catch (error) {
         console.error(error);
