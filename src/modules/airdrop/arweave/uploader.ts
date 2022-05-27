@@ -113,8 +113,18 @@ export const uploadToArweave = async (id: number) => {
         // if (!data) console.warn(`Can't find file: ${filePath}`);
 
         const contentType = ["Content-Type", "image/png"];
-        const { id } = await runUpload(arweave, data, contentType, true);
-        const imageUrl = id ? `https://arweave.net/${id}` : undefined;
+        let imageId = "";
+        while(true) {
+          try {
+            const res = await runUpload(arweave, data, contentType, true);
+            imageId = res.id;
+            break;
+          } catch (error) {
+            console.log("upload error. retrying image upload ...");
+          }
+        }
+        
+        const imageUrl = imageId ? `https://arweave.net/${imageId}` : undefined;
         console.log("imageUrl", imageUrl);
 
         const attributes = getAttributes(props);
@@ -123,12 +133,23 @@ export const uploadToArweave = async (id: number) => {
         // console.log(metadata);
         const metaContentType = ["Content-Type", "application/json"];
         const metadataString = JSON.stringify(metadata);
-        const { id: metadataId } = await runUpload(
-          arweave,
-          metadataString,
-          metaContentType
-        );
-        const metadataUrl = id
+        let metadataId = "";
+
+        while(true) {
+          try {
+            const res = await runUpload(
+              arweave,
+              metadataString,
+              metaContentType
+            );
+            metadataId = res.id;
+            break;
+          } catch(error) {
+            console.log("upload error. retrying metadata upload ...");
+          }
+        }
+
+        const metadataUrl = metadataId
           ? `https://arweave.net/${metadataId}`
           : undefined;
         
@@ -136,10 +157,10 @@ export const uploadToArweave = async (id: number) => {
         return { metadataUrl, name, symbol: "MTVS" };
 
       } catch (error) {
-        console.error(error);
+        console.log("file read error ", error);
       }
   } catch  (error) {
-    console.error(error);
+    console.log("file read error ", error);
   }
   return null;
 };

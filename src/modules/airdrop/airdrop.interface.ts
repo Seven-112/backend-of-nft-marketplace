@@ -1,42 +1,50 @@
 
 export class User {
-  name: string;
+  username: string;
   email: string;
-  wallet: string;
+  walletAddress: string;
+  status: string;
   nftCount: number;
-  userStatus: boolean;
 }
 
 export class AirdropStatus {
   // totally airdropped nft count
-  totalNftNumber: number;
-  // current user id
-  curUserId: number;
-  // current user's airdropped nft count
-  curUserNftNumber: number;
+  airdroppedCount: number;
+  status: string;
 
   constructor(
-    pTotalNftNumber,
-    pCurUserId,
-    pCurUserNftNumber
+    pTotalNftNumber = 0,
+    pStatus = "none"
   ) {
-    this.totalNftNumber = pTotalNftNumber;
-    this.curUserId = pCurUserId;
-    this.curUserNftNumber = pCurUserNftNumber;
+    this.airdroppedCount = pTotalNftNumber;
+    this.status = pStatus;
   }
 
   toString() {
-    return this.totalNftNumber + ";" 
-            + this.curUserId + ";" 
-            + this.curUserNftNumber;
+    return this.airdroppedCount + ";" 
+            + this.status;
+  }
+
+  setStateToDoing() {
+    this.status = "doing";
+  }
+
+  setStateToDone() {
+    this.status = "done";
+  }
+
+  isAble() {
+    return this.status === 'none';
   }
 
   static fromString(str: string) {
+    if (str === "") return new AirdropStatus();
     const tokens = str.split(';');
     return new AirdropStatus(
       parseInt(tokens[0]),
-      parseInt(tokens[1]),
-      parseInt(tokens[2]),
+      tokens[1]
     )
   }
+
+
 }
